@@ -25,7 +25,7 @@ import net.minecraftforge.common.MinecraftForge;
 public final class NeiCustomDiagram {
     public static final String MOD_ID = "neicustomdiagram";
     public static final String MOD_NAME = "NEI Custom Diagram";
-    public static final String MOD_VERSION = "@version@";
+    public static final String MOD_VERSION = "GRADLETOKEN_VERSION";
     public static final String MOD_DEPENDENCIES =
             "required-after:NotEnoughItems;"
                     + "after:dreamcraft;"
