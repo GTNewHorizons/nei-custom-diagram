@@ -19,7 +19,7 @@ dependencies {
     compileOnly("com.github.GTNewHorizons:EnderStorage:1.4.11:dev") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:DetravScannerMod:1.6.4:dev") {
+    compileOnly("com.github.GTNewHorizons:DetravScannerMod:master-SNAPSHOT:dev") {
         transitive = false
     }
     compileOnly("com.github.GTNewHorizons:ForestryMC:4.4.5:api") {
