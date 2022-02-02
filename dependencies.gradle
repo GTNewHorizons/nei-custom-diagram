@@ -1,34 +1,34 @@
 // Add your dependencies here
 
 dependencies {
-    compile("com.github.GTNewHorizons:NotEnoughItems:master-SNAPSHOT:dev")
-    compile("com.github.GTNewHorizons:CodeChickenLib:master-SNAPSHOT:dev")
+    compile("com.github.GTNewHorizons:NotEnoughItems:2.2.5:dev")
+    compile("com.github.GTNewHorizons:CodeChickenLib:1.1.5.2:dev")
 
-    compileOnly("com.github.GTNewHorizons:NewHorizonsCoreMod:master-SNAPSHOT:dev") {
+    compileOnly("com.github.GTNewHorizons:NewHorizonsCoreMod:1.9.19:dev") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:master-SNAPSHOT:dev") {
+    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:5.09.40.26:dev") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:bartworks:master-SNAPSHOT:dev") {
+    compileOnly("com.github.GTNewHorizons:bartworks:0.5.34:dev") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:GTplusplus:master-SNAPSHOT:dev") {
+    compileOnly("com.github.GTNewHorizons:GTplusplus:1.7.27:dev") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:EnderStorage:master-SNAPSHOT:dev") {
+    compileOnly("com.github.GTNewHorizons:EnderStorage:1.4.11:dev") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:DetravScannerMod:master-SNAPSHOT:dev") {
+    compileOnly("com.github.GTNewHorizons:DetravScannerMod:1.6.4:dev") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:ForestryMC:master-SNAPSHOT:api") {
+    compileOnly("com.github.GTNewHorizons:ForestryMC:4.4.5:api") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:Railcraft:master-SNAPSHOT:api") {
+    compileOnly("com.github.GTNewHorizons:Railcraft:9.13.5:api") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:EnderIO:master-SNAPSHOT:api") {
+    compileOnly("com.github.GTNewHorizons:EnderIO:2.3.1.28:api") {
         transitive = false
     }
 
