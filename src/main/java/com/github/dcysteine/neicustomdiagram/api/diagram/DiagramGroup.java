@@ -333,7 +333,7 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
 
     /** We have our own custom tooltip drawing code. */
     @Override
-    public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe) {
+    public List<String> handleTooltip(GuiRecipe<?> gui, List<String> currenttip, int recipe) {
         // Call our custom tooltip logic. It must be called here rather than in drawForeground(),
         // because calling it in drawForeground() will cause it to be drawn under NEI side panels.
         drawTooltip(gui, recipe);
@@ -344,7 +344,7 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
     /** We have our own custom tooltip drawing code. */
     @Override
     public List<String> handleItemTooltip(
-            GuiRecipe gui, ItemStack stack, List<String> currenttip, int recipe) {
+            GuiRecipe<?> gui, ItemStack stack, List<String> currenttip, int recipe) {
         return currenttip;
     }
 
