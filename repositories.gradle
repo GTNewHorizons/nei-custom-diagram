@@ -17,4 +17,7 @@ repositories {
     maven {
         url "https://cursemaven.com"
     }
+	maven{
+		url "https://maven.fabricmc.net/"
+	}
 }
