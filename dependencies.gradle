@@ -35,6 +35,7 @@ dependencies {
     runtime('com.github.GTNewHorizons:ModularUI:1.0.43:dev')
     runtime('com.github.GTNewHorizons:MrTJPCore:1.1.1:dev')
     runtime('com.github.GTNewHorizons:StructureLib:1.2.0-beta.2:dev')
+    runtime('com.github.GTNewHorizons:TecTech:5.0.70-1:dev')
     runtime('com.github.GTNewHorizons:Yamcl:0.5.84:dev')
     runtime('com.github.GTNewHorizons:waila:1.5.22:dev')
 }
