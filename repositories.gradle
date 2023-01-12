@@ -2,7 +2,6 @@
 
 repositories {
 
-    mavenCentral()
     maven {
         name = "GTNH"
         url = "http://jenkins.usrv.eu:8081/nexus/content/groups/public/"
