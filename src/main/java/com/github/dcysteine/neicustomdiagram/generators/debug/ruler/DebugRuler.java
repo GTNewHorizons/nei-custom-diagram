@@ -19,9 +19,8 @@ import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import com.google.common.collect.Lists;
-import net.minecraft.init.Items;
-
 import java.util.Collection;
+import net.minecraft.init.Items;
 
 /**
  * Generates a debug diagram that helps measure available NEI space.
@@ -48,17 +47,13 @@ public final class DebugRuler implements DiagramGenerator {
     private Layout layout;
 
     public DebugRuler(String groupId) {
-        this.info =
-                DiagramGroupInfo.builder(
-                                Lang.DEBUG_RULER.trans("groupname"),
-                                groupId, ICON, 1)
-                        .setIgnoreNbt(false)
-                        .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
-                        .setDescription(
-                                "This diagram has markings to measure the GUI height in pixels."
-                                        + "\nYou can also use it to view NBT data for any item."
-                                        + "\nThe tab icon also works as a compass!")
-                        .build();
+        this.info = DiagramGroupInfo.builder(Lang.DEBUG_RULER.trans("groupname"), groupId, ICON, 1)
+                .setIgnoreNbt(false)
+                .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
+                .setDescription("This diagram has markings to measure the GUI height in pixels."
+                        + "\nYou can also use it to view NBT data for any item."
+                        + "\nThe tab icon also works as a compass!")
+                .build();
     }
 
     @Override
@@ -69,31 +64,25 @@ public final class DebugRuler implements DiagramGenerator {
     @Override
     public DiagramGroup generate() {
         layout = buildLayout();
-        return new DiagramGroup(
-                info, new CustomDiagramMatcher(this::generateDiagrams));
+        return new DiagramGroup(info, new CustomDiagramMatcher(this::generateDiagrams));
     }
 
-    private Collection<Diagram> generateDiagrams(
-            Interactable.RecipeType recipeType, Component component) {
-        return Lists.newArrayList(
-                Diagram.builder()
-                        .addLayout(layout)
-                        .insertIntoSlot(
-                                Layout.SlotKey.create(String.format(SLOT_KEY_FORMAT_STRING, 0, 0)),
-                                DisplayComponent.builder(component).build())
-                        .build());
+    private Collection<Diagram> generateDiagrams(Interactable.RecipeType recipeType, Component component) {
+        return Lists.newArrayList(Diagram.builder()
+                .addLayout(layout)
+                .insertIntoSlot(
+                        Layout.SlotKey.create(String.format(SLOT_KEY_FORMAT_STRING, 0, 0)),
+                        DisplayComponent.builder(component).build())
+                .build());
     }
 
     private static Layout buildLayout() {
         Layout.Builder layoutBuilder = Layout.builder();
 
-        Lines.Builder rulerColour1 =
-                Lines.builder(Point.create(0, 0)).setColour(RULER_COLOUR_1);
-        Lines.Builder rulerColour2 =
-                Lines.builder(Point.create(0, 0)).setColour(RULER_COLOUR_2);
+        Lines.Builder rulerColour1 = Lines.builder(Point.create(0, 0)).setColour(RULER_COLOUR_1);
+        Lines.Builder rulerColour2 = Lines.builder(Point.create(0, 0)).setColour(RULER_COLOUR_2);
         for (int i = RULER_SEGMENT_PIXELS; i <= RULER_WIDTH_PIXELS; i += RULER_SEGMENT_PIXELS) {
-            Lines.Builder linesBuilder =
-                    i % (2 * RULER_SEGMENT_PIXELS) > 0 ? rulerColour1 : rulerColour2;
+            Lines.Builder linesBuilder = i % (2 * RULER_SEGMENT_PIXELS) > 0 ? rulerColour1 : rulerColour2;
 
             // To account for lines having thickness 2,
             // we must shorten both ends by 1 pixel to avoid overlap.
@@ -102,8 +91,7 @@ public final class DebugRuler implements DiagramGenerator {
         }
 
         for (int i = RULER_SEGMENT_PIXELS; i <= RULER_HEIGHT_PIXELS; i += RULER_SEGMENT_PIXELS) {
-            Lines.Builder linesBuilder =
-                    i % (2 * RULER_SEGMENT_PIXELS) > 0 ? rulerColour1 : rulerColour2;
+            Lines.Builder linesBuilder = i % (2 * RULER_SEGMENT_PIXELS) > 0 ? rulerColour1 : rulerColour2;
 
             // To account for lines having thickness 2,
             // we must shorten both ends by 1 pixel to avoid overlap.
@@ -116,10 +104,8 @@ public final class DebugRuler implements DiagramGenerator {
                 layoutBuilder.putSlot(
                         Layout.SlotKey.create(String.format(SLOT_KEY_FORMAT_STRING, i, j)),
                         Slot.builder(Grid.GRID.grid(2 * i, 2 * j))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.DEBUG_RULER.transf("slotlabel", i + 1, j + 1),
-                                                Tooltip.INFO_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.DEBUG_RULER.transf("slotlabel", i + 1, j + 1), Tooltip.INFO_FORMATTING))
                                 .build());
             }
         }

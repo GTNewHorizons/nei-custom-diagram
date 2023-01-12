@@ -4,7 +4,6 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
 import com.google.common.collect.ImmutableList;
-
 import java.util.Collection;
 import java.util.function.BiFunction;
 
@@ -14,8 +13,7 @@ import java.util.function.BiFunction;
  */
 public class CustomDiagramMatcher implements DiagramMatcher {
     protected final ImmutableList<Diagram> allDiagrams;
-    protected final BiFunction<
-            Interactable.RecipeType, Component, Collection<Diagram>> diagramFunction;
+    protected final BiFunction<Interactable.RecipeType, Component, Collection<Diagram>> diagramFunction;
 
     public CustomDiagramMatcher(
             Iterable<? extends Diagram> allDiagrams,
@@ -36,8 +34,7 @@ public class CustomDiagramMatcher implements DiagramMatcher {
      *     (e.g. it's difficult or impossible to find all components that should have a diagram).
      * </ul>
      */
-    public CustomDiagramMatcher(
-            BiFunction<Interactable.RecipeType, Component, Collection<Diagram>> diagramFunction) {
+    public CustomDiagramMatcher(BiFunction<Interactable.RecipeType, Component, Collection<Diagram>> diagramFunction) {
         this(ImmutableList.of(), diagramFunction);
     }
 

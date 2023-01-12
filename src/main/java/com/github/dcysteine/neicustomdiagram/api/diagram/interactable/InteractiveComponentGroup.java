@@ -13,10 +13,9 @@ import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-
-import java.util.List;
 
 /**
  * An interactive component group.
@@ -36,14 +35,12 @@ public class InteractiveComponentGroup implements Interactable {
      * This class is really intended to be used with slots. If you're calling this constructor,
      * consider using {@link CustomInteractable} instead.
      */
-    public InteractiveComponentGroup(
-            Point pos, Iterable<DisplayComponent> components, Tooltip slotTooltip) {
+    public InteractiveComponentGroup(Point pos, Iterable<DisplayComponent> components, Tooltip slotTooltip) {
         this.position = pos;
         this.components = ImmutableList.copyOf(components);
         this.slotTooltip = slotTooltip;
 
-        Preconditions.checkState(
-                !this.components.isEmpty(), "Must contain at least one component!");
+        Preconditions.checkState(!this.components.isEmpty(), "Must contain at least one component!");
     }
 
     public InteractiveComponentGroup(Slot slot, DisplayComponent... components) {
@@ -73,28 +70,21 @@ public class InteractiveComponentGroup implements Interactable {
             String transKey = maxComponents > 0 ? "cycleindexwithshift" : "cycleindex";
             return Tooltip.builder()
                     .setFormatting(Tooltip.INFO_FORMATTING)
-                    .addTextLine(
-                            Lang.API.transf(transKey,
-                                    currentIndex(diagramState) + 1, components.size()))
+                    .addTextLine(Lang.API.transf(transKey, currentIndex(diagramState) + 1, components.size()))
                     .build();
         }
 
         int numComponents = Math.min(components.size(), maxComponents);
         List<DisplayComponent> tooltipComponents = components.subList(0, numComponents);
-        Tooltip.Builder builder =
-                Tooltip.builder()
-                        .setFormatting(Tooltip.INFO_FORMATTING)
-                        .addTextLine(
-                                Lang.API.transf("cycleindex",
-                                        currentIndex(diagramState) + 1, components.size()))
-                        .addSpacing()
-                        .addTextLine(Lang.API.trans("cyclecomponents"))
-                        .addAllDisplayComponents(tooltipComponents);
+        Tooltip.Builder builder = Tooltip.builder()
+                .setFormatting(Tooltip.INFO_FORMATTING)
+                .addTextLine(Lang.API.transf("cycleindex", currentIndex(diagramState) + 1, components.size()))
+                .addSpacing()
+                .addTextLine(Lang.API.trans("cyclecomponents"))
+                .addAllDisplayComponents(tooltipComponents);
 
         if (numComponents < components.size()) {
-            builder.addTextLine(
-                    Lang.API.transf("excesscyclecomponents",
-                            components.size() - numComponents));
+            builder.addTextLine(Lang.API.transf("excesscyclecomponents", components.size() - numComponents));
         }
 
         return builder.build();
@@ -134,21 +124,21 @@ public class InteractiveComponentGroup implements Interactable {
             ItemStack stack = (ItemStack) component.stack();
 
             @SuppressWarnings("unchecked")
-            List<String> lines =
-                    stack.getTooltip(
-                            Minecraft.getMinecraft().thePlayer,
-                            Minecraft.getMinecraft().gameSettings.advancedItemTooltips);
+            List<String> lines = stack.getTooltip(
+                    Minecraft.getMinecraft().thePlayer, Minecraft.getMinecraft().gameSettings.advancedItemTooltips);
 
-            itemStackTooltip =
-                    Tooltip.builder()
-                            .setFormatting(Tooltip.TRIVIAL_FORMATTING)
-                            .addAllTextLines(lines.subList(1, lines.size()))
-                            .build();
+            itemStackTooltip = Tooltip.builder()
+                    .setFormatting(Tooltip.TRIVIAL_FORMATTING)
+                    .addAllTextLines(lines.subList(1, lines.size()))
+                    .build();
         }
 
         Tooltip.concat(
-                        component.descriptionTooltip(), slotTooltip, component.additionalTooltip(),
-                        itemStackTooltip, cycleTooltip(diagramState))
+                        component.descriptionTooltip(),
+                        slotTooltip,
+                        component.additionalTooltip(),
+                        itemStackTooltip,
+                        cycleTooltip(diagramState))
                 .draw(mousePos);
     }
 }

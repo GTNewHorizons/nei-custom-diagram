@@ -11,7 +11,7 @@ public abstract class TextFormatting {
     }
 
     public static TextFormatting create(EnumChatFormatting... formatting) {
-        return create( false, formatting);
+        return create(false, formatting);
     }
 
     public abstract boolean small();
@@ -36,8 +36,7 @@ public abstract class TextFormatting {
     }
 
     public static Builder builder() {
-        return new AutoValue_TextFormatting.Builder()
-                .setSmall(false);
+        return new AutoValue_TextFormatting.Builder().setSmall(false);
     }
 
     public abstract Builder toBuilder();
@@ -45,7 +44,9 @@ public abstract class TextFormatting {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder setSmall(boolean small);
+
         public abstract Builder setFormatting(Iterable<EnumChatFormatting> formatting);
+
         public abstract ImmutableSortedSet.Builder<EnumChatFormatting> formattingBuilder();
 
         public Builder addFormatting(EnumChatFormatting formatting) {

@@ -10,7 +10,6 @@ import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -160,11 +159,10 @@ public abstract class SlotGroup implements Drawable {
                     if (slots[i][j] != null) {
                         slotBuilder = slots[i][j].toBuilder().setPosition(currPos);
                     } else {
-                        slotBuilder =
-                                Slot.builder(currPos)
-                                        .setSlotWidth(slotWidth)
-                                        .setTooltip(defaultTooltip)
-                                        .setDrawFunction(defaultDrawFunction);
+                        slotBuilder = Slot.builder(currPos)
+                                .setSlotWidth(slotWidth)
+                                .setTooltip(defaultTooltip)
+                                .setDrawFunction(defaultDrawFunction);
                     }
 
                     slotsBuilder.add(slotBuilder.build());

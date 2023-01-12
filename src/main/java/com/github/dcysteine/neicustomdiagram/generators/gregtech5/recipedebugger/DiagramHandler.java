@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,23 +26,19 @@ class DiagramHandler {
     private final ListMultimap<GregTechRecipeDebugger.View, Diagram> diagramListMultimap;
     private Diagram menuDiagram;
 
-    DiagramHandler(
-            DiagramGroupInfo info, LayoutFactory layoutFactory, RecipeHandler recipeHandler) {
+    DiagramHandler(DiagramGroupInfo info, LayoutFactory layoutFactory, RecipeHandler recipeHandler) {
         this.info = info;
         this.layoutFactory = layoutFactory;
         this.recipeHandler = recipeHandler;
 
-        this.diagramListMultimap =
-                MultimapBuilder
-                        .enumKeys(GregTechRecipeDebugger.View.class)
-                        .arrayListValues()
-                        .build();
+        this.diagramListMultimap = MultimapBuilder.enumKeys(GregTechRecipeDebugger.View.class)
+                .arrayListValues()
+                .build();
     }
 
     /** This method must be called before any other methods are called. */
     void initialize() {
-        diagramListMultimap.put(
-                GregTechRecipeDebugger.View.PROGRAMMED_CIRCUITS, buildProgrammedCircuitsDiagram());
+        diagramListMultimap.put(GregTechRecipeDebugger.View.PROGRAMMED_CIRCUITS, buildProgrammedCircuitsDiagram());
         diagramListMultimap.putAll(
                 GregTechRecipeDebugger.View.CONSUME_CIRCUIT_RECIPES,
                 buildRecipeDiagrams(recipeHandler.consumeCircuitRecipes));
@@ -54,8 +49,7 @@ class DiagramHandler {
                 GregTechRecipeDebugger.View.COLLIDING_RECIPES,
                 buildRecipeDiagrams(ImmutableList.copyOf(recipeHandler.collidingRecipes)));
         diagramListMultimap.putAll(
-                GregTechRecipeDebugger.View.VOIDING_RECIPES,
-                buildRecipeDiagrams(recipeHandler.voidingRecipes));
+                GregTechRecipeDebugger.View.VOIDING_RECIPES, buildRecipeDiagrams(recipeHandler.voidingRecipes));
         diagramListMultimap.putAll(
                 GregTechRecipeDebugger.View.UNEQUAL_CELL_RECIPES,
                 buildRecipeDiagrams(recipeHandler.unequalCellRecipes));
@@ -74,19 +68,15 @@ class DiagramHandler {
 
     private CustomInteractable buildViewButton(GregTechRecipeDebugger.View view) {
         return CustomInteractable.builder(
-                        ComponentLabel.create(
-                                view.icon, LayoutFactory.VIEW_BUTTON_POSITIONS.get(view)))
-                .setTooltip(
-                        Tooltip.builder()
-                                .setFormatting(Tooltip.SPECIAL_FORMATTING)
-                                .addTextLine(Lang.GREGTECH_5_RECIPE_DEBUGGER.trans(view.tooltipKey))
-                                .addSpacing()
-                                .setFormatting(Tooltip.INFO_FORMATTING)
-                                .addTextLine(
-                                        Lang.GREGTECH_5_RECIPE_DEBUGGER.transf(
-                                                "diagramcount",
-                                                diagramListMultimap.get(view).size()))
-                                .build())
+                        ComponentLabel.create(view.icon, LayoutFactory.VIEW_BUTTON_POSITIONS.get(view)))
+                .setTooltip(Tooltip.builder()
+                        .setFormatting(Tooltip.SPECIAL_FORMATTING)
+                        .addTextLine(Lang.GREGTECH_5_RECIPE_DEBUGGER.trans(view.tooltipKey))
+                        .addSpacing()
+                        .setFormatting(Tooltip.INFO_FORMATTING)
+                        .addTextLine(Lang.GREGTECH_5_RECIPE_DEBUGGER.transf(
+                                "diagramcount", diagramListMultimap.get(view).size()))
+                        .build())
                 .setInteract(view.behaviorId(info))
                 .setDrawBackground(Draw::drawRaisedSlot)
                 .setDrawOverlay(pos -> Draw.drawOverlay(pos, Draw.Colour.OVERLAY_BLUE))
@@ -94,10 +84,10 @@ class DiagramHandler {
     }
 
     private Diagram buildMenuDiagram() {
-        int recipeCount =
-                recipeHandler.allRecipes.values().stream().mapToInt(RecipePartitioner::size).sum();
-        Diagram.Builder builder =
-                Diagram.builder().addLayout(layoutFactory.buildMenuLayout(recipeCount));
+        int recipeCount = recipeHandler.allRecipes.values().stream()
+                .mapToInt(RecipePartitioner::size)
+                .sum();
+        Diagram.Builder builder = Diagram.builder().addLayout(layoutFactory.buildMenuLayout(recipeCount));
 
         Arrays.stream(GregTechRecipeDebugger.View.values())
                 .forEach(view -> builder.addInteractable(buildViewButton(view)));
@@ -106,13 +96,11 @@ class DiagramHandler {
     }
 
     private Diagram buildProgrammedCircuitsDiagram() {
-        Diagram.Builder builder =
-                Diagram.builder().addLayout(layoutFactory.buildProgrammedCircuitsLayout());
+        Diagram.Builder builder = Diagram.builder().addLayout(layoutFactory.buildProgrammedCircuitsLayout());
 
-        List<DisplayComponent> programmedCircuits =
-                RecipeHandler.PROGRAMMED_CIRCUITS.stream()
-                        .map(ComponentTransformer::transformToDisplay)
-                        .collect(Collectors.toList());
+        List<DisplayComponent> programmedCircuits = RecipeHandler.PROGRAMMED_CIRCUITS.stream()
+                .map(ComponentTransformer::transformToDisplay)
+                .collect(Collectors.toList());
         builder.autoInsertIntoSlotGroup(LayoutFactory.SlotGroupKeys.PROGRAMMED_CIRCUITS)
                 .insertEachSafe(programmedCircuits);
 

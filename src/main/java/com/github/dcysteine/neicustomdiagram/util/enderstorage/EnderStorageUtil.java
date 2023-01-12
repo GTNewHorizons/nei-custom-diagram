@@ -7,14 +7,13 @@ import codechicken.enderstorage.storage.item.EnderItemStorage;
 import codechicken.enderstorage.storage.liquid.EnderLiquidStorage;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
-import net.minecraftforge.fluids.FluidStack;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
+import net.minecraftforge.fluids.FluidStack;
 
 public final class EnderStorageUtil {
     public static final int MAX_FREQUENCY = 0xFFF;
@@ -37,7 +36,9 @@ public final class EnderStorageUtil {
     }
 
     public enum Type {
-        CHEST("item"), TANK("liquid"), POUCH("item");
+        CHEST("item"),
+        TANK("liquid"),
+        POUCH("item");
 
         public final String stringParam;
 
@@ -55,7 +56,8 @@ public final class EnderStorageUtil {
                 return ItemComponent.create(EnderStorage.blockEnderChest, 0).get();
 
             case TANK:
-                return ItemComponent.create(EnderStorage.blockEnderChest, 1 << 12).get();
+                return ItemComponent.create(EnderStorage.blockEnderChest, 1 << 12)
+                        .get();
 
             case POUCH:
                 return ItemComponent.create(EnderStorage.itemEnderPouch, 0);
@@ -100,11 +102,8 @@ public final class EnderStorageUtil {
         // Use LinkedHashMap so that the resulting map iterates through keys in insertion order.
         Map<EnderStorageFrequency, EnderItemStorage> map = new LinkedHashMap<>();
         IntStream.rangeClosed(0, MAX_FREQUENCY)
-                .forEach(
-                        freq -> map.put(
-                                EnderStorageFrequency.create(freq),
-                                (EnderItemStorage) getManager().getStorage(
-                                        ownerParam, freq, Type.CHEST.stringParam)));
+                .forEach(freq -> map.put(EnderStorageFrequency.create(freq), (EnderItemStorage)
+                        getManager().getStorage(ownerParam, freq, Type.CHEST.stringParam)));
 
         return map;
     }
@@ -118,11 +117,8 @@ public final class EnderStorageUtil {
         IntStream.rangeClosed(0, MAX_FREQUENCY)
                 // Ender tanks seem to have their frequency colours in reverse order.
                 .map(EnderStorageUtil::reverseInt)
-                .forEach(
-                        freq -> map.put(
-                                EnderStorageFrequency.createReverse(freq),
-                                (EnderLiquidStorage) getManager().getStorage(
-                                        ownerParam, freq, Type.TANK.stringParam)));
+                .forEach(freq -> map.put(EnderStorageFrequency.createReverse(freq), (EnderLiquidStorage)
+                        getManager().getStorage(ownerParam, freq, Type.TANK.stringParam)));
 
         return map;
     }

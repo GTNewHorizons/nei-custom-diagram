@@ -5,7 +5,6 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSetMultimap;
-
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.stream.Collectors;
@@ -21,12 +20,10 @@ import java.util.stream.Collectors;
  * </ul>
  */
 public class ComponentDiagramMatcher implements DiagramMatcher {
-    protected final ImmutableMap<
-            Interactable.RecipeType, ImmutableSetMultimap<Component, Diagram>> matchData;
+    protected final ImmutableMap<Interactable.RecipeType, ImmutableSetMultimap<Component, Diagram>> matchData;
 
     public ComponentDiagramMatcher(
-            ImmutableMap<
-                    Interactable.RecipeType, ImmutableSetMultimap<Component, Diagram>> matchData) {
+            ImmutableMap<Interactable.RecipeType, ImmutableSetMultimap<Component, Diagram>> matchData) {
         this.matchData = matchData;
     }
 
@@ -48,8 +45,8 @@ public class ComponentDiagramMatcher implements DiagramMatcher {
     }
 
     public static final class Builder {
-        private final EnumMap<Interactable.RecipeType,
-                ImmutableSetMultimap.Builder<Component, Diagram>> matchDataBuilder;
+        private final EnumMap<Interactable.RecipeType, ImmutableSetMultimap.Builder<Component, Diagram>>
+                matchDataBuilder;
 
         public Builder() {
             matchDataBuilder = new EnumMap<>(Interactable.RecipeType.class);
@@ -64,9 +61,8 @@ public class ComponentDiagramMatcher implements DiagramMatcher {
         }
 
         public ComponentDiagramMatcher build() {
-            ImmutableMap.Builder<
-                    Interactable.RecipeType, ImmutableSetMultimap<Component, Diagram>> builder =
-                            ImmutableMap.builder();
+            ImmutableMap.Builder<Interactable.RecipeType, ImmutableSetMultimap<Component, Diagram>> builder =
+                    ImmutableMap.builder();
             matchDataBuilder.forEach((key, value) -> builder.put(key, value.build()));
 
             return new ComponentDiagramMatcher(builder.build());
@@ -105,8 +101,7 @@ public class ComponentDiagramMatcher implements DiagramMatcher {
              * If ignoring NBT, it is the caller's responsibility to remove NBT from
              * {@code component}.
              */
-            public DiagramSubBuilder addComponent(
-                    Interactable.RecipeType recipeType, Component component) {
+            public DiagramSubBuilder addComponent(Interactable.RecipeType recipeType, Component component) {
                 matchDataBuilder.get(recipeType).put(component, diagram);
                 return this;
             }
@@ -117,8 +112,7 @@ public class ComponentDiagramMatcher implements DiagramMatcher {
              */
             public DiagramSubBuilder addAllComponents(
                     Interactable.RecipeType recipeType, Iterable<? extends Component> components) {
-                ImmutableSetMultimap.Builder<Component, Diagram> builder =
-                        matchDataBuilder.get(recipeType);
+                ImmutableSetMultimap.Builder<Component, Diagram> builder = matchDataBuilder.get(recipeType);
                 components.forEach(c -> builder.put(c, diagram));
                 return this;
             }

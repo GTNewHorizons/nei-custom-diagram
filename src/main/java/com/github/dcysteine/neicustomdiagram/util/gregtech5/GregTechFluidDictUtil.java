@@ -7,13 +7,12 @@ import com.github.dcysteine.neicustomdiagram.util.FluidDictUtil;
 import com.google.common.collect.Lists;
 import gregtech.api.enums.ItemList;
 import gregtech.api.util.GT_Utility;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 public final class GregTechFluidDictUtil {
     // Static class.
@@ -59,11 +58,8 @@ public final class GregTechFluidDictUtil {
      */
     public static Optional<ItemComponent> fillCell(Component component) {
         return getFluidContents(component)
-                .map(
-                        fluidComponent -> GT_Utility.fillFluidContainer(
-                                fluidComponent.stack(),
-                                ItemList.Cell_Empty.get(1),
-                                false, false))
+                .map(fluidComponent ->
+                        GT_Utility.fillFluidContainer(fluidComponent.stack(), ItemList.Cell_Empty.get(1), false, false))
                 .map(ItemComponent::create);
     }
 
@@ -74,10 +70,7 @@ public final class GregTechFluidDictUtil {
     public static Component getCellOrDisplayItem(Component component) {
         return fillCell(component)
                 .map(Component.class::cast)
-                .orElse(
-                        getDisplayItem(component)
-                                .map(Component.class::cast)
-                                .orElse(component));
+                .orElse(getDisplayItem(component).map(Component.class::cast).orElse(component));
     }
 
     // TODO should we move the non-GregTech part of this into a new method in FluidDictUtil?

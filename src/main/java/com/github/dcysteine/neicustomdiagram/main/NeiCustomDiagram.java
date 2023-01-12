@@ -26,14 +26,13 @@ public final class NeiCustomDiagram {
     public static final String MOD_ID = "neicustomdiagram";
     public static final String MOD_NAME = "NEI Custom Diagram";
     public static final String MOD_VERSION = "GRADLETOKEN_VERSION";
-    public static final String MOD_DEPENDENCIES =
-            "required-after:NotEnoughItems;"
-                    + "after:dreamcraft;"
-                    + "after:gregtech;"
-                    + "after:bartworks;"
-                    + "after:miscutils;"
-                    + "after:detravscannermod;"
-                    + "after:MineTweaker3;";
+    public static final String MOD_DEPENDENCIES = "required-after:NotEnoughItems;"
+            + "after:dreamcraft;"
+            + "after:gregtech;"
+            + "after:bartworks;"
+            + "after:miscutils;"
+            + "after:detravscannermod;"
+            + "after:MineTweaker3;";
 
     @Instance(MOD_ID)
     public static NeiCustomDiagram instance;
@@ -71,8 +70,7 @@ public final class NeiCustomDiagram {
     @EventHandler
     @SuppressWarnings("unused")
     public void onLoadComplete(FMLLoadCompleteEvent event) {
-        if (event.getSide() != Side.CLIENT
-                || ConfigOptions.GENERATE_DIAGRAMS_ON_CLIENT_CONNECT.get()) {
+        if (event.getSide() != Side.CLIENT || ConfigOptions.GENERATE_DIAGRAMS_ON_CLIENT_CONNECT.get()) {
             return;
         }
         Logger.MOD.info("Mod post-load starting...");

@@ -25,8 +25,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import net.minecraft.init.Items;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +32,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import net.minecraft.init.Items;
 
 public final class EnderStorageTankOverview implements DiagramGenerator {
     public static final ItemComponent ICON = EnderStorageUtil.getItem(EnderStorageUtil.Type.TANK);
@@ -42,27 +41,21 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
 
     private static final ItemComponent GLOBAL_ICON = ItemComponent.create(Items.wooden_door, 0);
     private static final ItemComponent PERSONAL_ICON = ItemComponent.create(Items.iron_door, 0);
-    private static final CustomInteractable GLOBAL_LABEL =
-            CustomInteractable.builder(ComponentLabel.create(GLOBAL_ICON, Grid.GRID.grid(4, 0)))
-                    .setTooltip(
-                            Tooltip.create(
-                                    Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("globallabel"),
-                                    Tooltip.INFO_FORMATTING))
-                    .build();
-    private static final CustomInteractable PERSONAL_LABEL =
-            CustomInteractable.builder(ComponentLabel.create(PERSONAL_ICON, Grid.GRID.grid(4, 0)))
-                    .setTooltip(
-                            Tooltip.create(
-                                    Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("personallabel"),
-                                    Tooltip.INFO_FORMATTING))
-                    .build();
+    private static final CustomInteractable GLOBAL_LABEL = CustomInteractable.builder(
+                    ComponentLabel.create(GLOBAL_ICON, Grid.GRID.grid(4, 0)))
+            .setTooltip(Tooltip.create(Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("globallabel"), Tooltip.INFO_FORMATTING))
+            .build();
+    private static final CustomInteractable PERSONAL_LABEL = CustomInteractable.builder(
+                    ComponentLabel.create(PERSONAL_ICON, Grid.GRID.grid(4, 0)))
+            .setTooltip(
+                    Tooltip.create(Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("personallabel"), Tooltip.INFO_FORMATTING))
+            .build();
 
     private static final int TANKS_PER_DIAGRAM = 12;
     private static final ImmutableList<Layout.SlotGroupKey> SLOT_GROUP_TANKS =
-            ImmutableList.copyOf(
-                    IntStream.range(0, TANKS_PER_DIAGRAM)
-                            .mapToObj(i -> Layout.SlotGroupKey.create("tanks-" + i))
-                            .collect(Collectors.toList()));
+            ImmutableList.copyOf(IntStream.range(0, TANKS_PER_DIAGRAM)
+                    .mapToObj(i -> Layout.SlotGroupKey.create("tanks-" + i))
+                    .collect(Collectors.toList()));
 
     private final DiagramGroupInfo info;
     private Layout headerLayout;
@@ -70,14 +63,10 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
     private Layout noDataLayout;
 
     public EnderStorageTankOverview(String groupId) {
-        this.info =
-                DiagramGroupInfo.builder(
-                                Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("groupname"),
-                                groupId, ICON, 2)
-                        .setDescription(
-                                "This diagram displays ender tank used frequencies and contents."
-                                        + "\nUnfortunately, it doesn't work on servers.")
-                        .build();
+        this.info = DiagramGroupInfo.builder(Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("groupname"), groupId, ICON, 2)
+                .setDescription("This diagram displays ender tank used frequencies and contents."
+                        + "\nUnfortunately, it doesn't work on servers.")
+                .build();
     }
 
     @Override
@@ -88,24 +77,20 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
     @Override
     public CustomDiagramGroup generate() {
         headerLayout = buildHeaderLayout();
-        tankLayouts =
-                IntStream.range(0, TANKS_PER_DIAGRAM)
-                        .mapToObj(EnderStorageTankOverview::buildTanksLayout)
-                        .collect(Collectors.toList());
+        tankLayouts = IntStream.range(0, TANKS_PER_DIAGRAM)
+                .mapToObj(EnderStorageTankOverview::buildTanksLayout)
+                .collect(Collectors.toList());
         noDataLayout = buildNoDataLayout();
 
-        ImmutableMap<String, Supplier<Collection<Diagram>>> customBehaviorMap =
-                ImmutableMap.of(
-                        info.groupId() + LOOKUP_GLOBAL_TANKS_SUFFIX,
-                        () -> generateDiagrams(EnderStorageUtil.Owner.GLOBAL),
-                        info.groupId() + LOOKUP_PERSONAL_TANKS_SUFFIX,
-                        () -> generateDiagrams(EnderStorageUtil.Owner.PERSONAL));
-        return new CustomDiagramGroup(
-                info, new CustomDiagramMatcher(this::generateDiagrams), customBehaviorMap);
+        ImmutableMap<String, Supplier<Collection<Diagram>>> customBehaviorMap = ImmutableMap.of(
+                info.groupId() + LOOKUP_GLOBAL_TANKS_SUFFIX,
+                () -> generateDiagrams(EnderStorageUtil.Owner.GLOBAL),
+                info.groupId() + LOOKUP_PERSONAL_TANKS_SUFFIX,
+                () -> generateDiagrams(EnderStorageUtil.Owner.PERSONAL));
+        return new CustomDiagramGroup(info, new CustomDiagramMatcher(this::generateDiagrams), customBehaviorMap);
     }
 
-    private Collection<Diagram> generateDiagrams(
-            Interactable.RecipeType recipeType, Component component) {
+    private Collection<Diagram> generateDiagrams(Interactable.RecipeType recipeType, Component component) {
         Optional<EnderStorageUtil.Type> type = EnderStorageUtil.getType(component);
         if (!type.isPresent() || type.get() != EnderStorageUtil.Type.TANK) {
             return Lists.newArrayList();
@@ -121,10 +106,9 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
                         .collect(Collectors.toList());
 
         // Break up the list into sub-lists of length <= TANKS_PER_DIAGRAM.
-        List<Diagram> diagrams =
-                Lists.partition(tanks, TANKS_PER_DIAGRAM).stream()
-                        .map(subList -> buildDiagram(owner, subList))
-                        .collect(Collectors.toList());
+        List<Diagram> diagrams = Lists.partition(tanks, TANKS_PER_DIAGRAM).stream()
+                .map(subList -> buildDiagram(owner, subList))
+                .collect(Collectors.toList());
 
         if (diagrams.isEmpty()) {
             return Lists.newArrayList(buildNoDataDiagram(owner));
@@ -135,15 +119,10 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
 
     /** {@code tanks} must have size less than or equal to {@code TANKS_PER_DIAGRAM}. */
     private Diagram buildDiagram(
-            EnderStorageUtil.Owner owner,
-            List<Map.Entry<EnderStorageFrequency, EnderLiquidStorage>> tanks) {
-        Preconditions.checkArgument(
-                tanks.size() <= TANKS_PER_DIAGRAM, "Too many tanks: " + tanks);
+            EnderStorageUtil.Owner owner, List<Map.Entry<EnderStorageFrequency, EnderLiquidStorage>> tanks) {
+        Preconditions.checkArgument(tanks.size() <= TANKS_PER_DIAGRAM, "Too many tanks: " + tanks);
 
-        Diagram.Builder builder =
-                Diagram.builder()
-                        .addLayout(headerLayout)
-                        .addAllOptionalLayouts(tankLayouts);
+        Diagram.Builder builder = Diagram.builder().addLayout(headerLayout).addAllOptionalLayouts(tankLayouts);
 
         switch (owner) {
             case GLOBAL:
@@ -203,19 +182,16 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
                 .putSlotGroup(
                         SLOT_GROUP_TANKS.get(i),
                         SlotGroup.builder(4, 1, Grid.GRID.grid(gridX, gridY), direction)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.ENDER_STORAGE_TANK_OVERVIEW.trans(
-                                                        "frequencyslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("frequencyslot"),
+                                        Tooltip.SLOT_FORMATTING))
                                 .setSlot(
-                                        3, 0,
+                                        3,
+                                        0,
                                         SlotGroup.slotBuilder()
-                                                .setTooltip(
-                                                        Tooltip.create(
-                                                                Lang.ENDER_STORAGE_TANK_OVERVIEW
-                                                                        .trans("tankslot"),
-                                                                Tooltip.SLOT_FORMATTING))
+                                                .setTooltip(Tooltip.create(
+                                                        Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("tankslot"),
+                                                        Tooltip.SLOT_FORMATTING))
                                                 .build())
                                 .build())
                 .build();
@@ -225,26 +201,24 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
         return Layout.builder()
                 .addInteractable(buildGlobalButton())
                 .addInteractable(buildPersonalButton())
-                .addLabel(
-                        Text.builder(
-                                        Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("nodataheader"),
-                                        Grid.GRID.grid(0, 2), Grid.Direction.E)
-                                .build())
-                .addLabel(
-                        Text.builder(
-                                        Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("nodatasubheader"),
-                                        Grid.GRID.grid(0, 3), Grid.Direction.E)
-                                .setSmall(true)
-                                .build())
+                .addLabel(Text.builder(
+                                Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("nodataheader"),
+                                Grid.GRID.grid(0, 2),
+                                Grid.Direction.E)
+                        .build())
+                .addLabel(Text.builder(
+                                Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("nodatasubheader"),
+                                Grid.GRID.grid(0, 3),
+                                Grid.Direction.E)
+                        .setSmall(true)
+                        .build())
                 .build();
     }
 
     private CustomInteractable buildGlobalButton() {
         return CustomInteractable.builder(ComponentLabel.create(GLOBAL_ICON, Grid.GRID.grid(0, 0)))
-                .setTooltip(
-                        Tooltip.create(
-                                Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("globalbutton"),
-                                Tooltip.SPECIAL_FORMATTING))
+                .setTooltip(Tooltip.create(
+                        Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("globalbutton"), Tooltip.SPECIAL_FORMATTING))
                 .setInteract(info.groupId() + LOOKUP_GLOBAL_TANKS_SUFFIX)
                 .setDrawBackground(Draw::drawRaisedSlot)
                 .setDrawOverlay(pos -> Draw.drawOverlay(pos, Draw.Colour.OVERLAY_BLUE))
@@ -252,21 +226,15 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
     }
 
     private CustomInteractable buildPersonalButton() {
-        return CustomInteractable.builder(
-                        ComponentLabel.create(PERSONAL_ICON, Grid.GRID.grid(2, 0)))
-                .setTooltip(
-                        Tooltip.builder()
-                                .setFormatting(Tooltip.SPECIAL_FORMATTING)
-                                .addTextLine(
-                                        Lang.ENDER_STORAGE_TANK_OVERVIEW.trans(
-                                                "personalbutton"))
-                                .addSpacing()
-                                .setFormatting(Tooltip.INFO_FORMATTING)
-                                .addTextLine(
-                                        Lang.ENDER_STORAGE_TANK_OVERVIEW.trans(
-                                                "personalitemlabel"))
-                                .addComponent(EnderStorageUtil.getPersonalItem())
-                                .build())
+        return CustomInteractable.builder(ComponentLabel.create(PERSONAL_ICON, Grid.GRID.grid(2, 0)))
+                .setTooltip(Tooltip.builder()
+                        .setFormatting(Tooltip.SPECIAL_FORMATTING)
+                        .addTextLine(Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("personalbutton"))
+                        .addSpacing()
+                        .setFormatting(Tooltip.INFO_FORMATTING)
+                        .addTextLine(Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("personalitemlabel"))
+                        .addComponent(EnderStorageUtil.getPersonalItem())
+                        .build())
                 .setInteract(info.groupId() + LOOKUP_PERSONAL_TANKS_SUFFIX)
                 .setDrawBackground(Draw::drawRaisedSlot)
                 .setDrawOverlay(pos -> Draw.drawOverlay(pos, Draw.Colour.OVERLAY_BLUE))

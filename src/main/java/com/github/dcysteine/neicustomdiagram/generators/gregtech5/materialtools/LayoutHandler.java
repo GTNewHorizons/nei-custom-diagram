@@ -21,16 +21,14 @@ class LayoutHandler {
     }
 
     static final class SlotGroupKeys {
-        static final Layout.SlotGroupKey TOOLS =
-                Layout.SlotGroupKey.create("tools");
+        static final Layout.SlotGroupKey TOOLS = Layout.SlotGroupKey.create("tools");
         static final Layout.SlotGroupKey TOOL_PARTS = Layout.SlotGroupKey.create("tool-parts");
 
         static final Layout.SlotGroupKey TURBINES = Layout.SlotGroupKey.create("turbines");
         static final Layout.SlotGroupKey ARROWS = Layout.SlotGroupKey.create("arrows");
 
         static final Layout.SlotGroupKey SCANNERS = Layout.SlotGroupKey.create("scanners");
-        static final Layout.SlotGroupKey ELECTRIC_SCANNERS =
-                Layout.SlotGroupKey.create("electric-scanners");
+        static final Layout.SlotGroupKey ELECTRIC_SCANNERS = Layout.SlotGroupKey.create("electric-scanners");
     }
 
     private final DiagramGroupInfo info;
@@ -78,28 +76,22 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.TOOL_PARTS,
                         SlotGroup.builder(4, 4, Grid.GRID.grid(6, 6), Grid.Direction.NE)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_TOOLS.trans(
-                                                        "toolpartsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_TOOLS.trans("toolpartsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
 
     private Layout buildToolsLayout() {
         return Layout.builder()
-                .addLines(
-                        Lines.builder(Grid.GRID.grid(6, 6))
-                                .addArrow(Grid.GRID.edge(6, 8, Grid.Direction.N))
-                                .build())
+                .addLines(Lines.builder(Grid.GRID.grid(6, 6))
+                        .addArrow(Grid.GRID.edge(6, 8, Grid.Direction.N))
+                        .build())
                 .putSlotGroup(
                         SlotGroupKeys.TOOLS,
-                        SlotGroup.builder(9, 5, Grid.GRID.grid(6, 8), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_TOOLS.trans("toolsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                        SlotGroup.builder(9, 6, Grid.GRID.grid(6, 8), Grid.Direction.S)
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_TOOLS.trans("toolsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -109,29 +101,23 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.TURBINE_BLADE,
                         Slot.builder(Grid.GRID.grid(0, 2))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_TOOLS.trans(
-                                                        "turbinebladeslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_TOOLS.trans("turbinebladeslot"),
+                                        Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
 
     private Layout buildTurbinesLayout() {
         return Layout.builder()
-                .addLines(
-                        Lines.builder(Grid.GRID.grid(0, 2))
-                                .addArrow(Grid.GRID.edge(2, 2, Grid.Direction.W))
-                                .build())
+                .addLines(Lines.builder(Grid.GRID.grid(0, 2))
+                        .addArrow(Grid.GRID.edge(2, 2, Grid.Direction.W))
+                        .build())
                 .putSlotGroup(
                         SlotGroupKeys.TURBINES,
                         SlotGroup.builder(2, 2, Grid.GRID.grid(2, 2), Grid.Direction.SE)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_TOOLS.trans(
-                                                        "turbinesslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_TOOLS.trans("turbinesslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -141,55 +127,43 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.ARROWHEAD,
                         Slot.builder(Grid.GRID.grid(0, 6))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_TOOLS.trans(
-                                                        "arrowheadslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_TOOLS.trans("arrowheadslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
 
     private Layout buildArrowsLayout() {
         return Layout.builder()
-                .addLines(
-                        Lines.builder(Grid.GRID.grid(0, 6))
-                                .addArrow(Grid.GRID.edge(2, 6, Grid.Direction.W))
-                                .build())
+                .addLines(Lines.builder(Grid.GRID.grid(0, 6))
+                        .addArrow(Grid.GRID.edge(2, 6, Grid.Direction.W))
+                        .build())
                 .putSlotGroup(
                         SlotGroupKeys.ARROWS,
                         SlotGroup.builder(2, 1, Grid.GRID.grid(2, 6), Grid.Direction.E)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_TOOLS.trans("arrowsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_TOOLS.trans("arrowsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
 
     private Layout buildScannersLayout() {
         return Layout.builder()
-                .addLines(
-                        Lines.builder(Grid.GRID.grid(4, 17))
-                                .addSegment(Grid.GRID.grid(10, 17))
-                                .build())
+                .addLines(Lines.builder(Grid.GRID.grid(4, 19))
+                        .addSegment(Grid.GRID.grid(10, 19))
+                        .build())
                 .putSlotGroup(
                         SlotGroupKeys.SCANNERS,
-                        SlotGroup.builder(5, 2, Grid.GRID.grid(4, 17), Grid.Direction.C)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_TOOLS.trans(
-                                                        "scannersslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                        SlotGroup.builder(5, 2, Grid.GRID.grid(4, 19), Grid.Direction.C)
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_TOOLS.trans("scannersslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .putSlotGroup(
                         SlotGroupKeys.ELECTRIC_SCANNERS,
-                        SlotGroup.builder(2, 2, Grid.GRID.grid(10, 17), Grid.Direction.C)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_TOOLS.trans(
-                                                        "electricscannersslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                        SlotGroup.builder(2, 2, Grid.GRID.grid(10, 19), Grid.Direction.C)
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_TOOLS.trans("electricscannersslot"),
+                                        Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }

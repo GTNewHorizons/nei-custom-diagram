@@ -4,8 +4,7 @@ import org.apache.logging.log4j.LogManager;
 
 /** Class that provides convenient access to loggers. */
 public final class Logger {
-    public static final org.apache.logging.log4j.Logger MOD =
-            LogManager.getLogger(NeiCustomDiagram.MOD_NAME);
+    public static final org.apache.logging.log4j.Logger MOD = LogManager.getLogger(NeiCustomDiagram.MOD_NAME);
 
     public static final org.apache.logging.log4j.Logger GREGTECH_5_CIRCUITS =
             LogManager.getLogger(buildGroupName(Lang.GREGTECH_5_CIRCUITS));

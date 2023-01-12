@@ -4,9 +4,8 @@ import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import gregtech.api.enums.OrePrefixes;
-import net.minecraft.item.ItemStack;
-
 import java.util.Optional;
+import net.minecraft.item.ItemStack;
 
 public final class BartWorksOreDictUtil {
     // Static class.
@@ -18,8 +17,7 @@ public final class BartWorksOreDictUtil {
         }
 
         Optional<ItemStack> itemStackOptional =
-                Optional.ofNullable(
-                        WerkstoffLoader.getCorrespondingItemStackUnsafe(prefix, werkstoff, 1));
+                Optional.ofNullable(WerkstoffLoader.getCorrespondingItemStackUnsafe(prefix, werkstoff, 1));
         return itemStackOptional.map(ItemComponent::create);
     }
 }

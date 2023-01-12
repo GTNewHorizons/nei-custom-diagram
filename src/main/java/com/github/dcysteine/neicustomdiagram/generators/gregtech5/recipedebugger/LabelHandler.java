@@ -7,7 +7,6 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
-
 import java.util.EnumMap;
 
 class LabelHandler {
@@ -27,12 +26,8 @@ class LabelHandler {
     CustomInteractable buildLabel(RecipeHandler.RecipeMap recipeMap, Point pos) {
         ComponentLabel label = ComponentLabel.create(componentMap.get(recipeMap), pos);
         Tooltip tooltip =
-                Tooltip.create(
-                        Lang.GREGTECH_5_RECIPE_DEBUGGER.trans(recipeMap.tooltipKey),
-                        Tooltip.INFO_FORMATTING);
+                Tooltip.create(Lang.GREGTECH_5_RECIPE_DEBUGGER.trans(recipeMap.tooltipKey), Tooltip.INFO_FORMATTING);
 
-        return CustomInteractable.builder(label)
-                .setTooltip(tooltip)
-                .build();
+        return CustomInteractable.builder(label).setTooltip(tooltip).build();
     }
 }

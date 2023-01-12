@@ -10,6 +10,7 @@ import net.minecraft.util.EnumChatFormatting;
 @AutoValue
 public abstract class TooltipLine {
     public abstract ImmutableList<TooltipElement> elements();
+
     public abstract int additionalSpacing();
 
     public int width() {

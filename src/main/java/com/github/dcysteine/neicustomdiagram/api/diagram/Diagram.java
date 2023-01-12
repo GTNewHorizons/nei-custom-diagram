@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multiset;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -36,8 +35,7 @@ public class Diagram {
     protected final ImmutableList<? extends Interactable> interactables;
 
     public Diagram(
-            Layout layout, Multiset<Layout.Key> slotInsertions,
-            ImmutableList<? extends Interactable> interactables) {
+            Layout layout, Multiset<Layout.Key> slotInsertions, ImmutableList<? extends Interactable> interactables) {
         this.layout = layout;
         this.slotInsertions = ImmutableMultiset.copyOf(slotInsertions);
         this.interactables = interactables;
@@ -234,8 +232,8 @@ public class Diagram {
             }
 
             Layout layout = findLayoutContainingSlotGroup(key);
-            SlotGroupAutoSubBuilder builder =
-                    new SlotGroupAutoSubBuilder(layout, key, layout.slotGroup(key).get());
+            SlotGroupAutoSubBuilder builder = new SlotGroupAutoSubBuilder(
+                    layout, key, layout.slotGroup(key).get());
             slotGroupAutoSubBuilders.put(key, builder);
             return builder;
         }
@@ -252,7 +250,8 @@ public class Diagram {
          */
         public SlotGroupManualSubBuilder manualInsertIntoSlotGroup(Layout.SlotGroupKey key) {
             Layout layout = findLayoutContainingSlotGroup(key);
-            return new SlotGroupManualSubBuilder(layout, key, layout.slotGroup(key).get());
+            return new SlotGroupManualSubBuilder(
+                    layout, key, layout.slotGroup(key).get());
         }
 
         public Builder addInteractable(Interactable interactable) {
@@ -279,8 +278,7 @@ public class Diagram {
             private final Layout.SlotGroupKey slotGroupKey;
             private final Iterator<Slot> slotIterator;
 
-            private SlotGroupAutoSubBuilder(
-                    Layout layout, Layout.SlotGroupKey slotGroupKey, SlotGroup slotGroup) {
+            private SlotGroupAutoSubBuilder(Layout layout, Layout.SlotGroupKey slotGroupKey, SlotGroup slotGroup) {
                 this.layout = layout;
                 this.slotGroupKey = slotGroupKey;
                 this.slotIterator = slotGroup.slots().iterator();
@@ -301,8 +299,7 @@ public class Diagram {
             /**
              * @throws java.util.NoSuchElementException if this slot group is full.
              */
-            public SlotGroupAutoSubBuilder insertIntoNextSlot(
-                    Iterable<DisplayComponent> components) {
+            public SlotGroupAutoSubBuilder insertIntoNextSlot(Iterable<DisplayComponent> components) {
                 if (Iterables.isEmpty(components)) {
                     return this;
                 }
@@ -351,8 +348,7 @@ public class Diagram {
              *
              * @throws java.util.NoSuchElementException if this slot group is too small.
              */
-            public SlotGroupAutoSubBuilder insertEachGroup(
-                    Iterable<? extends Iterable<DisplayComponent>> components) {
+            public SlotGroupAutoSubBuilder insertEachGroup(Iterable<? extends Iterable<DisplayComponent>> components) {
                 components.forEach(this::insertIntoNextSlot);
                 return this;
             }
@@ -367,12 +363,11 @@ public class Diagram {
              *
              * @throws java.util.NoSuchElementException if this slot group is already full.
              */
-            public <T extends Iterable<DisplayComponent>> SlotGroupAutoSubBuilder
-                    insertEachGroupSafe(Iterable<T> components) {
-                Iterator<T> iterator =
-                        StreamSupport.stream(components.spliterator(), false)
-                                .filter(iter -> !Iterables.isEmpty(iter))
-                                .iterator();
+            public <T extends Iterable<DisplayComponent>> SlotGroupAutoSubBuilder insertEachGroupSafe(
+                    Iterable<T> components) {
+                Iterator<T> iterator = StreamSupport.stream(components.spliterator(), false)
+                        .filter(iter -> !Iterables.isEmpty(iter))
+                        .iterator();
 
                 while (slotIterator.hasNext() && iterator.hasNext()) {
                     Slot slot = slotIterator.next();
@@ -407,8 +402,7 @@ public class Diagram {
             private final Layout.SlotGroupKey slotGroupKey;
             private final SlotGroup slotGroup;
 
-            private SlotGroupManualSubBuilder(
-                    Layout layout, Layout.SlotGroupKey slotGroupKey, SlotGroup slotGroup) {
+            private SlotGroupManualSubBuilder(Layout layout, Layout.SlotGroupKey slotGroupKey, SlotGroup slotGroup) {
                 this.layout = layout;
                 this.slotGroupKey = slotGroupKey;
                 this.slotGroup = slotGroup;
@@ -418,10 +412,8 @@ public class Diagram {
              * It is the caller's responsibility to avoid inserting into the same slot multiple
              * times.
              */
-            public SlotGroupManualSubBuilder insertIntoSlot(
-                    int x, int y, DisplayComponent... components) {
-                interactablesBuilder.add(
-                        new InteractiveComponentGroup(slotGroup.slot(x, y), components));
+            public SlotGroupManualSubBuilder insertIntoSlot(int x, int y, DisplayComponent... components) {
+                interactablesBuilder.add(new InteractiveComponentGroup(slotGroup.slot(x, y), components));
                 layouts.put(layout, true);
                 slotInsertions.add(slotGroupKey);
                 return this;
@@ -431,10 +423,8 @@ public class Diagram {
              * It is the caller's responsibility to avoid inserting into the same slot multiple
              * times.
              */
-            public SlotGroupManualSubBuilder insertIntoSlot(
-                    int x, int y, Iterable<DisplayComponent> components) {
-                interactablesBuilder.add(
-                        new InteractiveComponentGroup(slotGroup.slot(x, y), components));
+            public SlotGroupManualSubBuilder insertIntoSlot(int x, int y, Iterable<DisplayComponent> components) {
+                interactablesBuilder.add(new InteractiveComponentGroup(slotGroup.slot(x, y), components));
                 layouts.put(layout, true);
                 slotInsertions.add(slotGroupKey);
                 return this;

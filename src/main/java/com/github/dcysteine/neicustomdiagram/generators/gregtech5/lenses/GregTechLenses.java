@@ -11,8 +11,8 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 
 public final class GregTechLenses implements DiagramGenerator {
-    public static final ItemComponent ICON =
-            GregTechOreDictUtil.getComponent(OrePrefixes.lens, Materials.Emerald).get();
+    public static final ItemComponent ICON = GregTechOreDictUtil.getComponent(OrePrefixes.lens, Materials.Emerald)
+            .get();
 
     private final DiagramGroupInfo info;
 
@@ -21,12 +21,9 @@ public final class GregTechLenses implements DiagramGenerator {
     private final DiagramFactory diagramFactory;
 
     public GregTechLenses(String groupId) {
-        this.info =
-                DiagramGroupInfo.builder(
-                                Lang.GREGTECH_5_LENSES.trans("groupname"),
-                                groupId, ICON, 1)
-                        .setDescription("This diagram displays GregTech lens colours and recipes.")
-                        .build();
+        this.info = DiagramGroupInfo.builder(Lang.GREGTECH_5_LENSES.trans("groupname"), groupId, ICON, 1)
+                .setDescription("This diagram displays GregTech lens colours and recipes.")
+                .build();
 
         this.layoutHandler = new LayoutHandler(this.info);
         this.recipeHandler = new RecipeHandler();
@@ -44,8 +41,7 @@ public final class GregTechLenses implements DiagramGenerator {
         recipeHandler.initialize();
 
         ComponentDiagramMatcher.Builder matcherBuilder = ComponentDiagramMatcher.builder();
-        recipeHandler.allLenses().forEach(
-                lens -> diagramFactory.buildDiagrams(lens, matcherBuilder));
+        recipeHandler.allLenses().forEach(lens -> diagramFactory.buildDiagrams(lens, matcherBuilder));
 
         return new DiagramGroup(info, matcherBuilder.build());
     }

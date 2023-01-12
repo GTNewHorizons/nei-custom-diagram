@@ -26,13 +26,13 @@ public abstract class Lines implements Drawable {
     @AutoValue
     public abstract static class Segment {
         public static Segment create(Point a, Point b) {
-            Preconditions.checkArgument(
-                    a.isOrthogonal(b), "Points aren't orthogonal: [%s] [%s]", a, b);
+            Preconditions.checkArgument(a.isOrthogonal(b), "Points aren't orthogonal: [%s] [%s]", a, b);
 
             return new AutoValue_Lines_Segment(a, b);
         }
 
         public abstract Point a();
+
         public abstract Point b();
 
         /** See {@link Draw.Colour} for colour encoding information. */
@@ -51,6 +51,7 @@ public abstract class Lines implements Drawable {
     public abstract int colour();
 
     public abstract ImmutableList<Segment> segments();
+
     public abstract ImmutableList<Segment> arrows();
 
     @Override

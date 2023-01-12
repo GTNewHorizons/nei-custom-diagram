@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnel;
 import com.google.common.hash.PrimitiveSink;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +29,7 @@ class RecipePartitioner {
      * worse.
      */
     private static final int PARTITION_SIZE = 128;
+
     private static final int INSERTIONS_PER_RECIPE = 3;
 
     private enum ComponentFunnel implements Funnel<Component> {
@@ -40,8 +40,7 @@ class RecipePartitioner {
             switch (from.type()) {
                 case ITEM:
                     ItemComponent itemComponent = (ItemComponent) from;
-                    into.putInt(itemComponent.itemId())
-                            .putInt(itemComponent.damage());
+                    into.putInt(itemComponent.itemId()).putInt(itemComponent.damage());
                     break;
 
                 case FLUID:
@@ -71,14 +70,11 @@ class RecipePartitioner {
         partitions = new HashMap<>();
         for (List<RecipeHandler.Recipe> partition : Lists.partition(recipeList, PARTITION_SIZE)) {
             BloomFilter<Component> bloomFilter =
-                    BloomFilter.create(
-                            ComponentFunnel.INSTANCE,
-                            INSERTIONS_PER_RECIPE * partition.size());
+                    BloomFilter.create(ComponentFunnel.INSTANCE, INSERTIONS_PER_RECIPE * partition.size());
 
             partition.stream()
-                    .flatMap(
-                            recipe -> RecipeHandler.filterCircuits(
-                                    recipe.inputs().keySet()).stream())
+                    .flatMap(recipe ->
+                            RecipeHandler.filterCircuits(recipe.inputs().keySet()).stream())
                     .forEach(bloomFilter::put);
 
             partitions.put(bloomFilter, partition);
@@ -99,10 +95,8 @@ class RecipePartitioner {
         }
 
         List<List<RecipeHandler.Recipe>> matchingPartitions = new ArrayList<>();
-        for (Map.Entry<BloomFilter<Component>, List<RecipeHandler.Recipe>> entry
-                : partitions.entrySet()) {
-            if (RecipeHandler.filterCircuits(components).stream()
-                    .allMatch(entry.getKey()::mightContain)) {
+        for (Map.Entry<BloomFilter<Component>, List<RecipeHandler.Recipe>> entry : partitions.entrySet()) {
+            if (RecipeHandler.filterCircuits(components).stream().allMatch(entry.getKey()::mightContain)) {
                 matchingPartitions.add(entry.getValue());
             }
         }

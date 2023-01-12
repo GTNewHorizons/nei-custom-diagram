@@ -5,11 +5,10 @@ import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.recipe.GuiRecipe;
 import com.github.dcysteine.neicustomdiagram.main.Reflection;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
+import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.opengl.GL11;
-
-import java.util.Optional;
 
 /** Handles things like getting the mouse position, and scrolling. */
 public final class GuiManager {
@@ -51,11 +50,13 @@ public final class GuiManager {
     }
 
     public enum MouseButton {
-        LEFT, RIGHT;
+        LEFT,
+        RIGHT;
     }
 
     /** Horizontal scrolling is not fully implemented; there isn't a way to change this value. */
     private int scrollX;
+
     private int scrollY;
 
     private boolean scrollbarSelected;
@@ -130,9 +131,7 @@ public final class GuiManager {
         int fade = Math.min(2 * scrollbarFade, SCROLLBAR_FADE_TICKS);
         int fgOpacity = SCROLLBAR_FOREGROUND_COLOUR_OPACITY * fade / SCROLLBAR_FADE_TICKS;
         int bgOpacity = SCROLLBAR_BACKGROUND_COLOUR_OPACITY * fade / SCROLLBAR_FADE_TICKS;
-        int fgColour =
-                scrollbarSelected
-                        ? SCROLLBAR_FOREGROUND_SELECTED_COLOUR : SCROLLBAR_FOREGROUND_COLOUR;
+        int fgColour = scrollbarSelected ? SCROLLBAR_FOREGROUND_SELECTED_COLOUR : SCROLLBAR_FOREGROUND_COLOUR;
         fgColour |= fgOpacity << 24;
         int bgColour = SCROLLBAR_BACKGROUND_COLOUR | bgOpacity << 24;
 
@@ -177,8 +176,7 @@ public final class GuiManager {
         int yDiff = mousePos.y() - viewportPos.y();
 
         Dimension viewportDim = getViewportDimension();
-        return xDiff >= 0 && xDiff <= viewportDim.width()
-                && yDiff >= 0 && yDiff <= viewportDim.height();
+        return xDiff >= 0 && xDiff <= viewportDim.width() && yDiff >= 0 && yDiff <= viewportDim.height();
     }
 
     public boolean mouseInScrollBounds() {
@@ -254,8 +252,7 @@ public final class GuiManager {
         int scrollbarCursorHeight = viewportDim.height() * viewportDim.height() / paddedHeight;
 
         int mouseOffset =
-                getAbsoluteMousePosition().y()
-                        - (getViewportPosition().y() + scrollbarCursorHeight / 2);
+                getAbsoluteMousePosition().y() - (getViewportPosition().y() + scrollbarCursorHeight / 2);
         int scrollbarHeight = viewportDim.height() - scrollbarCursorHeight;
 
         scrollY = mouseOffset * computeScrollableHeight(diagramDimension) / scrollbarHeight;
@@ -275,9 +272,7 @@ public final class GuiManager {
         }
         GuiRecipe gui = guiOptional.get();
 
-        return Point.create(
-                Reflection.GUI_LEFT.get(gui) + SIDE_MARGIN,
-                Reflection.GUI_TOP.get(gui) + TOP_MARGIN);
+        return Point.create(Reflection.GUI_LEFT.get(gui) + SIDE_MARGIN, Reflection.GUI_TOP.get(gui) + TOP_MARGIN);
     }
 
     public Dimension getViewportDimension() {
@@ -295,7 +290,9 @@ public final class GuiManager {
 
     private int computeScrollableHeight(Dimension diagramDimension) {
         // Need to add padding to avoid clipping the bottom-most row.
-        return diagramDimension.height() + VERTICAL_PADDING - getViewportDimension().height();
+        return diagramDimension.height()
+                + VERTICAL_PADDING
+                - getViewportDimension().height();
     }
 
     private void setScissor() {
@@ -307,13 +304,10 @@ public final class GuiManager {
         GuiRecipe gui = guiOptional.get();
 
         int left = Reflection.GUI_LEFT.get(gui) + SIDE_MARGIN;
-        int bottom =
-                gui.height - (Reflection.GUI_TOP.get(gui) + Reflection.Y_SIZE.get(gui))
-                        + BOTTOM_MARGIN;
+        int bottom = gui.height - (Reflection.GUI_TOP.get(gui) + Reflection.Y_SIZE.get(gui)) + BOTTOM_MARGIN;
 
         Minecraft minecraft = Minecraft.getMinecraft();
-        ScaledResolution res =
-                new ScaledResolution(minecraft, minecraft.displayWidth, minecraft.displayHeight);
+        ScaledResolution res = new ScaledResolution(minecraft, minecraft.displayWidth, minecraft.displayHeight);
         int scaleFactor = res.getScaleFactor();
 
         Dimension viewportDim = getViewportDimension();

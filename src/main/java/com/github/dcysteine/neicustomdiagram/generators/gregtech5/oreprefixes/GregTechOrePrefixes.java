@@ -28,7 +28,6 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.objects.ItemData;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +39,7 @@ import java.util.Optional;
  * diagrams.
  */
 public final class GregTechOrePrefixes implements DiagramGenerator {
-    public static final ItemComponent ICON =
-            GregTechOreDictUtil.getComponent(ItemList.Book_Written_02);
+    public static final ItemComponent ICON = GregTechOreDictUtil.getComponent(ItemList.Book_Written_02);
 
     private static final Layout.SlotGroupKey SLOT_GROUP_KEY = Layout.SlotGroupKey.create("key");
 
@@ -49,18 +47,14 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
     private ImmutableBiMap<Materials, Diagram> materialsMap;
 
     public GregTechOrePrefixes(String groupId) {
-        this.info =
-                DiagramGroupInfo.builder(
-                                Lang.GREGTECH_5_ORE_PREFIXES.trans("groupname"),
-                                groupId, ICON, 1)
-                        // No point in showing the diagram for a single item. So require at least 2.
-                        .setEmptyDiagramPredicate(DiagramUtil.buildEmptyDiagramPredicate(2))
-                        .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
-                        .setDescription(
-                                "This diagram displays all GregTech ore prefixes for each GregTech"
-                                        + " material."
-                                        + "\nMostly useful for modpack development.")
-                        .build();
+        this.info = DiagramGroupInfo.builder(Lang.GREGTECH_5_ORE_PREFIXES.trans("groupname"), groupId, ICON, 1)
+                // No point in showing the diagram for a single item. So require at least 2.
+                .setEmptyDiagramPredicate(DiagramUtil.buildEmptyDiagramPredicate(2))
+                .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
+                .setDescription("This diagram displays all GregTech ore prefixes for each GregTech"
+                        + " material."
+                        + "\nMostly useful for modpack development.")
+                .build();
         this.materialsMap = null;
     }
 
@@ -77,8 +71,7 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
         }
         materialsMap = materialsMapBuilder.build();
 
-        return new DiagramGroup(
-                info, new CustomDiagramMatcher(materialsMap.values(), this::getDiagram));
+        return new DiagramGroup(info, new CustomDiagramMatcher(materialsMap.values(), this::getDiagram));
     }
 
     private Diagram generateDiagram(Materials material) {
@@ -86,20 +79,16 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
 
         List<DisplayComponent> components = new ArrayList<>();
         for (OrePrefixes prefix : OrePrefixes.values()) {
-            Optional<ItemComponent> componentOptional =
-                    GregTechOreDictUtil.getComponent(prefix, material);
+            Optional<ItemComponent> componentOptional = GregTechOreDictUtil.getComponent(prefix, material);
             if (!componentOptional.isPresent()) {
                 continue;
             }
 
-            components.add(
-                    DisplayComponent.builder(componentOptional.get())
-                            .setAdditionalTooltip(
-                                    Tooltip.create(
-                                            Lang.GREGTECH_5_ORE_PREFIXES.transf(
-                                                    "prefixlabel", prefix.mRegularLocalName),
-                                            Tooltip.INFO_FORMATTING))
-                            .build());
+            components.add(DisplayComponent.builder(componentOptional.get())
+                    .setAdditionalTooltip(Tooltip.create(
+                            Lang.GREGTECH_5_ORE_PREFIXES.transf("prefixlabel", prefix.mRegularLocalName),
+                            Tooltip.INFO_FORMATTING))
+                    .build());
         }
         builder.autoInsertIntoSlotGroup(SLOT_GROUP_KEY).insertEachSafe(components);
 
@@ -110,7 +99,8 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
     private List<Diagram> getDiagram(Interactable.RecipeType unused, Component component) {
         // Try handling fluids and fluid display stacks by converting into a filled cell.
         component = GregTechFluidDictUtil.fillCell(component)
-                .map(Component.class::cast).orElse(component);
+                .map(Component.class::cast)
+                .orElse(component);
 
         Optional<ItemData> itemDataOptional = GregTechOreDictUtil.getItemData(component);
         if (itemDataOptional.isPresent() && itemDataOptional.get().mMaterial != null) {
@@ -132,8 +122,7 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
     private Layout buildLayout(Materials material) {
         return Layout.builder()
                 .addInteractable(new AllDiagramsButton(info, Grid.GRID.grid(0, 0)))
-                .addInteractable(
-                        GregTechDiagramUtil.buildMaterialInfoButton(Grid.GRID.grid(2, 0), material))
+                .addInteractable(GregTechDiagramUtil.buildMaterialInfoButton(Grid.GRID.grid(2, 0), material))
                 .putSlotGroup(
                         SLOT_GROUP_KEY,
                         SlotGroup.builder(9, 12, Grid.GRID.grid(6, 2), Grid.Direction.S)

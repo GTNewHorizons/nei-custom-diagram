@@ -7,22 +7,20 @@ import com.github.dcysteine.neicustomdiagram.api.draw.Draw;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.google.auto.value.AutoValue;
+import java.util.Comparator;
+import java.util.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.Comparator;
-import java.util.Optional;
-
 @AutoValue
 public abstract class ItemComponent implements Component {
-    public static final Comparator<ItemComponent> COMPARATOR =
-            Comparator.<ItemComponent, Integer>comparing(c -> Item.getIdFromItem(c.item()))
-                    .thenComparing(ItemComponent::damage)
-                    .thenComparing(
-                            c -> c.nbtWrapper().orElse(null), ImmutableNbtWrapper.COMPARATOR);
+    public static final Comparator<ItemComponent> COMPARATOR = Comparator.<ItemComponent, Integer>comparing(
+                    c -> Item.getIdFromItem(c.item()))
+            .thenComparing(ItemComponent::damage)
+            .thenComparing(c -> c.nbtWrapper().orElse(null), ImmutableNbtWrapper.COMPARATOR);
 
     public static final int DEFAULT_STACK_SIZE = 1;
 
@@ -44,9 +42,7 @@ public abstract class ItemComponent implements Component {
     }
 
     public static ItemComponent createWithNbt(ItemStack itemStack) {
-        return create(
-                itemStack.getItem(), itemStack.getItemDamage(),
-                Optional.ofNullable(itemStack.stackTagCompound));
+        return create(itemStack.getItem(), itemStack.getItemDamage(), Optional.ofNullable(itemStack.stackTagCompound));
     }
 
     public static ItemComponent createWithNbt(ItemStack itemStack, NBTTagCompound nbt) {
@@ -63,6 +59,7 @@ public abstract class ItemComponent implements Component {
     }
 
     public abstract Item item();
+
     public abstract int damage();
 
     @Override

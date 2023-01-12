@@ -2,13 +2,12 @@ package com.github.dcysteine.neicustomdiagram.api.diagram.component;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
+import java.util.Optional;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-
-import java.util.Optional;
 
 /**
  * Interface to allow us to handle both items and fluids.
@@ -20,10 +19,12 @@ import java.util.Optional;
  */
 public interface Component extends Comparable<Component> {
     enum ComponentType {
-        ITEM, FLUID;
+        ITEM,
+        FLUID;
     }
 
     ComponentType type();
+
     Optional<ImmutableNbtWrapper> nbtWrapper();
 
     default Optional<NBTTagCompound> nbt() {
@@ -31,6 +32,7 @@ public interface Component extends Comparable<Component> {
     }
 
     Component withNbt(NBTTagCompound nbt);
+
     Component withoutNbt();
 
     /** Returns an {@link ItemStack} or {@link FluidStack}, depending on the component type. */
@@ -58,5 +60,6 @@ public interface Component extends Comparable<Component> {
     String description();
 
     void interact(Interactable.RecipeType recipeType);
+
     void draw(Point pos);
 }

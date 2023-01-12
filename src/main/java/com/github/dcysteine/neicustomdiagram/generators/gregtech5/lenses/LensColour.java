@@ -44,13 +44,9 @@ enum LensColour {
     }
 
     CustomInteractable buildLabel() {
-        return CustomInteractable.builder(
-                        ComponentLabel.create(itemComponent, LayoutHandler.LENS_COLOUR_POSITION))
-                .setTooltip(
-                        Tooltip.create(
-                                Lang.GREGTECH_5_LENSES.transf(
-                                        "colourlenseslabel", translateColour()),
-                                Tooltip.INFO_FORMATTING))
+        return CustomInteractable.builder(ComponentLabel.create(itemComponent, LayoutHandler.LENS_COLOUR_POSITION))
+                .setTooltip(Tooltip.create(
+                        Lang.GREGTECH_5_LENSES.transf("colourlenseslabel", translateColour()), Tooltip.INFO_FORMATTING))
                 .build();
     }
 }

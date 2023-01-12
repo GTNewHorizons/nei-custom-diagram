@@ -64,8 +64,11 @@ public final class Draw {
         }
 
         abstract int x();
+
         abstract int y();
+
         abstract int width();
+
         abstract int height();
     }
 
@@ -108,10 +111,7 @@ public final class Draw {
         Point currPos = b;
         for (int i = 0; i < 3; i++) {
             // Draw a line perpendicular to (diffX, diffY) and of length 2 * i.
-            drawLine(
-                    currPos.translate(i * diffY, i * diffX),
-                    currPos.translate(-i * diffY, -i * diffX),
-                    colour);
+            drawLine(currPos.translate(i * diffY, i * diffX), currPos.translate(-i * diffY, -i * diffX), colour);
 
             currPos = currPos.translate(diffX, diffY);
         }
@@ -125,8 +125,7 @@ public final class Draw {
      * @param small Whether to draw half-scale text.
      * @param shadow Whether to draw a shadow for the text.
      */
-    public static void drawText(
-            String text, Point pos, int colour, boolean small, boolean shadow) {
+    public static void drawText(String text, Point pos, int colour, boolean small, boolean shadow) {
         int width = GuiDraw.getStringWidth(text);
         int height = TEXT_HEIGHT;
         if (small) {
@@ -189,9 +188,7 @@ public final class Draw {
         }
 
         Point textCenter =
-                pos.translate(
-                        dir.xFactor * (ICON_WIDTH - textWidth) / 2,
-                        dir.yFactor * (ICON_WIDTH - textHeight) / 2);
+                pos.translate(dir.xFactor * (ICON_WIDTH - textWidth) / 2, dir.yFactor * (ICON_WIDTH - textHeight) / 2);
         drawText(text, textCenter, colour, small, shadow);
     }
 
@@ -263,16 +260,19 @@ public final class Draw {
         GL11.glDisable(GL11.GL_LIGHTING);
         GuiDraw.changeTexture(TextureData.TEXTURE_PATH);
         GuiDraw.drawTexturedModalRect(
-                pos.x() - (texture.width() / 2), pos.y() - (texture.height() / 2),
-                texture.x(), texture.y(), texture.width(), texture.height());
+                pos.x() - (texture.width() / 2),
+                pos.y() - (texture.height() / 2),
+                texture.x(),
+                texture.y(),
+                texture.width(),
+                texture.height());
         GL11.glEnable(GL11.GL_LIGHTING);
     }
 
     /** Draws an item centered on the given point. */
     public static void drawItem(ItemStack itemStack, Point pos) {
         GL11.glDisable(GL11.GL_LIGHTING);
-        GuiContainerManager.drawItem(
-                pos.x() - ICON_WIDTH / 2, pos.y() - ICON_WIDTH / 2, itemStack);
+        GuiContainerManager.drawItem(pos.x() - ICON_WIDTH / 2, pos.y() - ICON_WIDTH / 2, itemStack);
         GL11.glEnable(GL11.GL_LIGHTING);
 
         // Looks like drawItem() leaves colour blending active, so reset it.
@@ -289,9 +289,7 @@ public final class Draw {
         // Some fluids don't set their icon colour, so we have to blend in the colour ourselves.
         int colour = fluid.getColor();
         GL11.glColor3ub(
-                (byte) ((colour & 0xFF0000) >> 16),
-                (byte) ((colour & 0x00FF00) >> 8),
-                (byte) (colour & 0x0000FF));
+                (byte) ((colour & 0xFF0000) >> 16), (byte) ((colour & 0x00FF00) >> 8), (byte) (colour & 0x0000FF));
 
         GL11.glDisable(GL11.GL_LIGHTING);
         GuiDraw.changeTexture(TextureMap.locationBlocksTexture);
@@ -311,8 +309,7 @@ public final class Draw {
      */
     public static void drawOverlay(Point pos, int colour) {
         GL11.glDisable(GL11.GL_LIGHTING);
-        GuiDraw.drawRect(
-                pos.x() - ICON_WIDTH / 2, pos.y() - ICON_WIDTH / 2, ICON_WIDTH, ICON_WIDTH, colour);
+        GuiDraw.drawRect(pos.x() - ICON_WIDTH / 2, pos.y() - ICON_WIDTH / 2, ICON_WIDTH, ICON_WIDTH, colour);
         GL11.glEnable(GL11.GL_LIGHTING);
     }
 }

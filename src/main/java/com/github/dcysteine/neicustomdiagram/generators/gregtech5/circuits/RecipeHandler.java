@@ -9,13 +9,12 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import gregtech.api.util.GT_Recipe;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 
 class RecipeHandler {
     private final CircuitLineHandler circuitLineHandler;
@@ -33,51 +32,42 @@ class RecipeHandler {
     @SuppressWarnings("unchecked")
     void initialize() {
         craftingTableOutputs = new HashSet<>();
-        ((List<IRecipe>) CraftingManager.getInstance().getRecipeList()).stream()
-                .filter(recipe -> recipe.getRecipeOutput() != null)
-                .forEach(
-                        recipe -> craftingTableOutputs.add(
-                                ItemComponent.create(recipe.getRecipeOutput())));
+        ((List<IRecipe>) CraftingManager.getInstance().getRecipeList())
+                .stream()
+                        .filter(recipe -> recipe.getRecipeOutput() != null)
+                        .forEach(recipe -> craftingTableOutputs.add(ItemComponent.create(recipe.getRecipeOutput())));
 
-        assemblingMachineOutputs =
-                GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.mRecipeList.stream()
-                        .flatMap(
-                                recipe -> GregTechRecipeUtil.buildComponentsFromItemOutputs(recipe)
-                                        .stream())
-                        .map(DisplayComponent::component)
-                        .map(ItemComponent.class::cast)
-                        .collect(Collectors.toSet());
+        assemblingMachineOutputs = GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.mRecipeList.stream()
+                .flatMap(recipe -> GregTechRecipeUtil.buildComponentsFromItemOutputs(recipe).stream())
+                .map(DisplayComponent::component)
+                .map(ItemComponent.class::cast)
+                .collect(Collectors.toSet());
 
-        assemblingLineOutputs =
-                GT_Recipe.GT_Recipe_Map.sAssemblylineVisualRecipes.mRecipeList.stream()
-                        .flatMap(
-                                recipe -> GregTechRecipeUtil.buildComponentsFromItemOutputs(recipe)
-                                        .stream())
-                        .map(DisplayComponent::component)
-                        .map(ItemComponent.class::cast)
-                        .collect(Collectors.toSet());
+        assemblingLineOutputs = GT_Recipe.GT_Recipe_Map.sAssemblylineVisualRecipes.mRecipeList.stream()
+                .flatMap(recipe -> GregTechRecipeUtil.buildComponentsFromItemOutputs(recipe).stream())
+                .map(DisplayComponent::component)
+                .map(ItemComponent.class::cast)
+                .collect(Collectors.toSet());
 
         Set<ItemComponent> allCircuits = circuitLineHandler.allCircuits();
         ListMultimap<ItemComponent, GT_Recipe> circuitRecipes =
                 MultimapBuilder.hashKeys().arrayListValues().build();
         for (GT_Recipe recipe : GT_Recipe.GT_Recipe_Map.sCircuitAssemblerRecipes.mRecipeList) {
             ItemComponent output =
-                    (ItemComponent)
-                            Iterables.getOnlyElement(
-                                            GregTechRecipeUtil.buildComponentsFromItemOutputs(
-                                                    recipe))
-                                    .component();
+                    (ItemComponent) Iterables.getOnlyElement(GregTechRecipeUtil.buildComponentsFromItemOutputs(recipe))
+                            .component();
 
             if (allCircuits.contains(output)) {
                 circuitRecipes.put(output, recipe);
             }
         }
 
-        ImmutableListMultimap.Builder<ItemComponent, CircuitRecipe>
-                circuitAssemblingMachineRecipesBuilder = ImmutableListMultimap.builder();
-        circuitRecipes.asMap().forEach(
-                (key, value) -> circuitAssemblingMachineRecipesBuilder.putAll(
-                        key, CircuitRecipe.buildCircuitRecipes(value)));
+        ImmutableListMultimap.Builder<ItemComponent, CircuitRecipe> circuitAssemblingMachineRecipesBuilder =
+                ImmutableListMultimap.builder();
+        circuitRecipes
+                .asMap()
+                .forEach((key, value) ->
+                        circuitAssemblingMachineRecipesBuilder.putAll(key, CircuitRecipe.buildCircuitRecipes(value)));
         circuitAssemblingMachineRecipes = circuitAssemblingMachineRecipesBuilder.build();
     }
 

@@ -19,15 +19,14 @@ import gregtech.api.items.GT_MetaGenerated_Tool;
 import gregtech.api.util.GT_Recipe;
 import gregtech.common.items.GT_MetaGenerated_Tool_01;
 import gtPlusPlus.xmod.gregtech.common.items.MetaGeneratedGregtechTools;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-
-import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 
 /**
  * Class that finds GregTech tools by looking up recipes, and provides access to them by primary
@@ -41,18 +40,18 @@ class RecipeHandler {
      */
     @AutoValue
     abstract static class BaseTool implements Comparable<BaseTool> {
-        private static final Comparator<BaseTool> COMPARATOR =
-                Comparator.<BaseTool, Integer>comparing(b -> b.primaryMaterial().mMetaItemSubID)
-                        .thenComparing(b -> b.primaryMaterial().mName)
-                        .thenComparing(BaseTool::itemComponent);
+        private static final Comparator<BaseTool> COMPARATOR = Comparator.<BaseTool, Integer>comparing(
+                        b -> b.primaryMaterial().mMetaItemSubID)
+                .thenComparing(b -> b.primaryMaterial().mName)
+                .thenComparing(BaseTool::itemComponent);
 
         private static BaseTool create(ItemStack itemStack) {
             return new AutoValue_RecipeHandler_BaseTool(
-                    ItemComponent.create(itemStack),
-                    GT_MetaGenerated_Tool.getPrimaryMaterial(itemStack));
+                    ItemComponent.create(itemStack), GT_MetaGenerated_Tool.getPrimaryMaterial(itemStack));
         }
 
         abstract ItemComponent itemComponent();
+
         abstract Materials primaryMaterial();
 
         @Override
@@ -67,12 +66,11 @@ class RecipeHandler {
                             d -> getEuCapacity((ItemComponent) d.component()).orElse(-1L))
                     .thenComparing(Comparator.naturalOrder());
 
-    private static final ImmutableList<Integer> TURBINE_TOOL_IDS =
-            ImmutableList.of(
-                    (int) GT_MetaGenerated_Tool_01.TURBINE_SMALL,
-                    (int) GT_MetaGenerated_Tool_01.TURBINE,
-                    (int) GT_MetaGenerated_Tool_01.TURBINE_LARGE,
-                    (int) GT_MetaGenerated_Tool_01.TURBINE_HUGE);
+    private static final ImmutableList<Integer> TURBINE_TOOL_IDS = ImmutableList.of(
+            (int) GT_MetaGenerated_Tool_01.TURBINE_SMALL,
+            (int) GT_MetaGenerated_Tool_01.TURBINE,
+            (int) GT_MetaGenerated_Tool_01.TURBINE_LARGE,
+            (int) GT_MetaGenerated_Tool_01.TURBINE_HUGE);
 
     private static final int ELECTRIC_SCANNER_ID_START = 100;
 
@@ -136,16 +134,19 @@ class RecipeHandler {
      * electrical stats). This is why values will be lists of lists. Though in practice, scanners
      * don't have varying electric stats, so each inner list will have size 1.
      */
-    private final ListMultimap<Materials, ImmutableList<DisplayComponent>>
-            materialElectricScannersMultimap;
+    private final ListMultimap<Materials, ImmutableList<DisplayComponent>> materialElectricScannersMultimap;
 
     RecipeHandler() {
         this.toolsMultimap = MultimapBuilder.hashKeys().treeSetValues().build();
-        this.gtPlusPlusToolsMultimap = MultimapBuilder.hashKeys().treeSetValues().build();
+        this.gtPlusPlusToolsMultimap =
+                MultimapBuilder.hashKeys().treeSetValues().build();
         this.scannersMultimap = MultimapBuilder.hashKeys().treeSetValues().build();
-        this.materialToolsMultimap = MultimapBuilder.hashKeys().arrayListValues().build();
-        this.materialTurbinesMultimap = MultimapBuilder.hashKeys().arrayListValues().build();
-        this.materialScannersMultimap = MultimapBuilder.hashKeys().arrayListValues().build();
+        this.materialToolsMultimap =
+                MultimapBuilder.hashKeys().arrayListValues().build();
+        this.materialTurbinesMultimap =
+                MultimapBuilder.hashKeys().arrayListValues().build();
+        this.materialScannersMultimap =
+                MultimapBuilder.hashKeys().arrayListValues().build();
         this.materialElectricScannersMultimap =
                 MultimapBuilder.hashKeys().arrayListValues().build();
     }
@@ -156,18 +157,16 @@ class RecipeHandler {
         // First pass: find all tools with recipes, and group them by base NBT item stack.
         ((List<IRecipe>) CraftingManager.getInstance().getRecipeList())
                 .forEach(recipe -> addTool(recipe.getRecipeOutput()));
-        GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.mRecipeList
-                .forEach(recipe -> addTool(recipe.getOutput(0)));
+        GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.mRecipeList.forEach(recipe -> addTool(recipe.getOutput(0)));
 
         // Second pass: iterate through and construct DisplayComponents for found tools.
         // We iterate on SortedSet copies so that the resulting lists of tools are ordered.
-        for (BaseTool baseTool: ImmutableSortedSet.copyOf(toolsMultimap.keySet())) {
+        for (BaseTool baseTool : ImmutableSortedSet.copyOf(toolsMultimap.keySet())) {
             ImmutableList<DisplayComponent> displayComponents =
-                    ImmutableList.copyOf(
-                            toolsMultimap.get(baseTool).stream()
-                                    .map(RecipeHandler::buildDisplayComponent)
-                                    .sorted(EU_CAPACITY_COMPARATOR)
-                                    .collect(Collectors.toList()));
+                    ImmutableList.copyOf(toolsMultimap.get(baseTool).stream()
+                            .map(RecipeHandler::buildDisplayComponent)
+                            .sorted(EU_CAPACITY_COMPARATOR)
+                            .collect(Collectors.toList()));
 
             if (TURBINE_TOOL_IDS.contains(baseTool.itemComponent().damage())) {
                 materialTurbinesMultimap.put(baseTool.primaryMaterial(), displayComponents);
@@ -176,24 +175,22 @@ class RecipeHandler {
             }
         }
 
-        for (BaseTool baseTool: ImmutableSortedSet.copyOf(gtPlusPlusToolsMultimap.keySet())) {
+        for (BaseTool baseTool : ImmutableSortedSet.copyOf(gtPlusPlusToolsMultimap.keySet())) {
             ImmutableList<DisplayComponent> displayComponents =
-                    ImmutableList.copyOf(
-                            gtPlusPlusToolsMultimap.get(baseTool).stream()
-                                    .map(RecipeHandler::buildDisplayComponent)
-                                    .sorted(EU_CAPACITY_COMPARATOR)
-                                    .collect(Collectors.toList()));
+                    ImmutableList.copyOf(gtPlusPlusToolsMultimap.get(baseTool).stream()
+                            .map(RecipeHandler::buildDisplayComponent)
+                            .sorted(EU_CAPACITY_COMPARATOR)
+                            .collect(Collectors.toList()));
 
             materialToolsMultimap.put(baseTool.primaryMaterial(), displayComponents);
         }
 
         for (BaseTool baseTool : ImmutableSortedSet.copyOf(scannersMultimap.keySet())) {
             ImmutableList<DisplayComponent> displayComponents =
-                    ImmutableList.copyOf(
-                            scannersMultimap.get(baseTool).stream()
-                                    .map(RecipeHandler::buildDisplayComponent)
-                                    .sorted(EU_CAPACITY_COMPARATOR)
-                                    .collect(Collectors.toList()));
+                    ImmutableList.copyOf(scannersMultimap.get(baseTool).stream()
+                            .map(RecipeHandler::buildDisplayComponent)
+                            .sorted(EU_CAPACITY_COMPARATOR)
+                            .collect(Collectors.toList()));
 
             if (baseTool.itemComponent().damage() >= ELECTRIC_SCANNER_ID_START) {
                 materialElectricScannersMultimap.put(baseTool.primaryMaterial(), displayComponents);
@@ -257,24 +254,20 @@ class RecipeHandler {
 
         if (Registry.ModDependency.GT_PLUS_PLUS.isLoaded()) {
             if (itemStack.getItem() == MetaGeneratedGregtechTools.INSTANCE) {
-                gtPlusPlusToolsMultimap.put(
-                        BaseTool.create(itemStack), ItemComponent.createWithNbt(itemStack));
+                gtPlusPlusToolsMultimap.put(BaseTool.create(itemStack), ItemComponent.createWithNbt(itemStack));
             }
         }
 
         if (Registry.ModDependency.DETRAV_SCANNER.isLoaded()) {
             if (itemStack.getItem() == DetravMetaGeneratedTool01.INSTANCE) {
-                scannersMultimap.put(
-                        BaseTool.create(itemStack), ItemComponent.createWithNbt(itemStack));
+                scannersMultimap.put(BaseTool.create(itemStack), ItemComponent.createWithNbt(itemStack));
             }
         }
     }
 
     /** Returns the EU capacity of the given item, if available. */
     private static Optional<Long> getEuCapacity(ItemComponent itemComponent) {
-        Long[] electricStats =
-                ((GT_MetaGenerated_Tool) itemComponent.item())
-                        .getElectricStats(itemComponent.stack());
+        Long[] electricStats = ((GT_MetaGenerated_Tool) itemComponent.item()).getElectricStats(itemComponent.stack());
         if (electricStats == null) {
             return Optional.empty();
         } else {
@@ -289,23 +282,16 @@ class RecipeHandler {
         ItemStack itemStack = itemComponent.stack();
         Materials primaryMaterial = GT_MetaGenerated_Tool.getPrimaryMaterial(itemStack);
         Materials secondaryMaterial = GT_MetaGenerated_Tool.getSecondaryMaterial(itemStack);
-        builder.setAdditionalTooltip(
-                Tooltip.builder()
-                        .setFormatting(Tooltip.INFO_FORMATTING)
-                        .addTextLine(
-                                Lang.GREGTECH_5_MATERIAL_TOOLS.transf(
-                                        "primarymateriallabel",
-                                        GregTechFormatting.getMaterialDescription(primaryMaterial)))
-                        .addTextLine(
-                                Lang.GREGTECH_5_MATERIAL_TOOLS.transf(
-                                        "secondarymateriallabel",
-                                        GregTechFormatting.getMaterialDescription(
-                                                secondaryMaterial)))
-                        .build());
+        builder.setAdditionalTooltip(Tooltip.builder()
+                .setFormatting(Tooltip.INFO_FORMATTING)
+                .addTextLine(Lang.GREGTECH_5_MATERIAL_TOOLS.transf(
+                        "primarymateriallabel", GregTechFormatting.getMaterialDescription(primaryMaterial)))
+                .addTextLine(Lang.GREGTECH_5_MATERIAL_TOOLS.transf(
+                        "secondarymateriallabel", GregTechFormatting.getMaterialDescription(secondaryMaterial)))
+                .build());
 
-        getEuCapacity(itemComponent).ifPresent(
-                euCapacity -> builder.setAdditionalInfo(
-                        Formatter.smartFormatInteger(euCapacity)));
+        getEuCapacity(itemComponent)
+                .ifPresent(euCapacity -> builder.setAdditionalInfo(Formatter.smartFormatInteger(euCapacity)));
 
         return builder.build();
     }

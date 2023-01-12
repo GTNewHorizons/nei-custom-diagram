@@ -19,6 +19,7 @@ public abstract class Dimension {
     }
 
     public abstract int width();
+
     public abstract int height();
 
     /** Takes the larger width and larger height. */

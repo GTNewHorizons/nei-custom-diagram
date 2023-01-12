@@ -17,7 +17,6 @@ import com.google.common.collect.SortedSetMultimap;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.objects.ItemData;
 import gregtech.api.util.GT_Recipe;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +36,7 @@ class RecipeHandler {
         }
 
         abstract LensColour colour();
+
         abstract ItemComponent itemComponent();
 
         @Override
@@ -54,6 +54,7 @@ class RecipeHandler {
         }
 
         abstract ItemComponent input();
+
         abstract DisplayComponent output();
 
         @Override
@@ -74,7 +75,8 @@ class RecipeHandler {
     RecipeHandler() {
         lensRecipes = MultimapBuilder.treeKeys().treeSetValues().build();
         lensColours = MultimapBuilder.enumKeys(LensColour.class).treeSetValues().build();
-        colourRecipes = MultimapBuilder.enumKeys(LensColour.class).treeSetValues().build();
+        colourRecipes =
+                MultimapBuilder.enumKeys(LensColour.class).treeSetValues().build();
     }
 
     /** This method must be called before any other methods are called. */
@@ -103,18 +105,16 @@ class RecipeHandler {
         // We need to be able to mark lens-specific recipes with '*', so we can't show any recipe
         // input formatting. So use plain ItemComponent here.
         // TODO if we ever do need the recipe input formatting, we'll need to change something here.
-        List<ItemComponent> inputs =
-                GregTechRecipeUtil.buildComponentsFromItemInputs(recipe).stream()
-                        .map(DisplayComponent::component)
-                        .map(ItemComponent.class::cast)
-                        .collect(Collectors.toList());
+        List<ItemComponent> inputs = GregTechRecipeUtil.buildComponentsFromItemInputs(recipe).stream()
+                .map(DisplayComponent::component)
+                .map(ItemComponent.class::cast)
+                .collect(Collectors.toList());
         List<DisplayComponent> outputs = GregTechRecipeUtil.buildComponentsFromItemOutputs(recipe);
 
         if (inputs.size() != 2 || outputs.size() != 1) {
             Logger.GREGTECH_5_LENSES.warn("Found a malformed recipe: [{}] [{}]", inputs, outputs);
             return;
         }
-
 
         ItemComponent lensItemComponent;
         ItemComponent input;
@@ -130,21 +130,18 @@ class RecipeHandler {
         }
         DisplayComponent output = outputs.get(0);
 
-        List<String> lensColourOreNames =
-                OreDictUtil.getOreNames(lensItemComponent).stream()
-                        .filter(oreName -> oreName.startsWith(LENS_COLOUR_ORE_NAME_PREFIX))
-                        .collect(Collectors.toList());
+        List<String> lensColourOreNames = OreDictUtil.getOreNames(lensItemComponent).stream()
+                .filter(oreName -> oreName.startsWith(LENS_COLOUR_ORE_NAME_PREFIX))
+                .collect(Collectors.toList());
         if (lensColourOreNames.size() > 1) {
             Logger.GREGTECH_5_LENSES.warn(
-                    "Found a multi-coloured lens: [{}] [{}]",
-                    lensItemComponent, lensColourOreNames);
+                    "Found a multi-coloured lens: [{}] [{}]", lensItemComponent, lensColourOreNames);
             return;
         }
 
-        LensColour colour =
-                lensColourOreNames.isEmpty()
-                        ? LensColour.UNIQUE
-                        : LensColour.get(Iterables.getOnlyElement(lensColourOreNames));
+        LensColour colour = lensColourOreNames.isEmpty()
+                ? LensColour.UNIQUE
+                : LensColour.get(Iterables.getOnlyElement(lensColourOreNames));
         Lens lens = Lens.create(colour, lensItemComponent);
 
         lensRecipes.put(lens, Recipe.create(input, output));

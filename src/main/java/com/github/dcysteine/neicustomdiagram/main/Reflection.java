@@ -2,9 +2,8 @@ package com.github.dcysteine.neicustomdiagram.main;
 
 import com.google.auto.value.AutoValue;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import net.minecraft.client.gui.inventory.GuiContainer;
-
 import java.lang.reflect.Field;
+import net.minecraft.client.gui.inventory.GuiContainer;
 
 /** Class containing reflection accessors for private fields. */
 public final class Reflection {
@@ -19,8 +18,7 @@ public final class Reflection {
 
     @AutoValue
     public abstract static class ReflectionField<T, U> {
-        public static <T> ReflectionField<T, Integer> createInteger(
-                Class<T> clazz, String... fieldNames) {
+        public static <T> ReflectionField<T, Integer> createInteger(Class<T> clazz, String... fieldNames) {
             Field field = ReflectionHelper.findField(clazz, fieldNames);
             return new AutoValue_Reflection_ReflectionField<>(field, field::getInt);
         }
@@ -31,6 +29,7 @@ public final class Reflection {
         }
 
         public abstract Field field();
+
         public abstract FieldAccessorFunction<T, U> accessorFunction();
 
         public U get(T obj) {

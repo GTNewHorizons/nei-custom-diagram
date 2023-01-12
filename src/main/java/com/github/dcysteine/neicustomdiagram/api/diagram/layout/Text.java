@@ -10,7 +10,6 @@ import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,8 +72,7 @@ public abstract class Text implements BoundedDrawable {
     }
 
     public static MultiLineBuilder multiLineBuilder(Point pos, Grid.Direction dir) {
-        Preconditions.checkArgument(
-                dir.yFactor != 0, "Direction must have a vertical component: %s", dir);
+        Preconditions.checkArgument(dir.yFactor != 0, "Direction must have a vertical component: %s", dir);
 
         return new MultiLineBuilder(pos, dir);
     }
@@ -122,10 +120,7 @@ public abstract class Text implements BoundedDrawable {
                 height /= 2;
             }
 
-            Point center =
-                    position.translate(
-                            direction.xFactor * width / 2,
-                            direction.yFactor * height / 2);
+            Point center = position.translate(direction.xFactor * width / 2, direction.yFactor * height / 2);
 
             return new AutoValue_Text(text, center, colour, small, shadow);
         }
@@ -204,12 +199,11 @@ public abstract class Text implements BoundedDrawable {
                 y -= textLines.size() * lineHeight;
             }
             for (String line : textLines) {
-                list.add(
-                        builder(line, Point.create(position.x(), y), direction)
-                                .setColour(colour)
-                                .setSmall(small)
-                                .setShadow(shadow)
-                                .build());
+                list.add(builder(line, Point.create(position.x(), y), direction)
+                        .setColour(colour)
+                        .setSmall(small)
+                        .setShadow(shadow)
+                        .build());
                 y += lineHeight;
             }
 
