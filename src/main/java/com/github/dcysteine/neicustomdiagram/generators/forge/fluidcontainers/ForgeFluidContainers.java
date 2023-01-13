@@ -25,12 +25,11 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
+import java.util.List;
+import java.util.Optional;
 import net.minecraft.init.Items;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Generates diagrams showing all Forge-registered fluid containers for a given fluid.
@@ -40,10 +39,8 @@ import java.util.Optional;
 public final class ForgeFluidContainers implements DiagramGenerator {
     public static final ItemComponent ICON = ItemComponent.create(Items.water_bucket, 0);
 
-    private static final Layout.SlotGroupKey SLOT_GROUP_FLUIDS =
-            Layout.SlotGroupKey.create("fluids");
-    private static final Layout.SlotGroupKey SLOT_GROUP_CONTAINERS =
-            Layout.SlotGroupKey.create("containers");
+    private static final Layout.SlotGroupKey SLOT_GROUP_FLUIDS = Layout.SlotGroupKey.create("fluids");
+    private static final Layout.SlotGroupKey SLOT_GROUP_CONTAINERS = Layout.SlotGroupKey.create("containers");
 
     private final DiagramGroupInfo info;
 
@@ -52,15 +49,10 @@ public final class ForgeFluidContainers implements DiagramGenerator {
     private ImmutableListMultimap<ItemComponent, Diagram> emptyContainersMultimap;
 
     public ForgeFluidContainers(String groupId) {
-        this.info =
-                DiagramGroupInfo.builder(
-                                Lang.FORGE_FLUID_CONTAINERS.trans("groupname"),
-                                groupId, ICON, 2)
-                        .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
-                        .setDescription(
-                                "This diagram displays Forge registered fluids"
-                                        + " and fluid containers.")
-                        .build();
+        this.info = DiagramGroupInfo.builder(Lang.FORGE_FLUID_CONTAINERS.trans("groupname"), groupId, ICON, 2)
+                .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
+                .setDescription("This diagram displays Forge registered fluids" + " and fluid containers.")
+                .build();
     }
 
     @Override
@@ -79,15 +71,12 @@ public final class ForgeFluidContainers implements DiagramGenerator {
                 MultimapBuilder.hashKeys().hashSetValues().build();
         for (Fluid fluid : FluidRegistry.getRegisteredFluids().values()) {
             FluidComponent fluidComponent = FluidComponent.create(fluid);
-            fluidsMapBuilder.put(
-                    fluidComponent,
-                    generateDiagram(fluidComponent, emptyContainersSetMultimap));
+            fluidsMapBuilder.put(fluidComponent, generateDiagram(fluidComponent, emptyContainersSetMultimap));
         }
         fluidsMap = fluidsMapBuilder.build();
         emptyContainersMultimap = ImmutableListMultimap.copyOf(emptyContainersSetMultimap);
 
-        return new DiagramGroup(
-                info, new CustomDiagramMatcher(fluidsMap.values(), this::getDiagram));
+        return new DiagramGroup(info, new CustomDiagramMatcher(fluidsMap.values(), this::getDiagram));
     }
 
     private List<Diagram> getDiagram(Interactable.RecipeType unused, Component component) {
@@ -109,63 +98,44 @@ public final class ForgeFluidContainers implements DiagramGenerator {
         }
     }
 
-    private Diagram generateDiagram(
-            FluidComponent fluid, SetMultimap<ItemComponent, Diagram> emptyContainersMultimap) {
+    private Diagram generateDiagram(FluidComponent fluid, SetMultimap<ItemComponent, Diagram> emptyContainersMultimap) {
         List<DisplayComponent> fluidContainers = FluidDictUtil.getFluidContainers(fluid);
         // Remove the first element, which is the fluid.
         fluidContainers = fluidContainers.subList(1, fluidContainers.size());
 
         Diagram.Builder builder = Diagram.builder().addLayout(layout);
         builder.autoInsertIntoSlotGroup(SLOT_GROUP_CONTAINERS).insertEachSafe(fluidContainers);
-        Diagram.Builder.SlotGroupAutoSubBuilder fluidsBuilder =
-                builder.autoInsertIntoSlotGroup(SLOT_GROUP_FLUIDS);
+        Diagram.Builder.SlotGroupAutoSubBuilder fluidsBuilder = builder.autoInsertIntoSlotGroup(SLOT_GROUP_FLUIDS);
 
-        fluidsBuilder.insertIntoNextSlot(
-                DisplayComponent.builder(fluid)
-                        .setAdditionalTooltip(
-                                Tooltip.builder()
-                                        .setFormatting(Tooltip.SLOT_FORMATTING)
-                                        .addTextLine(
-                                                Lang.FORGE_FLUID_CONTAINERS.trans("fluidlabel"))
-                                        .addSpacing()
-                                        .setFormatting(Tooltip.INFO_FORMATTING)
-                                        .addTextLine(
-                                                Lang.FORGE_FLUID_CONTAINERS.transf(
-                                                        "fluidnamelabel", fluid.fluid().getName()))
-                                        .build())
-                        .build());
+        fluidsBuilder.insertIntoNextSlot(DisplayComponent.builder(fluid)
+                .setAdditionalTooltip(Tooltip.builder()
+                        .setFormatting(Tooltip.SLOT_FORMATTING)
+                        .addTextLine(Lang.FORGE_FLUID_CONTAINERS.trans("fluidlabel"))
+                        .addSpacing()
+                        .setFormatting(Tooltip.INFO_FORMATTING)
+                        .addTextLine(Lang.FORGE_FLUID_CONTAINERS.transf(
+                                "fluidnamelabel", fluid.fluid().getName()))
+                        .build())
+                .build());
 
         Optional<ItemComponent> blockOptional = FluidDictUtil.fluidToItem(fluid);
-        blockOptional.ifPresent(
-                block ->
-                        fluidsBuilder.insertIntoNextSlot(
-                                DisplayComponent.builder(block)
-                                        .setAdditionalTooltip(
-                                                Tooltip.create(
-                                                        Lang.FORGE_FLUID_CONTAINERS.trans(
-                                                                "blocklabel"),
-                                                        Tooltip.SLOT_FORMATTING))
-                                        .build()));
+        blockOptional.ifPresent(block -> fluidsBuilder.insertIntoNextSlot(DisplayComponent.builder(block)
+                .setAdditionalTooltip(
+                        Tooltip.create(Lang.FORGE_FLUID_CONTAINERS.trans("blocklabel"), Tooltip.SLOT_FORMATTING))
+                .build()));
 
         if (Registry.ModDependency.GREGTECH_5.isLoaded()) {
-            Optional<ItemComponent> displayItemOptional =
-                    GregTechFluidDictUtil.fluidToDisplayItem(fluid);
+            Optional<ItemComponent> displayItemOptional = GregTechFluidDictUtil.fluidToDisplayItem(fluid);
             displayItemOptional.ifPresent(
-                    displayItem ->
-                            fluidsBuilder.insertIntoNextSlot(
-                                    DisplayComponent.builder(displayItem)
-                                            .setAdditionalTooltip(
-                                                    Tooltip.create(
-                                                            Lang.FORGE_FLUID_CONTAINERS.trans(
-                                                                    "gregtechitemlabel"),
-                                                            Tooltip.SLOT_FORMATTING))
-                                            .build()));
+                    displayItem -> fluidsBuilder.insertIntoNextSlot(DisplayComponent.builder(displayItem)
+                            .setAdditionalTooltip(Tooltip.create(
+                                    Lang.FORGE_FLUID_CONTAINERS.trans("gregtechitemlabel"), Tooltip.SLOT_FORMATTING))
+                            .build()));
         }
 
         Diagram diagram = builder.build();
-        fluidContainers.forEach(
-                displayComponent -> FluidDictUtil.getEmptyContainer(displayComponent.component())
-                        .ifPresent(container -> emptyContainersMultimap.put(container, diagram)));
+        fluidContainers.forEach(displayComponent -> FluidDictUtil.getEmptyContainer(displayComponent.component())
+                .ifPresent(container -> emptyContainersMultimap.put(container, diagram)));
         return diagram;
     }
 
@@ -179,10 +149,8 @@ public final class ForgeFluidContainers implements DiagramGenerator {
                 .putSlotGroup(
                         SLOT_GROUP_CONTAINERS,
                         SlotGroup.builder(6, 6, Grid.GRID.grid(3, 2), Grid.Direction.SE)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.FORGE_FLUID_CONTAINERS.trans("containersslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.FORGE_FLUID_CONTAINERS.trans("containersslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }

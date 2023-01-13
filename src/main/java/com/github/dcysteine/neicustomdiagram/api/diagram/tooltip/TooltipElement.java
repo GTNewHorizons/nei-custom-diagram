@@ -27,7 +27,11 @@ import com.google.auto.value.AutoOneOf;
 @AutoOneOf(TooltipElement.ElementType.class)
 public abstract class TooltipElement {
     public enum ElementType {
-        SPACING, TEXT, DISPLAY_COMPONENT_ICON, COMPONENT_DESCRIPTION, FORMATTING;
+        SPACING,
+        TEXT,
+        DISPLAY_COMPONENT_ICON,
+        COMPONENT_DESCRIPTION,
+        FORMATTING;
     }
 
     public static TooltipElement ofSpacing(int spacing) {
@@ -56,10 +60,15 @@ public abstract class TooltipElement {
     }
 
     public abstract ElementType type();
+
     public abstract int spacing();
+
     public abstract String text();
+
     public abstract DisplayComponent displayComponentIcon();
+
     public abstract Component componentDescription();
+
     public abstract TextFormatting formatting();
 
     public int width(TextFormatting formatting) {
@@ -118,9 +127,7 @@ public abstract class TooltipElement {
 
         switch (type()) {
             case TEXT:
-                Draw.drawText(
-                        formatting.format(text()), center,
-                        Draw.Colour.WHITE, formatting.small(), true);
+                Draw.drawText(formatting.format(text()), center, Draw.Colour.WHITE, formatting.small(), true);
                 break;
 
             case DISPLAY_COMPONENT_ICON:
@@ -130,8 +137,11 @@ public abstract class TooltipElement {
 
             case COMPONENT_DESCRIPTION:
                 Draw.drawText(
-                        formatting.format(componentDescription().description()), center,
-                        Draw.Colour.WHITE, formatting.small(), true);
+                        formatting.format(componentDescription().description()),
+                        center,
+                        Draw.Colour.WHITE,
+                        formatting.small(),
+                        true);
                 break;
         }
     }

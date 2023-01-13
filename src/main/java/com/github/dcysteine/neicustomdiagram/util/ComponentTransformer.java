@@ -2,7 +2,6 @@ package com.github.dcysteine.neicustomdiagram.util;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -29,16 +28,12 @@ public final class ComponentTransformer {
         return displayComponent.component();
     }
 
-    public static List<DisplayComponent> transformToDisplay(
-            Collection<? extends Component> components) {
-        return components.stream()
-                .map(ComponentTransformer::transformToDisplay)
-                .collect(Collectors.toList());
+    public static List<DisplayComponent> transformToDisplay(Collection<? extends Component> components) {
+        return components.stream().map(ComponentTransformer::transformToDisplay).collect(Collectors.toList());
     }
 
     /** The returned list will have duplicate {@link Component}s removed. */
-    public static List<Component> transformFromDisplay(
-            Collection<DisplayComponent> displayComponents) {
+    public static List<Component> transformFromDisplay(Collection<DisplayComponent> displayComponents) {
         return displayComponents.stream()
                 .map(ComponentTransformer::transformFromDisplay)
                 .distinct()
@@ -49,10 +44,8 @@ public final class ComponentTransformer {
      * Returns whether {@code displayComponents} contains any elements that, when transformed to
      * {@link Component}, are equal to {@code component}.
      */
-    public static boolean containsComponent(
-            Collection<DisplayComponent> displayComponents, Component component) {
-        return displayComponents.stream()
-                .anyMatch(displayComponent -> equals(displayComponent, component));
+    public static boolean containsComponent(Collection<DisplayComponent> displayComponents, Component component) {
+        return displayComponents.stream().anyMatch(displayComponent -> equals(displayComponent, component));
     }
 
     /**
@@ -69,8 +62,7 @@ public final class ComponentTransformer {
      * {@link Component}, are equal to all elements of {@code components}.
      */
     public static boolean containsAllComponents(
-            Collection<DisplayComponent> displayComponents,
-            Iterable<? extends Component> components) {
+            Collection<DisplayComponent> displayComponents, Iterable<? extends Component> components) {
         for (Component component : components) {
             if (!containsComponent(displayComponents, component)) {
                 return false;
@@ -84,8 +76,7 @@ public final class ComponentTransformer {
      * {@code displayComponents} transformed to {@link Component}.
      */
     public static boolean containsAllDisplayComponents(
-            Collection<? extends Component> components,
-            Iterable<DisplayComponent> displayComponents) {
+            Collection<? extends Component> components, Iterable<DisplayComponent> displayComponents) {
         for (DisplayComponent displayComponent : displayComponents) {
             if (!containsDisplayComponent(components, displayComponent)) {
                 return false;
@@ -118,8 +109,7 @@ public final class ComponentTransformer {
      *
      * @return whether any elements were removed
      */
-    public static boolean removeComponent(
-            Collection<DisplayComponent> displayComponents, Component component) {
+    public static boolean removeComponent(Collection<DisplayComponent> displayComponents, Component component) {
         return displayComponents.removeIf(displayComponent -> equals(displayComponent, component));
     }
 
@@ -141,8 +131,7 @@ public final class ComponentTransformer {
      * @return whether any elements were removed
      */
     public static boolean removeAllComponents(
-            Collection<DisplayComponent> displayComponents,
-            Iterable<? extends Component> components) {
+            Collection<DisplayComponent> displayComponents, Iterable<? extends Component> components) {
         boolean anythingRemoved = false;
         for (Component component : components) {
             anythingRemoved |= removeComponent(displayComponents, component);
@@ -157,8 +146,7 @@ public final class ComponentTransformer {
      * @return whether any elements were removed
      */
     public static boolean removeAllDisplayComponents(
-            Collection<? extends Component> components,
-            Iterable<DisplayComponent> displayComponents) {
+            Collection<? extends Component> components, Iterable<DisplayComponent> displayComponents) {
         boolean anythingRemoved = false;
         for (DisplayComponent displayComponent : displayComponents) {
             anythingRemoved |= removeDisplayComponent(components, displayComponent);
@@ -172,8 +160,7 @@ public final class ComponentTransformer {
      *
      * @return whether any elements were removed
      */
-    public static boolean removeAllComponents(
-            Collection<DisplayComponent> displayComponents, Component... components) {
+    public static boolean removeAllComponents(Collection<DisplayComponent> displayComponents, Component... components) {
         return removeAllComponents(displayComponents, Arrays.asList(components));
     }
 

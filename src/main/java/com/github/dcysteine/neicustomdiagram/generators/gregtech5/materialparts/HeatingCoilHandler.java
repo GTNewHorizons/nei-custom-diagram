@@ -10,22 +10,21 @@ import net.minecraft.item.ItemStack;
 
 class HeatingCoilHandler {
     /** List of all heating coil items in GregTech. Unfortunately, must be manually updated. */
-    private static final ImmutableList<ItemList> HEATING_COILS =
-            ImmutableList.of(
-                    ItemList.Casing_Coil_Cupronickel,
-                    ItemList.Casing_Coil_Kanthal,
-                    ItemList.Casing_Coil_Nichrome,
-                    ItemList.Casing_Coil_TungstenSteel,
-                    ItemList.Casing_Coil_HSSG,
-                    ItemList.Casing_Coil_Naquadah,
-                    ItemList.Casing_Coil_NaquadahAlloy,
-                    ItemList.Casing_Coil_ElectrumFlux,
-                    ItemList.Casing_Coil_AwakenedDraconium,
-                    ItemList.Casing_Coil_HSSS,
-                    ItemList.Casing_Coil_Trinium,
-                    ItemList.Casing_Coil_Infinity,
-                    ItemList.Casing_Coil_Hypogen,
-                    ItemList.Casing_Coil_Eternal);
+    private static final ImmutableList<ItemList> HEATING_COILS = ImmutableList.of(
+            ItemList.Casing_Coil_Cupronickel,
+            ItemList.Casing_Coil_Kanthal,
+            ItemList.Casing_Coil_Nichrome,
+            ItemList.Casing_Coil_TungstenSteel,
+            ItemList.Casing_Coil_HSSG,
+            ItemList.Casing_Coil_Naquadah,
+            ItemList.Casing_Coil_NaquadahAlloy,
+            ItemList.Casing_Coil_ElectrumFlux,
+            ItemList.Casing_Coil_AwakenedDraconium,
+            ItemList.Casing_Coil_HSSS,
+            ItemList.Casing_Coil_Trinium,
+            ItemList.Casing_Coil_Infinity,
+            ItemList.Casing_Coil_Hypogen,
+            ItemList.Casing_Coil_Eternal);
 
     /** Sorted map of blast furnace recipe heat to heating coil item. */
     private ImmutableSortedMap<Long, Component> heatingCoilMap;
@@ -35,8 +34,8 @@ class HeatingCoilHandler {
         ImmutableSortedMap.Builder<Long, Component> builder = ImmutableSortedMap.naturalOrder();
         for (ItemList item : HEATING_COILS) {
             ItemStack itemStack = item.get(1);
-            long heat =
-                    GT_Block_Casings5.getCoilHeatFromDamage(itemStack.getItemDamage()).getHeat();
+            long heat = GT_Block_Casings5.getCoilHeatFromDamage(itemStack.getItemDamage())
+                    .getHeat();
 
             builder.put(heat, ItemComponent.create(itemStack));
         }

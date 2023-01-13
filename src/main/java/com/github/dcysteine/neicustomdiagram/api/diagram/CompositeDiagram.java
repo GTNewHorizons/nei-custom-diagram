@@ -5,7 +5,6 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.layout.Layout;
 import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,8 +34,7 @@ public abstract class CompositeDiagram extends Diagram {
         List<Iterable<Interactable>> iterables = new ArrayList<>();
 
         iterables.add(super.interactables(diagramState));
-        activeDiagrams(diagramState)
-                .forEach(diagram -> iterables.add(diagram.interactables(diagramState)));
+        activeDiagrams(diagramState).forEach(diagram -> iterables.add(diagram.interactables(diagramState)));
 
         return Iterables.concat(iterables);
     }

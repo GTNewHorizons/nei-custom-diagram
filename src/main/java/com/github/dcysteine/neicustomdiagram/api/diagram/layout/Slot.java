@@ -8,7 +8,6 @@ import com.github.dcysteine.neicustomdiagram.api.draw.Draw;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.toprettystring.ToPrettyString;
-
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -24,9 +23,11 @@ public abstract class Slot implements Interactable {
     /** The center of this slot. */
     @Override
     public abstract Point position();
+
     public abstract int slotWidth();
 
     public abstract Tooltip tooltip();
+
     public abstract BiConsumer<DiagramState, Point> drawFunction();
 
     @Override
@@ -65,8 +66,11 @@ public abstract class Slot implements Interactable {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder setPosition(Point pos);
+
         public abstract Builder setSlotWidth(int slotWidth);
+
         public abstract Builder setTooltip(Tooltip tooltip);
+
         public abstract Builder setDrawFunction(BiConsumer<DiagramState, Point> fun);
 
         public Builder setDrawFunction(Consumer<Point> fun) {

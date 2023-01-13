@@ -17,10 +17,6 @@ import gregtech.api.util.GT_ModHandler;
 import gregtech.api.util.GT_OreDictUnificator;
 import gregtech.api.util.GT_Recipe;
 import gregtech.api.util.GT_Utility;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -29,35 +25,31 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 class RecipeHandler {
     static final Item PROGRAMMED_CIRCUIT = ItemList.Circuit_Integrated.getItem();
-    static final ImmutableSet<ItemComponent> PROGRAMMED_CIRCUITS =
-            ImmutableSet.copyOf(
-                    IntStream.range(0, 25)
-                            .mapToObj(i -> ItemComponent.create(GT_Utility.getIntegratedCircuit(i)))
-                            .collect(Collectors.toList()));
-    static final ImmutableSet<ItemComponent> SCHEMATICS =
-            ImmutableSet.<ItemComponent>builder()
-                    .add(GregTechOreDictUtil.getComponent(ItemList.Schematic_1by1))
-                    .add(GregTechOreDictUtil.getComponent(ItemList.Schematic_2by2))
-                    .add(GregTechOreDictUtil.getComponent(ItemList.Schematic_3by3))
-                    .add(GregTechOreDictUtil.getComponent(ItemList.Schematic_Dust))
-                    .build();
+    static final ImmutableSet<ItemComponent> PROGRAMMED_CIRCUITS = ImmutableSet.copyOf(IntStream.range(0, 25)
+            .mapToObj(i -> ItemComponent.create(GT_Utility.getIntegratedCircuit(i)))
+            .collect(Collectors.toList()));
+    static final ImmutableSet<ItemComponent> SCHEMATICS = ImmutableSet.<ItemComponent>builder()
+            .add(GregTechOreDictUtil.getComponent(ItemList.Schematic_1by1))
+            .add(GregTechOreDictUtil.getComponent(ItemList.Schematic_2by2))
+            .add(GregTechOreDictUtil.getComponent(ItemList.Schematic_3by3))
+            .add(GregTechOreDictUtil.getComponent(ItemList.Schematic_Dust))
+            .build();
 
     enum RecipeMap {
         ORE_WASHING_PLANT(
-                GT_Recipe.GT_Recipe_Map.sOreWasherRecipes,
-                ItemList.Machine_HV_OreWasher, "orewashingplantlabel"),
+                GT_Recipe.GT_Recipe_Map.sOreWasherRecipes, ItemList.Machine_HV_OreWasher, "orewashingplantlabel"),
         THERMAL_CENTRIFUGE(
                 GT_Recipe.GT_Recipe_Map.sThermalCentrifugeRecipes,
-                ItemList.Machine_HV_ThermalCentrifuge, "thermalcentrifugelabel"),
-        COMPRESSOR(
-                GT_Recipe.GT_Recipe_Map.sCompressorRecipes,
-                ItemList.Machine_HV_Compressor, "compressorlabel"),
-        EXTRACTOR(
-                GT_Recipe.GT_Recipe_Map.sExtractorRecipes,
-                ItemList.Machine_HV_Extractor, "extractorlabel"),
+                ItemList.Machine_HV_ThermalCentrifuge,
+                "thermalcentrifugelabel"),
+        COMPRESSOR(GT_Recipe.GT_Recipe_Map.sCompressorRecipes, ItemList.Machine_HV_Compressor, "compressorlabel"),
+        EXTRACTOR(GT_Recipe.GT_Recipe_Map.sExtractorRecipes, ItemList.Machine_HV_Extractor, "extractorlabel"),
         // Recycler, Furnace, Microwave
 
         /*
@@ -79,127 +71,82 @@ class RecipeHandler {
          */
 
         // Plasma Arc Furnace, Arc Furnace
-        PRINTER(
-                GT_Recipe.GT_Recipe_Map.sPrinterRecipes,
-                ItemList.Machine_HV_Printer, "printerlabel"),
+        PRINTER(GT_Recipe.GT_Recipe_Map.sPrinterRecipes, ItemList.Machine_HV_Printer, "printerlabel"),
         SIFTER(GT_Recipe.GT_Recipe_Map.sSifterRecipes, ItemList.Machine_HV_Sifter, "sifterlabel"),
-        FORMING_PRESS(
-                GT_Recipe.GT_Recipe_Map.sPressRecipes,
-                ItemList.Machine_HV_Press, "formingpresslabel"),
+        FORMING_PRESS(GT_Recipe.GT_Recipe_Map.sPressRecipes, ItemList.Machine_HV_Press, "formingpresslabel"),
         PRECISION_LASER_ENGRAVER(
                 GT_Recipe.GT_Recipe_Map.sLaserEngraverRecipes,
-                ItemList.Machine_HV_LaserEngraver, "precisionlaserengraverlabel"),
+                ItemList.Machine_HV_LaserEngraver,
+                "precisionlaserengraverlabel"),
         MIXER(GT_Recipe.GT_Recipe_Map.sMixerRecipes, ItemList.Machine_HV_Mixer, "mixerlabel"),
-        AUTOCLAVE(
-                GT_Recipe.GT_Recipe_Map.sAutoclaveRecipes,
-                ItemList.Machine_HV_Autoclave, "autoclavelabel"),
+        AUTOCLAVE(GT_Recipe.GT_Recipe_Map.sAutoclaveRecipes, ItemList.Machine_HV_Autoclave, "autoclavelabel"),
         ELECTROMAGNETIC_SEPARATOR(
                 GT_Recipe.GT_Recipe_Map.sElectroMagneticSeparatorRecipes,
-                ItemList.Machine_HV_ElectromagneticSeparator, "electromagneticseparatorlabel"),
-        POLARIZER(
-                GT_Recipe.GT_Recipe_Map.sPolarizerRecipes,
-                ItemList.Machine_HV_Polarizer, "polarizerlabel"),
-        MACERATOR(
-                GT_Recipe.GT_Recipe_Map.sMaceratorRecipes,
-                ItemList.Machine_HV_Macerator, "maceratorlabel"),
+                ItemList.Machine_HV_ElectromagneticSeparator,
+                "electromagneticseparatorlabel"),
+        POLARIZER(GT_Recipe.GT_Recipe_Map.sPolarizerRecipes, ItemList.Machine_HV_Polarizer, "polarizerlabel"),
+        MACERATOR(GT_Recipe.GT_Recipe_Map.sMaceratorRecipes, ItemList.Machine_HV_Macerator, "maceratorlabel"),
         CHEMICAL_BATH(
-                GT_Recipe.GT_Recipe_Map.sChemicalBathRecipes,
-                ItemList.Machine_HV_ChemicalBath, "chemicalbathlabel"),
-        FLUID_CANNER(
-                GT_Recipe.GT_Recipe_Map.sFluidCannerRecipes,
-                ItemList.Machine_HV_FluidCanner, "fluidcannerlabel"),
-        BREWERY(
-                GT_Recipe.GT_Recipe_Map.sBrewingRecipes,
-                ItemList.Machine_HV_Brewery, "brewerylabel"),
-        FLUID_HEATER(
-                GT_Recipe.GT_Recipe_Map.sFluidHeaterRecipes,
-                ItemList.Machine_HV_FluidHeater, "fluidheaterlabel"),
-        DISTILLERY(
-                GT_Recipe.GT_Recipe_Map.sDistilleryRecipes,
-                ItemList.Machine_HV_Distillery, "distillerylabel"),
-        FERMENTER(
-                GT_Recipe.GT_Recipe_Map.sFermentingRecipes,
-                ItemList.Machine_HV_Fermenter, "fermenterlabel"),
+                GT_Recipe.GT_Recipe_Map.sChemicalBathRecipes, ItemList.Machine_HV_ChemicalBath, "chemicalbathlabel"),
+        FLUID_CANNER(GT_Recipe.GT_Recipe_Map.sFluidCannerRecipes, ItemList.Machine_HV_FluidCanner, "fluidcannerlabel"),
+        BREWERY(GT_Recipe.GT_Recipe_Map.sBrewingRecipes, ItemList.Machine_HV_Brewery, "brewerylabel"),
+        FLUID_HEATER(GT_Recipe.GT_Recipe_Map.sFluidHeaterRecipes, ItemList.Machine_HV_FluidHeater, "fluidheaterlabel"),
+        DISTILLERY(GT_Recipe.GT_Recipe_Map.sDistilleryRecipes, ItemList.Machine_HV_Distillery, "distillerylabel"),
+        FERMENTER(GT_Recipe.GT_Recipe_Map.sFermentingRecipes, ItemList.Machine_HV_Fermenter, "fermenterlabel"),
         // Fluid Solidifier
         // Be warned: this thing has way too many recipes (~46k), and they all have similar
         // components! Expect extreme slow-down if you want to add it.
         FLUID_EXTRACTOR(
                 GT_Recipe.GT_Recipe_Map.sFluidExtractionRecipes,
-                ItemList.Machine_HV_FluidExtractor, "fluidextractorlabel"),
-        PACKAGER(
-                GT_Recipe.GT_Recipe_Map.sBoxinatorRecipes,
-                ItemList.Machine_HV_Boxinator, "packagerlabel"),
-        UNPACKAGER(
-                GT_Recipe.GT_Recipe_Map.sUnboxinatorRecipes,
-                ItemList.Machine_HV_Unboxinator, "unpackagerlabel"),
-        FUSION_REACTOR(
-                GT_Recipe.GT_Recipe_Map.sFusionRecipes,
-                ItemList.FusionComputer_LuV, "fusionreactorlabel"),
-        CENTRIFUGE(
-                GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes,
-                ItemList.Machine_HV_Centrifuge, "centrifugelabel"),
+                ItemList.Machine_HV_FluidExtractor,
+                "fluidextractorlabel"),
+        PACKAGER(GT_Recipe.GT_Recipe_Map.sBoxinatorRecipes, ItemList.Machine_HV_Boxinator, "packagerlabel"),
+        UNPACKAGER(GT_Recipe.GT_Recipe_Map.sUnboxinatorRecipes, ItemList.Machine_HV_Unboxinator, "unpackagerlabel"),
+        FUSION_REACTOR(GT_Recipe.GT_Recipe_Map.sFusionRecipes, ItemList.FusionComputer_LuV, "fusionreactorlabel"),
+        CENTRIFUGE(GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes, ItemList.Machine_HV_Centrifuge, "centrifugelabel"),
         ELECTROLYZER(
-                GT_Recipe.GT_Recipe_Map.sElectrolyzerRecipes,
-                ItemList.Machine_HV_Electrolyzer, "electrolyzerlabel"),
+                GT_Recipe.GT_Recipe_Map.sElectrolyzerRecipes, ItemList.Machine_HV_Electrolyzer, "electrolyzerlabel"),
         ELECTRIC_BLAST_FURNACE(
                 GT_Recipe.GT_Recipe_Map.sBlastRecipes,
-                ItemList.Machine_Multi_BlastFurnace, "electricblastfurnacelabel"),
+                ItemList.Machine_Multi_BlastFurnace,
+                "electricblastfurnacelabel"),
         BRICKED_BLAST_FURNACE(
                 GT_Recipe.GT_Recipe_Map.sPrimitiveBlastRecipes,
-                ItemList.Machine_Bricked_BlastFurnace, "brickedblastfurnacelabel"),
+                ItemList.Machine_Bricked_BlastFurnace,
+                "brickedblastfurnacelabel"),
         IMPLOSION_COMPRESSOR(
                 GT_Recipe.GT_Recipe_Map.sImplosionRecipes,
-                ItemList.Machine_Multi_ImplosionCompressor, "implosioncompressorlabel"),
+                ItemList.Machine_Multi_ImplosionCompressor,
+                "implosioncompressorlabel"),
         VACUUM_FREEZER(
-                GT_Recipe.GT_Recipe_Map.sVacuumRecipes,
-                ItemList.Machine_Multi_VacuumFreezer, "vacuumfreezerlabel"),
+                GT_Recipe.GT_Recipe_Map.sVacuumRecipes, ItemList.Machine_Multi_VacuumFreezer, "vacuumfreezerlabel"),
         CHEMICAL_REACTOR(
-                GT_Recipe.GT_Recipe_Map.sChemicalRecipes,
-                ItemList.Machine_HV_ChemicalReactor, "chemicalreactorlabel"),
+                GT_Recipe.GT_Recipe_Map.sChemicalRecipes, ItemList.Machine_HV_ChemicalReactor, "chemicalreactorlabel"),
         LARGE_CHEMICAL_REACTOR(
                 GT_Recipe.GT_Recipe_Map.sMultiblockChemicalRecipes,
-                ItemList.Machine_Multi_LargeChemicalReactor, "largechemicalreactorlabel"),
+                ItemList.Machine_Multi_LargeChemicalReactor,
+                "largechemicalreactorlabel"),
         DISTILLATION_TOWER(
-                GT_Recipe.GT_Recipe_Map.sDistillationRecipes,
-                ItemList.Distillation_Tower, "distillationtowerlabel"),
-        OIL_CRACKER(
-                GT_Recipe.GT_Recipe_Map.sCrackingRecipes,
-                ItemList.OilCracker, "oilcrackerlabel"),
-        PYROLYSE_OVEN(
-                GT_Recipe.GT_Recipe_Map.sPyrolyseRecipes,
-                ItemList.PyrolyseOven, "pyrolyseovenlabel"),
-        WIREMILL(
-                GT_Recipe.GT_Recipe_Map.sWiremillRecipes,
-                ItemList.Machine_HV_Wiremill, "wiremilllabel"),
-        BENDING_MACHINE(
-                GT_Recipe.GT_Recipe_Map.sBenderRecipes,
-                ItemList.Machine_HV_Bender, "bendingmachinelabel"),
+                GT_Recipe.GT_Recipe_Map.sDistillationRecipes, ItemList.Distillation_Tower, "distillationtowerlabel"),
+        OIL_CRACKER(GT_Recipe.GT_Recipe_Map.sCrackingRecipes, ItemList.OilCracker, "oilcrackerlabel"),
+        PYROLYSE_OVEN(GT_Recipe.GT_Recipe_Map.sPyrolyseRecipes, ItemList.PyrolyseOven, "pyrolyseovenlabel"),
+        WIREMILL(GT_Recipe.GT_Recipe_Map.sWiremillRecipes, ItemList.Machine_HV_Wiremill, "wiremilllabel"),
+        BENDING_MACHINE(GT_Recipe.GT_Recipe_Map.sBenderRecipes, ItemList.Machine_HV_Bender, "bendingmachinelabel"),
         ALLOY_SMELTER(
-                GT_Recipe.GT_Recipe_Map.sAlloySmelterRecipes,
-                ItemList.Machine_HV_AlloySmelter, "alloysmelterlabel"),
+                GT_Recipe.GT_Recipe_Map.sAlloySmelterRecipes, ItemList.Machine_HV_AlloySmelter, "alloysmelterlabel"),
         ASSEMBLING_MACHINE(
-                GT_Recipe.GT_Recipe_Map.sAssemblerRecipes,
-                ItemList.Machine_HV_Assembler, "assemblingmachinelabel"),
+                GT_Recipe.GT_Recipe_Map.sAssemblerRecipes, ItemList.Machine_HV_Assembler, "assemblingmachinelabel"),
         CIRCUIT_ASSEMBLING_MACHINE(
                 GT_Recipe.GT_Recipe_Map.sCircuitAssemblerRecipes,
-                ItemList.Machine_HV_CircuitAssembler, "circuitassemblingmachinelabel"),
-        CANNING_MACHINE(
-                GT_Recipe.GT_Recipe_Map.sCannerRecipes,
-                ItemList.Machine_HV_Canner, "canningmachinelabel"),
+                ItemList.Machine_HV_CircuitAssembler,
+                "circuitassemblingmachinelabel"),
+        CANNING_MACHINE(GT_Recipe.GT_Recipe_Map.sCannerRecipes, ItemList.Machine_HV_Canner, "canningmachinelabel"),
         // CNC Machine (what even is this?)
         LATHE(GT_Recipe.GT_Recipe_Map.sLatheRecipes, ItemList.Machine_HV_Lathe, "lathelabel"),
-        CUTTING_MACHINE(
-                GT_Recipe.GT_Recipe_Map.sCutterRecipes,
-                ItemList.Machine_HV_Cutter, "cuttingmachinelabel"),
-        SLICING_MACHINE(
-                GT_Recipe.GT_Recipe_Map.sSlicerRecipes,
-                ItemList.Machine_HV_Slicer, "slicingmachinelabel"),
-        EXTRUDER(
-                GT_Recipe.GT_Recipe_Map.sExtruderRecipes,
-                ItemList.Machine_HV_Extruder, "extruderlabel"),
-        FORGE_HAMMER(
-                GT_Recipe.GT_Recipe_Map.sHammerRecipes,
-                ItemList.Machine_HV_Hammer, "forgehammerlabel");
+        CUTTING_MACHINE(GT_Recipe.GT_Recipe_Map.sCutterRecipes, ItemList.Machine_HV_Cutter, "cuttingmachinelabel"),
+        SLICING_MACHINE(GT_Recipe.GT_Recipe_Map.sSlicerRecipes, ItemList.Machine_HV_Slicer, "slicingmachinelabel"),
+        EXTRUDER(GT_Recipe.GT_Recipe_Map.sExtruderRecipes, ItemList.Machine_HV_Extruder, "extruderlabel"),
+        FORGE_HAMMER(GT_Recipe.GT_Recipe_Map.sHammerRecipes, ItemList.Machine_HV_Hammer, "forgehammerlabel");
         // Amplifabricator, Mass Fabrication, fuels
 
         final GT_Recipe.GT_Recipe_Map recipeMap;
@@ -222,15 +169,13 @@ class RecipeHandler {
                     continue;
                 }
                 ItemStack unified = GT_OreDictUnificator.get_nocopy(itemStack);
-                inputs.merge(
-                        ItemComponent.createWithNbt(unified), itemStack.stackSize, Integer::sum);
+                inputs.merge(ItemComponent.createWithNbt(unified), itemStack.stackSize, Integer::sum);
             }
             for (FluidStack fluidStack : recipe.mFluidInputs) {
                 if (fluidStack == null) {
                     continue;
                 }
-                inputs.merge(
-                        FluidComponent.createWithNbt(fluidStack), fluidStack.amount, Integer::sum);
+                inputs.merge(FluidComponent.createWithNbt(fluidStack), fluidStack.amount, Integer::sum);
             }
 
             Map<Component, Integer> outputs = new HashMap<>();
@@ -239,19 +184,19 @@ class RecipeHandler {
                     continue;
                 }
                 ItemStack unified = GT_OreDictUnificator.get_nocopy(itemStack);
-                outputs.merge(
-                        ItemComponent.createWithNbt(unified), itemStack.stackSize, Integer::sum);
+                outputs.merge(ItemComponent.createWithNbt(unified), itemStack.stackSize, Integer::sum);
             }
             for (FluidStack fluidStack : recipe.mFluidOutputs) {
                 if (fluidStack == null) {
                     continue;
                 }
-                outputs.merge(
-                        FluidComponent.createWithNbt(fluidStack), fluidStack.amount, Integer::sum);
+                outputs.merge(FluidComponent.createWithNbt(fluidStack), fluidStack.amount, Integer::sum);
             }
 
             return new AutoValue_RecipeHandler_Recipe(
-                    recipeMap, ImmutableMap.copyOf(inputs), ImmutableMap.copyOf(outputs),
+                    recipeMap,
+                    ImmutableMap.copyOf(inputs),
+                    ImmutableMap.copyOf(outputs),
                     ImmutableList.copyOf(GregTechRecipeUtil.buildComponentsFromInputs(recipe)),
                     ImmutableList.copyOf(GregTechRecipeUtil.buildComponentsFromOutputs(recipe)));
         }
@@ -265,6 +210,7 @@ class RecipeHandler {
         abstract ImmutableMap<Component, Integer> outputs();
 
         abstract ImmutableList<DisplayComponent> displayInputs();
+
         abstract ImmutableList<DisplayComponent> displayOutputs();
     }
 
@@ -288,14 +234,13 @@ class RecipeHandler {
     void initialize() {
         // First pass: build recipe data.
         for (RecipeMap recipeMap : RecipeMap.values()) {
-            Logger.GREGTECH_5_RECIPE_DEBUGGER.info(
-                    "Checking recipes, pass 1: {}", recipeMap.name());
+            Logger.GREGTECH_5_RECIPE_DEBUGGER.info("Checking recipes, pass 1: {}", recipeMap.name());
 
             ImmutableList.Builder<Recipe> recipeListBuilder = ImmutableList.builder();
-                    recipeMap.recipeMap.mRecipeList.stream()
-                            .map(recipe -> Recipe.create(recipeMap, recipe))
-                            .filter(recipe -> RecipeHandler.filterRecipes(recipeMap, recipe))
-                            .forEach(recipeListBuilder::add);
+            recipeMap.recipeMap.mRecipeList.stream()
+                    .map(recipe -> Recipe.create(recipeMap, recipe))
+                    .filter(recipe -> RecipeHandler.filterRecipes(recipeMap, recipe))
+                    .forEach(recipeListBuilder::add);
 
             RecipePartitioner recipePartitioner = new RecipePartitioner(recipeListBuilder.build());
             recipePartitioner.initialize();
@@ -306,7 +251,8 @@ class RecipeHandler {
         for (RecipeMap recipeMap : RecipeMap.values()) {
             Logger.GREGTECH_5_RECIPE_DEBUGGER.info(
                     "Checking recipes, pass 2: {} [{}]",
-                    recipeMap.name(), allRecipes.get(recipeMap).size());
+                    recipeMap.name(),
+                    allRecipes.get(recipeMap).size());
 
             RecipePartitioner recipePartitioner = allRecipes.get(recipeMap);
             for (Recipe recipe : recipePartitioner.allRecipes()) {
@@ -362,8 +308,7 @@ class RecipeHandler {
     /**
      * Returns whether {@code a} is a subset of {@code b}, checking stack sizes.
      */
-    private static boolean isSubsetComparingStackSizes(
-            Map<Component, Integer> a, Map<Component, Integer> b) {
+    private static boolean isSubsetComparingStackSizes(Map<Component, Integer> a, Map<Component, Integer> b) {
         for (Map.Entry<Component, Integer> entry : a.entrySet()) {
             if (b.getOrDefault(entry.getKey(), 0) < entry.getValue()) {
                 return false;
@@ -380,8 +325,7 @@ class RecipeHandler {
                 continue;
             }
 
-            if ((PROGRAMMED_CIRCUITS.contains(component) || SCHEMATICS.contains(component))
-                    && entry.getValue() > 0) {
+            if ((PROGRAMMED_CIRCUITS.contains(component) || SCHEMATICS.contains(component)) && entry.getValue() > 0) {
                 return true;
             }
         }

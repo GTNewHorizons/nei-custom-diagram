@@ -7,12 +7,11 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.objects.ItemData;
 import gregtech.api.util.GT_OreDictUnificator;
-import net.minecraft.item.ItemStack;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import net.minecraft.item.ItemStack;
 
 public final class GregTechOreDictUtil {
     // Static class.
@@ -23,8 +22,7 @@ public final class GregTechOreDictUtil {
     }
 
     public static Optional<ItemComponent> getComponent(OrePrefixes prefix, Materials material) {
-        Optional<ItemStack> itemStackOptional =
-                Optional.ofNullable(GT_OreDictUnificator.get(prefix, material, 1));
+        Optional<ItemStack> itemStackOptional = Optional.ofNullable(GT_OreDictUnificator.get(prefix, material, 1));
         return itemStackOptional.map(ItemComponent::create);
     }
 
@@ -51,8 +49,8 @@ public final class GregTechOreDictUtil {
         List<Component> results = new ArrayList<>();
 
         if (unified.type() == Component.ComponentType.ITEM) {
-            GT_OreDictUnificator.getNonUnifiedStacks((ItemStack) unified.stack()).forEach(
-                    itemStack -> results.add(ItemComponent.create(itemStack)));
+            GT_OreDictUnificator.getNonUnifiedStacks((ItemStack) unified.stack())
+                    .forEach(itemStack -> results.add(ItemComponent.create(itemStack)));
         } else {
             results.add(unified);
         }
@@ -69,8 +67,7 @@ public final class GregTechOreDictUtil {
         if (component.type() != Component.ComponentType.ITEM) {
             return Optional.empty();
         }
-        return Optional.ofNullable(
-                GT_OreDictUnificator.getAssociation((ItemStack) component.stack()));
+        return Optional.ofNullable(GT_OreDictUnificator.getAssociation((ItemStack) component.stack()));
     }
 
     /**
@@ -86,9 +83,8 @@ public final class GregTechOreDictUtil {
         Optional<ItemData> itemDataOptional = getItemData(component);
         if (itemDataOptional.isPresent()) {
             ItemData itemData = itemDataOptional.get();
-            itemData.mPrefix.mFamiliarPrefixes.forEach(
-                    prefix -> getComponent(prefix, itemData.mMaterial.mMaterial)
-                            .ifPresent(c -> results.addAll(reverseUnify(c))));
+            itemData.mPrefix.mFamiliarPrefixes.forEach(prefix ->
+                    getComponent(prefix, itemData.mMaterial.mMaterial).ifPresent(c -> results.addAll(reverseUnify(c))));
         }
 
         return results;

@@ -11,13 +11,12 @@ import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.base.Splitter;
+import java.util.Comparator;
+import java.util.Optional;
+import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
-
-import javax.annotation.Nullable;
-import java.util.Comparator;
-import java.util.Optional;
 
 /**
  * A display component is a component that may have additional display information attached, such as
@@ -28,14 +27,15 @@ import java.util.Optional;
  */
 @AutoValue
 public abstract class DisplayComponent implements Comparable<DisplayComponent> {
-    public static final Comparator<DisplayComponent> COMPARATOR =
-            Comparator.<DisplayComponent, Component>comparing(DisplayComponent::component)
-                    .thenComparing(d -> d.stackSize().orElse(-1));
+    public static final Comparator<DisplayComponent> COMPARATOR = Comparator.<DisplayComponent, Component>comparing(
+                    DisplayComponent::component)
+            .thenComparing(d -> d.stackSize().orElse(-1));
 
     /** NBT strings will be split if they are too long. */
     private static final Splitter NBT_SPLITTER = Splitter.fixedLength(64);
 
     public abstract Component component();
+
     public abstract Optional<Integer> stackSize();
 
     /** Additional information to be drawn on the component, if any. Keep this short! */
@@ -64,10 +64,8 @@ public abstract class DisplayComponent implements Comparable<DisplayComponent> {
     /** Returns a localized description of the item or fluid stack, for display in a tooltip. */
     public Tooltip descriptionTooltip() {
         Tooltip.Builder builder = Tooltip.builder().addTextLine(description());
-        stackSize().ifPresent(
-                stackSize -> builder
-                        .setFormatting(TextFormatting.create(true))
-                        .addTextLine(Lang.API.transf("stacksize", stackSize)));
+        stackSize().ifPresent(stackSize -> builder.setFormatting(TextFormatting.create(true))
+                .addTextLine(Lang.API.transf("stacksize", stackSize)));
 
         if (component().nbt().isPresent()) {
             NBTTagCompound nbt = component().nbt().get();
@@ -76,9 +74,7 @@ public abstract class DisplayComponent implements Comparable<DisplayComponent> {
                         .setFormatting(Tooltip.TRIVIAL_FORMATTING)
                         .addAllTextLines(NBT_SPLITTER.split(nbt.toString()));
             } else {
-                builder.addSpacing()
-                        .setFormatting(Tooltip.INFO_FORMATTING)
-                        .addTextLine(Lang.API.trans("hasnbt"));
+                builder.addSpacing().setFormatting(Tooltip.INFO_FORMATTING).addTextLine(Lang.API.trans("hasnbt"));
             }
         }
 
@@ -113,8 +109,7 @@ public abstract class DisplayComponent implements Comparable<DisplayComponent> {
             }
         }
 
-        additionalInfo().ifPresent(
-                additionalInfo -> Draw.drawAdditionalInfo(additionalInfo, pos, true));
+        additionalInfo().ifPresent(additionalInfo -> Draw.drawAdditionalInfo(additionalInfo, pos, true));
     }
 
     @ToPrettyString
@@ -167,10 +162,15 @@ public abstract class DisplayComponent implements Comparable<DisplayComponent> {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder setComponent(Component component);
+
         public abstract Builder setStackSize(Optional<Integer> stackSize);
+
         public abstract Builder setStackSize(int stackSize);
+
         public abstract Builder setAdditionalInfo(Optional<String> additionalInfo);
+
         public abstract Builder setAdditionalInfo(@Nullable String additionalInfo);
+
         public abstract Builder setAdditionalTooltip(Tooltip additionalTooltip);
 
         public Builder clearStackSize() {

@@ -1,7 +1,6 @@
 package com.github.dcysteine.neicustomdiagram.util;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
-
 import java.util.function.Predicate;
 
 public final class DiagramUtil {

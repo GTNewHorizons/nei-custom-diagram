@@ -11,14 +11,13 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import gregtech.api.util.GT_OreDictUnificator;
 import gregtech.api.util.GT_Recipe;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public final class GregTechRecipeUtil {
     private static final Joiner STRING_JOINER = Joiner.on(' ');
@@ -28,25 +27,23 @@ public final class GregTechRecipeUtil {
 
     // TODO these findRecipe* methods are slow and inefficient, and also unused. Maybe delete them?
     /** Compares ignoring stack size. */
-    public static List<GT_Recipe> findRecipeByInput(
-            GT_Recipe.GT_Recipe_Map recipes, Component... inputs) {
+    public static List<GT_Recipe> findRecipeByInput(GT_Recipe.GT_Recipe_Map recipes, Component... inputs) {
         return findRecipe(recipes, Arrays.asList(inputs), ImmutableList.of());
     }
 
     /** Compares ignoring stack size. */
-    public static List<GT_Recipe> findRecipeByOutput(
-            GT_Recipe.GT_Recipe_Map recipes, Component... outputs) {
+    public static List<GT_Recipe> findRecipeByOutput(GT_Recipe.GT_Recipe_Map recipes, Component... outputs) {
         return findRecipe(recipes, ImmutableList.of(), Arrays.asList(outputs));
     }
 
-    public static List<GT_Recipe> findRecipe(
-            GT_Recipe.GT_Recipe_Map recipes, Component input, Component output) {
+    public static List<GT_Recipe> findRecipe(GT_Recipe.GT_Recipe_Map recipes, Component input, Component output) {
         return findRecipe(recipes, ImmutableList.of(input), ImmutableList.of(output));
     }
 
     public static List<GT_Recipe> findRecipe(
             GT_Recipe.GT_Recipe_Map recipes,
-            Collection<? extends Component> inputs, Collection<? extends Component> outputs) {
+            Collection<? extends Component> inputs,
+            Collection<? extends Component> outputs) {
         List<FluidStack> inputFluids = new ArrayList<>();
         List<ItemStack> inputItems = new ArrayList<>();
         for (Component component : inputs) {
@@ -88,8 +85,7 @@ public final class GregTechRecipeUtil {
         return foundRecipes;
     }
 
-    private static boolean recipeContainsFluids(
-            FluidStack[] recipeFluidStacks, Collection<FluidStack> fluidStacks) {
+    private static boolean recipeContainsFluids(FluidStack[] recipeFluidStacks, Collection<FluidStack> fluidStacks) {
         for (FluidStack fluidStack : fluidStacks) {
             if (Arrays.stream(recipeFluidStacks).noneMatch(fluidStack::isFluidEqual)) {
                 return false;
@@ -98,11 +94,9 @@ public final class GregTechRecipeUtil {
         return true;
     }
 
-    private static boolean recipeContainsItems(
-            ItemStack[] recipeItemStacks, Collection<ItemStack> itemStacks) {
+    private static boolean recipeContainsItems(ItemStack[] recipeItemStacks, Collection<ItemStack> itemStacks) {
         for (ItemStack itemStack : itemStacks) {
-            if (Arrays.stream(recipeItemStacks)
-                    .noneMatch(s -> GT_OreDictUnificator.isInputStackEqual(s, itemStack))) {
+            if (Arrays.stream(recipeItemStacks).noneMatch(s -> GT_OreDictUnificator.isInputStackEqual(s, itemStack))) {
                 return false;
             }
         }
@@ -137,17 +131,13 @@ public final class GregTechRecipeUtil {
 
             List<Component> reverseUnifiedItems = GregTechOreDictUtil.reverseUnify(itemComponent);
             if (reverseUnifiedItems.size() > 1) {
-                builder
-                        .setAdditionalInfo("*")
-                        .setAdditionalTooltip(
-                                Tooltip.builder()
-                                        .setFormatting(Tooltip.INFO_FORMATTING)
-                                        .addTextLine(
-                                                Lang.GREGTECH_5_UTIL.trans(
-                                                        "reverseunifieditems"))
-                                        .setFormatting(Tooltip.DEFAULT_FORMATTING)
-                                        .addAllComponents(reverseUnifiedItems)
-                                        .build());
+                builder.setAdditionalInfo("*")
+                        .setAdditionalTooltip(Tooltip.builder()
+                                .setFormatting(Tooltip.INFO_FORMATTING)
+                                .addTextLine(Lang.GREGTECH_5_UTIL.trans("reverseunifieditems"))
+                                .setFormatting(Tooltip.DEFAULT_FORMATTING)
+                                .addAllComponents(reverseUnifiedItems)
+                                .build());
             }
 
             displayComponents.add(builder.build());
@@ -164,12 +154,13 @@ public final class GregTechRecipeUtil {
             }
 
             FluidComponent fluidComponent = FluidComponent.createWithNbt(fluidStack);
-            Component component =
-                    GregTechFluidDictUtil.fluidToDisplayItem(fluidComponent)
-                            .map(Component.class::cast)
-                            .orElse(fluidComponent);
+            Component component = GregTechFluidDictUtil.fluidToDisplayItem(fluidComponent)
+                    .map(Component.class::cast)
+                    .orElse(fluidComponent);
 
-            list.add(DisplayComponent.builder(component).setStackSize(fluidStack.amount).build());
+            list.add(DisplayComponent.builder(component)
+                    .setStackSize(fluidStack.amount)
+                    .build());
         }
 
         return list;
@@ -202,19 +193,14 @@ public final class GregTechRecipeUtil {
                 double normalizedChance = chance / 100d;
                 // Truncate the decimal portion where possible.
                 String formattedChance =
-                        chance % 100 == 0
-                                ? Integer.toString(chance / 100)
-                                : Formatter.formatFloat(normalizedChance);
+                        chance % 100 == 0 ? Integer.toString(chance / 100) : Formatter.formatFloat(normalizedChance);
 
-                tooltips.add(
-                        Tooltip.create(
-                                Lang.GREGTECH_5_UTIL.transf("outputchance", normalizedChance),
-                                Tooltip.INFO_FORMATTING));
+                tooltips.add(Tooltip.create(
+                        Lang.GREGTECH_5_UTIL.transf("outputchance", normalizedChance), Tooltip.INFO_FORMATTING));
                 additionalInfoStrings.add(formattedChance + "%");
             }
 
-            Optional<Tooltip> specialConditionsTooltipOptional =
-                    buildSpecialConditionsTooltip(recipe);
+            Optional<Tooltip> specialConditionsTooltipOptional = buildSpecialConditionsTooltip(recipe);
             if (specialConditionsTooltipOptional.isPresent()) {
                 additionalInfoStrings.add("*");
                 tooltips.add(specialConditionsTooltipOptional.get());
@@ -243,16 +229,14 @@ public final class GregTechRecipeUtil {
             }
 
             FluidComponent fluidComponent = FluidComponent.createWithNbt(fluidStack);
-            Component component =
-                    GregTechFluidDictUtil.fluidToDisplayItem(fluidComponent)
-                            .map(Component.class::cast)
-                            .orElse(fluidComponent);
+            Component component = GregTechFluidDictUtil.fluidToDisplayItem(fluidComponent)
+                    .map(Component.class::cast)
+                    .orElse(fluidComponent);
 
             DisplayComponent.Builder builder =
                     DisplayComponent.builder(component).setStackSize(fluidStack.amount);
 
-            Optional<Tooltip> specialConditionsTooltipOptional =
-                    buildSpecialConditionsTooltip(recipe);
+            Optional<Tooltip> specialConditionsTooltipOptional = buildSpecialConditionsTooltip(recipe);
             if (specialConditionsTooltipOptional.isPresent()) {
                 builder.setAdditionalInfo("*");
                 builder.setAdditionalTooltip(specialConditionsTooltipOptional.get());
@@ -278,8 +262,7 @@ public final class GregTechRecipeUtil {
         boolean requiresCleanroom = requiresCleanroom(recipe);
         boolean requiresLowGravity = requiresLowGravity(recipe);
         if (requiresCleanroom || requiresLowGravity) {
-            Tooltip.Builder tooltipBuilder =
-                    Tooltip.builder().setFormatting(Tooltip.INFO_FORMATTING);
+            Tooltip.Builder tooltipBuilder = Tooltip.builder().setFormatting(Tooltip.INFO_FORMATTING);
             if (requiresCleanroom) {
                 tooltipBuilder.addTextLine(Lang.GREGTECH_5_UTIL.trans("recipecleanroom"));
             }

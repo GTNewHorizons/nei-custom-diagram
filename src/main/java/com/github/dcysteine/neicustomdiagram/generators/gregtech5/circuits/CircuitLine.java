@@ -4,7 +4,6 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -76,10 +75,11 @@ abstract class CircuitLine {
             Preconditions.checkArgument(
                     startTier + circuits.size() <= MAX_TIER + 1,
                     "Too many circuits: (%d + %d) > (%d + 1)",
-                    startTier, circuits.size(), MAX_TIER);
+                    startTier,
+                    circuits.size(),
+                    MAX_TIER);
 
-            return new AutoValue_CircuitLine(
-                    ImmutableList.copyOf(boards), startTier, ImmutableList.copyOf(circuits));
+            return new AutoValue_CircuitLine(ImmutableList.copyOf(boards), startTier, ImmutableList.copyOf(circuits));
         }
     }
 }

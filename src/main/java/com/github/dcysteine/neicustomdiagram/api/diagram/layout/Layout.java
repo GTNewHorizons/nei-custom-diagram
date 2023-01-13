@@ -10,7 +10,6 @@ import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,9 +51,13 @@ public abstract class Layout implements Drawable {
     }
 
     public abstract ImmutableList<Lines> lines();
+
     public abstract ImmutableList<Drawable> labels();
+
     public abstract ImmutableList<Interactable> interactables();
+
     public abstract ImmutableMap<SlotKey, Slot> slots();
+
     public abstract ImmutableMap<SlotGroupKey, SlotGroup> slotGroups();
 
     public Optional<Slot> slot(SlotKey key) {
@@ -106,14 +109,23 @@ public abstract class Layout implements Drawable {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder setLines(Iterable<Lines> lines);
+
         public abstract ImmutableList.Builder<Lines> linesBuilder();
+
         public abstract Builder setLabels(Iterable<? extends Drawable> labels);
+
         public abstract ImmutableList.Builder<Drawable> labelsBuilder();
+
         public abstract Builder setInteractables(Iterable<? extends Interactable> interactables);
+
         public abstract ImmutableList.Builder<Interactable> interactablesBuilder();
+
         public abstract Builder setSlots(Map<SlotKey, Slot> slots);
+
         public abstract ImmutableMap.Builder<SlotKey, Slot> slotsBuilder();
+
         public abstract Builder setSlotGroups(Map<SlotGroupKey, SlotGroup> slotGroups);
+
         public abstract ImmutableMap.Builder<SlotGroupKey, SlotGroup> slotGroupsBuilder();
 
         public Builder addLines(Lines lines) {

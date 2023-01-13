@@ -20,17 +20,14 @@ import gregtech.api.enums.Materials;
 import gregtech.api.items.GT_MetaGenerated_Tool;
 import gregtech.api.objects.ItemData;
 import gregtech.common.items.GT_MetaGenerated_Tool_01;
-import net.minecraft.item.ItemStack;
-
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.item.ItemStack;
 
 public final class GregTechMaterialTools implements DiagramGenerator {
     public static final ItemComponent ICON =
-            ItemComponent.createWithNbt(
-                    GT_MetaGenerated_Tool_01.INSTANCE.getToolWithStats(
-                            GT_MetaGenerated_Tool_01.HARDHAMMER, 1,
-                            Materials.Aluminium, Materials.Wood, null));
+            ItemComponent.createWithNbt(GT_MetaGenerated_Tool_01.INSTANCE.getToolWithStats(
+                    GT_MetaGenerated_Tool_01.HARDHAMMER, 1, Materials.Aluminium, Materials.Wood, null));
 
     private final DiagramGroupInfo info;
 
@@ -41,18 +38,13 @@ public final class GregTechMaterialTools implements DiagramGenerator {
     private ImmutableBiMap<Materials, Diagram> materialsMap;
 
     public GregTechMaterialTools(String groupId) {
-        this.info =
-                DiagramGroupInfo.builder(
-                                Lang.GREGTECH_5_MATERIAL_TOOLS.trans("groupname"),
-                                groupId, ICON, 1)
-                        .setIgnoreNbt(false)
-                        // We'll almost always insert the handle item, so require at least 2
-                        // components to be inserted to be non-empty.
-                        .setEmptyDiagramPredicate(DiagramUtil.buildEmptyDiagramPredicate(2))
-                        .setDescription(
-                                "This diagram displays craftable GregTech tools for each"
-                                        + " GregTech material.")
-                        .build();
+        this.info = DiagramGroupInfo.builder(Lang.GREGTECH_5_MATERIAL_TOOLS.trans("groupname"), groupId, ICON, 1)
+                .setIgnoreNbt(false)
+                // We'll almost always insert the handle item, so require at least 2
+                // components to be inserted to be non-empty.
+                .setEmptyDiagramPredicate(DiagramUtil.buildEmptyDiagramPredicate(2))
+                .setDescription("This diagram displays craftable GregTech tools for each" + " GregTech material.")
+                .build();
 
         this.layoutHandler = new LayoutHandler(this.info);
         this.recipeHandler = new RecipeHandler();
@@ -77,15 +69,15 @@ public final class GregTechMaterialTools implements DiagramGenerator {
         }
         materialsMap = materialsMapBuilder.build();
 
-        return new DiagramGroup(
-                info, new CustomDiagramMatcher(materialsMap.values(), this::getDiagram));
+        return new DiagramGroup(info, new CustomDiagramMatcher(materialsMap.values(), this::getDiagram));
     }
 
     /** Returns either a single-element list, or an empty list. */
     private List<Diagram> getDiagram(Interactable.RecipeType unused, Component component) {
         // Try handling fluids and fluid display stacks by converting into a filled cell.
         component = GregTechFluidDictUtil.fillCell(component)
-                .map(Component.class::cast).orElse(component);
+                .map(Component.class::cast)
+                .orElse(component);
 
         Materials material = null;
 

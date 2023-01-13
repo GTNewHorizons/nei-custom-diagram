@@ -28,17 +28,34 @@ public abstract class EnderStorageFrequency {
 
     /** Ender Storage uses the same colour-integer mapping as wool blocks. */
     public enum Colour {
-        WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME, PINK, GRAY,
-        LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK;
+        WHITE,
+        ORANGE,
+        MAGENTA,
+        LIGHT_BLUE,
+        YELLOW,
+        LIME,
+        PINK,
+        GRAY,
+        LIGHT_GRAY,
+        CYAN,
+        PURPLE,
+        BLUE,
+        BROWN,
+        GREEN,
+        RED,
+        BLACK;
 
         public DisplayComponent icon() {
-            return DisplayComponent.builder(ItemComponent.create(Blocks.wool, this.ordinal()).get())
+            return DisplayComponent.builder(
+                            ItemComponent.create(Blocks.wool, this.ordinal()).get())
                     .build();
         }
     }
 
     public abstract Colour colour1();
+
     public abstract Colour colour2();
+
     public abstract Colour colour3();
 
     public int frequency() {

@@ -9,7 +9,6 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.draw.BoundedDrawable;
 import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
-
 import java.util.function.Consumer;
 
 /** This class is a flexible way to create arbitrary interactables, but requires a lot of setup. */
@@ -41,8 +40,11 @@ public class CustomInteractable implements Interactable {
     protected final Consumer<Point> drawOverlay;
 
     protected CustomInteractable(
-            BoundedDrawable drawable, Tooltip tooltip, Consumer<RecipeType> interact,
-            Consumer<Point> drawBackground, Consumer<Point> drawForeground,
+            BoundedDrawable drawable,
+            Tooltip tooltip,
+            Consumer<RecipeType> interact,
+            Consumer<Point> drawBackground,
+            Consumer<Point> drawForeground,
             Consumer<Point> drawOverlay) {
         this.drawable = drawable;
         this.tooltip = tooltip;
@@ -185,8 +187,7 @@ public class CustomInteractable implements Interactable {
         }
 
         public CustomInteractable build() {
-            return new CustomInteractable(
-                    drawable, tooltip, interact, drawBackground, drawForeground, drawOverlay);
+            return new CustomInteractable(drawable, tooltip, interact, drawBackground, drawForeground, drawOverlay);
         }
     }
 }

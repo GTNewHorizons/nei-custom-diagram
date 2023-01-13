@@ -20,11 +20,10 @@ import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import com.github.dcysteine.neicustomdiagram.util.ComponentTransformer;
 import com.github.dcysteine.neicustomdiagram.util.OreDictUtil;
-import net.minecraft.init.Items;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import net.minecraft.init.Items;
 
 /**
  * Generates diagrams showing Forge ore dictionary data for any item.
@@ -40,16 +39,12 @@ public final class ForgeOreDictionary implements DiagramGenerator {
     private final DiagramGroupInfo info;
 
     public ForgeOreDictionary(String groupId) {
-        this.info =
-                DiagramGroupInfo.builder(
-                                Lang.FORGE_ORE_DICTIONARY.trans("groupname"),
-                                groupId, ICON, 2)
-                        .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
-                        .setDescription(
-                                "This diagram displays Forge ore dictionary prefixes"
-                                        + " and registered items."
-                                        + "\nMostly useful for modpack development.")
-                        .build();
+        this.info = DiagramGroupInfo.builder(Lang.FORGE_ORE_DICTIONARY.trans("groupname"), groupId, ICON, 2)
+                .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
+                .setDescription("This diagram displays Forge ore dictionary prefixes"
+                        + " and registered items."
+                        + "\nMostly useful for modpack development.")
+                .build();
     }
 
     @Override
@@ -59,12 +54,10 @@ public final class ForgeOreDictionary implements DiagramGenerator {
 
     @Override
     public DiagramGroup generate() {
-        return new DiagramGroup(
-                info, new CustomDiagramMatcher(ForgeOreDictionary::generateDiagrams));
+        return new DiagramGroup(info, new CustomDiagramMatcher(ForgeOreDictionary::generateDiagrams));
     }
 
-    private static Collection<Diagram> generateDiagrams(
-            Interactable.RecipeType recipeType, Component component) {
+    private static Collection<Diagram> generateDiagrams(Interactable.RecipeType recipeType, Component component) {
         return OreDictUtil.getOreNames(component).stream()
                 .map(ForgeOreDictionary::generateDiagram)
                 .collect(Collectors.toList());
@@ -72,32 +65,25 @@ public final class ForgeOreDictionary implements DiagramGenerator {
 
     private static Diagram generateDiagram(String oreName) {
         List<ItemComponent> components = OreDictUtil.getComponents(oreName);
-        List<List<DisplayComponent>> displayComponentPermutations =
-                components.stream()
-                        .map(OreDictUtil::getPermutations)
-                        .map(ComponentTransformer::transformToDisplay)
-                        .collect(Collectors.toList());
+        List<List<DisplayComponent>> displayComponentPermutations = components.stream()
+                .map(OreDictUtil::getPermutations)
+                .map(ComponentTransformer::transformToDisplay)
+                .collect(Collectors.toList());
 
         Diagram.Builder builder = Diagram.builder().addLayout(buildLayout(oreName));
-        builder.autoInsertIntoSlotGroup(SLOT_GROUP_KEY)
-                .insertEachGroupSafe(displayComponentPermutations);
+        builder.autoInsertIntoSlotGroup(SLOT_GROUP_KEY).insertEachGroupSafe(displayComponentPermutations);
 
         return builder.build();
     }
 
     private static Layout buildLayout(String oreName) {
         boolean small = GuiDraw.getStringWidth(oreName) > Grid.TOTAL_WIDTH - 4;
-        Text oreNameText =
-                Text.builder(oreName, Grid.GRID.grid(6, 0), Grid.Direction.N)
-                        .setSmall(small)
-                        .build();
-        Interactable oreNameLabel =
-                CustomInteractable.builder(oreNameText)
-                        .setTooltip(
-                                Tooltip.create(
-                                        Lang.FORGE_ORE_DICTIONARY.trans("orenamelabel"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        Text oreNameText = Text.builder(oreName, Grid.GRID.grid(6, 0), Grid.Direction.N)
+                .setSmall(small)
+                .build();
+        Interactable oreNameLabel = CustomInteractable.builder(oreNameText)
+                .setTooltip(Tooltip.create(Lang.FORGE_ORE_DICTIONARY.trans("orenamelabel"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .addInteractable(oreNameLabel)

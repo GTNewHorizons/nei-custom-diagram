@@ -19,16 +19,14 @@ import com.google.common.collect.Lists;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.objects.ItemData;
-import net.minecraft.init.Items;
-
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.init.Items;
 
 /** Generates part diagrams for GregTech materials. */
 public final class GregTechMaterialParts implements DiagramGenerator {
-    public static final ItemComponent ICON =
-            GregTechOreDictUtil.getComponent(OrePrefixes.gearGt, Materials.Aluminium)
-                    .orElse(ItemComponent.create(Items.iron_ingot, 0));
+    public static final ItemComponent ICON = GregTechOreDictUtil.getComponent(OrePrefixes.gearGt, Materials.Aluminium)
+            .orElse(ItemComponent.create(Items.iron_ingot, 0));
 
     private final DiagramGroupInfo info;
 
@@ -40,22 +38,17 @@ public final class GregTechMaterialParts implements DiagramGenerator {
     private ImmutableBiMap<Materials, Diagram> materialsMap;
 
     public GregTechMaterialParts(String groupId) {
-        this.info =
-                DiagramGroupInfo.builder(
-                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("groupname"),
-                                groupId, ICON, 1)
-                        // No point in showing the diagram for a single item. So require at least 2.
-                        .setEmptyDiagramPredicate(DiagramUtil.buildEmptyDiagramPredicate(2))
-                        .setDescription(
-                                "This diagram displays GregTech crafting items for each"
-                                        + " GregTech material.")
-                        .build();
+        this.info = DiagramGroupInfo.builder(Lang.GREGTECH_5_MATERIAL_PARTS.trans("groupname"), groupId, ICON, 1)
+                // No point in showing the diagram for a single item. So require at least 2.
+                .setEmptyDiagramPredicate(DiagramUtil.buildEmptyDiagramPredicate(2))
+                .setDescription("This diagram displays GregTech crafting items for each" + " GregTech material.")
+                .build();
 
         this.layoutHandler = new LayoutHandler(this.info);
         this.heatingCoilHandler = new HeatingCoilHandler();
         this.relatedMaterialsHandler = new RelatedMaterialsHandler();
-        this.diagramFactory = new DiagramFactory(
-                this.layoutHandler, this.heatingCoilHandler, this.relatedMaterialsHandler);
+        this.diagramFactory =
+                new DiagramFactory(this.layoutHandler, this.heatingCoilHandler, this.relatedMaterialsHandler);
 
         this.materialsMap = null;
     }
@@ -78,15 +71,15 @@ public final class GregTechMaterialParts implements DiagramGenerator {
         }
         materialsMap = materialsMapBuilder.build();
 
-        return new DiagramGroup(
-                info, new CustomDiagramMatcher(materialsMap.values(), this::getDiagram));
+        return new DiagramGroup(info, new CustomDiagramMatcher(materialsMap.values(), this::getDiagram));
     }
 
     /** Returns either a single-element list, or an empty list. */
     private List<Diagram> getDiagram(Interactable.RecipeType unused, Component component) {
         // Try handling fluids and fluid display stacks by converting into a filled cell.
         component = GregTechFluidDictUtil.fillCell(component)
-                .map(Component.class::cast).orElse(component);
+                .map(Component.class::cast)
+                .orElse(component);
 
         Optional<ItemData> itemDataOptional = GregTechOreDictUtil.getItemData(component);
         if (itemDataOptional.isPresent() && itemDataOptional.get().mMaterial != null) {

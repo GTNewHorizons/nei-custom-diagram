@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
-
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -44,47 +43,26 @@ public enum Registry {
 
         // Add your diagram generator here!
         entriesBuilder.add(RegistryEntry.create("debug.ruler", DebugRuler::new));
-        entriesBuilder.add(
-                RegistryEntry.create(
-                        "enderstorage.chestoverview", EnderStorageChestOverview::new,
-                        ModDependency.ENDER_STORAGE));
-        entriesBuilder.add(
-                RegistryEntry.create(
-                        "enderstorage.tankoverview", EnderStorageTankOverview::new,
-                        ModDependency.ENDER_STORAGE));
-        entriesBuilder.add(
-                RegistryEntry.create("forge.fluidcontainers", ForgeFluidContainers::new));
+        entriesBuilder.add(RegistryEntry.create(
+                "enderstorage.chestoverview", EnderStorageChestOverview::new, ModDependency.ENDER_STORAGE));
+        entriesBuilder.add(RegistryEntry.create(
+                "enderstorage.tankoverview", EnderStorageTankOverview::new, ModDependency.ENDER_STORAGE));
+        entriesBuilder.add(RegistryEntry.create("forge.fluidcontainers", ForgeFluidContainers::new));
         entriesBuilder.add(RegistryEntry.create("forge.oredictionary", ForgeOreDictionary::new));
+        entriesBuilder.add(RegistryEntry.create("gregtech.circuits", GregTechCircuits::new, ModDependency.GREGTECH_5));
+        entriesBuilder.add(RegistryEntry.create("gregtech.lenses", GregTechLenses::new, ModDependency.GREGTECH_5));
         entriesBuilder.add(
-                RegistryEntry.create(
-                        "gregtech.circuits", GregTechCircuits::new, ModDependency.GREGTECH_5));
+                RegistryEntry.create("gregtech.materialparts", GregTechMaterialParts::new, ModDependency.GREGTECH_5));
         entriesBuilder.add(
-                RegistryEntry.create(
-                        "gregtech.lenses", GregTechLenses::new, ModDependency.GREGTECH_5));
+                RegistryEntry.create("gregtech.materialtools", GregTechMaterialTools::new, ModDependency.GREGTECH_5));
         entriesBuilder.add(
-                RegistryEntry.create(
-                        "gregtech.materialparts", GregTechMaterialParts::new,
-                        ModDependency.GREGTECH_5));
+                RegistryEntry.create("gregtech.oredictionary", GregTechOreDictionary::new, ModDependency.GREGTECH_5));
         entriesBuilder.add(
-                RegistryEntry.create(
-                        "gregtech.materialtools", GregTechMaterialTools::new,
-                        ModDependency.GREGTECH_5));
+                RegistryEntry.create("gregtech.oreprefixes", GregTechOrePrefixes::new, ModDependency.GREGTECH_5));
         entriesBuilder.add(
-                RegistryEntry.create(
-                        "gregtech.oredictionary", GregTechOreDictionary::new,
-                        ModDependency.GREGTECH_5));
+                RegistryEntry.create("gregtech.oreprocessing", GregTechOreProcessing::new, ModDependency.GREGTECH_5));
         entriesBuilder.add(
-                RegistryEntry.create(
-                        "gregtech.oreprefixes", GregTechOrePrefixes::new,
-                        ModDependency.GREGTECH_5));
-        entriesBuilder.add(
-                RegistryEntry.create(
-                        "gregtech.oreprocessing", GregTechOreProcessing::new,
-                        ModDependency.GREGTECH_5));
-        entriesBuilder.add(
-                RegistryEntry.create(
-                        "gregtech.recipedebugger", GregTechRecipeDebugger::new,
-                        ModDependency.GREGTECH_5));
+                RegistryEntry.create("gregtech.recipedebugger", GregTechRecipeDebugger::new, ModDependency.GREGTECH_5));
 
         entries = entriesBuilder.build();
     }
@@ -147,15 +125,17 @@ public enum Registry {
     @AutoValue
     protected abstract static class RegistryEntry {
         protected static RegistryEntry create(
-                String groupIdSuffix, Function<String, DiagramGenerator> generatorConstructor,
+                String groupIdSuffix,
+                Function<String, DiagramGenerator> generatorConstructor,
                 ModDependency... hardDependencies) {
             return new AutoValue_Registry_RegistryEntry(
-                    GROUP_ID_PREFIX + groupIdSuffix, generatorConstructor,
-                    ImmutableSet.copyOf(hardDependencies));
+                    GROUP_ID_PREFIX + groupIdSuffix, generatorConstructor, ImmutableSet.copyOf(hardDependencies));
         }
 
         protected abstract String groupId();
+
         protected abstract Function<String, DiagramGenerator> generatorConstructor();
+
         protected abstract ImmutableSet<ModDependency> hardDependencies();
 
         protected DiagramGenerator get() {
@@ -183,9 +163,7 @@ public enum Registry {
         for (RegistryEntry entry : entries) {
             List<ModDependency> missingDependencies = entry.missingDependencies();
             if (!missingDependencies.isEmpty()) {
-                Logger.MOD.warn(
-                        "Diagram group [{}] is missing dependencies: {}",
-                        entry.groupId(), missingDependencies);
+                Logger.MOD.warn("Diagram group [{}] is missing dependencies: {}", entry.groupId(), missingDependencies);
                 continue;
             }
             if (hardDisabledDiagramGroups.contains(entry.groupId())) {

@@ -17,25 +17,21 @@ public final class GregTechDiagramUtil {
     private GregTechDiagramUtil() {}
 
     public static Interactable buildMaterialInfoButton(Point pos, Materials material) {
-        Tooltip.Builder tooltipBuilder =
-                Tooltip.builder()
-                        .addTextLine(GregTechFormatting.getMaterialDescription(material))
-                        .setFormatting(Tooltip.INFO_FORMATTING)
-                        .addTextLine(material.mChemicalFormula);
+        Tooltip.Builder tooltipBuilder = Tooltip.builder()
+                .addTextLine(GregTechFormatting.getMaterialDescription(material))
+                .setFormatting(Tooltip.INFO_FORMATTING)
+                .addTextLine(material.mChemicalFormula);
 
         if (material.isRadioactive() || material.mHeatDamage != 0) {
             tooltipBuilder.addSpacing().setFormatting(Tooltip.URGENT_FORMATTING);
 
             if (material.isRadioactive()) {
-                tooltipBuilder.addTextLine(
-                        Lang.GREGTECH_5_UTIL.trans("materialinforadioactive"));
+                tooltipBuilder.addTextLine(Lang.GREGTECH_5_UTIL.trans("materialinforadioactive"));
             }
             if (material.mHeatDamage > 0) {
-                tooltipBuilder.addTextLine(
-                        Lang.GREGTECH_5_UTIL.trans("materialinfohot"));
+                tooltipBuilder.addTextLine(Lang.GREGTECH_5_UTIL.trans("materialinfohot"));
             } else if (material.mHeatDamage < 0) {
-                tooltipBuilder.addTextLine(
-                        Lang.GREGTECH_5_UTIL.trans("materialinfocold"));
+                tooltipBuilder.addTextLine(Lang.GREGTECH_5_UTIL.trans("materialinfocold"));
             }
         }
 

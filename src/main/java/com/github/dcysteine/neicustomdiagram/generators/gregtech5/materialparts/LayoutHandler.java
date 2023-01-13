@@ -20,6 +20,7 @@ class LayoutHandler {
         static final Layout.SlotKey GEM = Layout.SlotKey.create("gem");
         static final Layout.SlotKey LENS = Layout.SlotKey.create("lens");
 
+        static final Layout.SlotKey NANITES = Layout.SlotKey.create("nanites");
         static final Layout.SlotKey HOT_INGOT = Layout.SlotKey.create("hot-ingot");
         static final Layout.SlotKey ALLOY_PLATE = Layout.SlotKey.create("alloy-plate");
 
@@ -34,14 +35,11 @@ class LayoutHandler {
     }
 
     static final class SlotGroupKeys {
-        static final Layout.SlotGroupKey RELATED_MATERIALS =
-                Layout.SlotGroupKey.create("related-materials");
+        static final Layout.SlotGroupKey RELATED_MATERIALS = Layout.SlotGroupKey.create("related-materials");
 
         static final Layout.SlotGroupKey FLUIDS = Layout.SlotGroupKey.create("fluids");
-        static final Layout.SlotGroupKey HYDRO_CRACKED_FLUIDS =
-                Layout.SlotGroupKey.create("hydro-cracked-fluids");
-        static final Layout.SlotGroupKey STEAM_CRACKED_FLUIDS =
-                Layout.SlotGroupKey.create("steam-cracked-fluids");
+        static final Layout.SlotGroupKey HYDRO_CRACKED_FLUIDS = Layout.SlotGroupKey.create("hydro-cracked-fluids");
+        static final Layout.SlotGroupKey STEAM_CRACKED_FLUIDS = Layout.SlotGroupKey.create("steam-cracked-fluids");
 
         static final Layout.SlotGroupKey GEMS = Layout.SlotGroupKey.create("gems");
 
@@ -61,8 +59,7 @@ class LayoutHandler {
         static final Layout.SlotGroupKey WIRES = Layout.SlotGroupKey.create("wires");
         static final Layout.SlotGroupKey CABLES = Layout.SlotGroupKey.create("cables");
         static final Layout.SlotGroupKey PIPES = Layout.SlotGroupKey.create("pipes");
-        static final Layout.SlotGroupKey SPECIAL_PIPES =
-                Layout.SlotGroupKey.create("special-pipes");
+        static final Layout.SlotGroupKey SPECIAL_PIPES = Layout.SlotGroupKey.create("special-pipes");
     }
 
     private final DiagramGroupInfo info;
@@ -87,6 +84,7 @@ class LayoutHandler {
         optionalLayoutsBuilder.add(buildGemsLayout());
         optionalLayoutsBuilder.add(buildGemLayout());
         optionalLayoutsBuilder.add(buildLensLayout());
+        optionalLayoutsBuilder.add(buildNanitesLayout());
         optionalLayoutsBuilder.add(buildDustsLayout());
         optionalLayoutsBuilder.add(buildHotIngotLayout());
         optionalLayoutsBuilder.add(buildIngotsLayout());
@@ -131,11 +129,9 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.RELATED_MATERIALS,
                         SlotGroup.builder(3, 1, Grid.GRID.grid(12, 0), Grid.Direction.W)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans(
-                                                        "relatedmaterialsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("relatedmaterialsslot"),
+                                        Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -145,59 +141,49 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.FLUIDS,
                         SlotGroup.builder(2, 2, Grid.GRID.grid(1, 3), Grid.Direction.C)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
 
     private Layout buildCrackedFluidsLayout() {
         return Layout.builder()
-                .addLines(
-                        Lines.builder(Grid.GRID.grid(1, 3))
-                                .addSegment(Grid.GRID.grid(3, 3))
-                                .addSegment(Grid.GRID.grid(3, 2))
-                                .addArrow(Grid.GRID.edge(4, 2, Grid.Direction.W))
-                                .move(Grid.GRID.grid(3, 3))
-                                .addSegment(Grid.GRID.grid(3, 4))
-                                .addArrow(Grid.GRID.edge(4, 4, Grid.Direction.W))
-                                .build())
+                .addLines(Lines.builder(Grid.GRID.grid(1, 3))
+                        .addSegment(Grid.GRID.grid(3, 3))
+                        .addSegment(Grid.GRID.grid(3, 2))
+                        .addArrow(Grid.GRID.edge(4, 2, Grid.Direction.W))
+                        .move(Grid.GRID.grid(3, 3))
+                        .addSegment(Grid.GRID.grid(3, 4))
+                        .addArrow(Grid.GRID.edge(4, 4, Grid.Direction.W))
+                        .build())
                 .putSlotGroup(
                         SlotGroupKeys.HYDRO_CRACKED_FLUIDS,
                         SlotGroup.builder(3, 1, Grid.GRID.grid(4, 2), Grid.Direction.E)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans(
-                                                        "hydrocrackedfluidsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("hydrocrackedfluidsslot"),
+                                        Tooltip.SLOT_FORMATTING))
                                 .build())
                 .putSlotGroup(
                         SlotGroupKeys.STEAM_CRACKED_FLUIDS,
                         SlotGroup.builder(3, 1, Grid.GRID.grid(4, 4), Grid.Direction.E)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans(
-                                                        "steamcrackedfluidsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("steamcrackedfluidsslot"),
+                                        Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
 
     private Layout buildGemsLayout() {
         return Layout.builder()
-                .addLines(
-                        Lines.builder(Grid.GRID.grid(10, 4))
-                                .addSegment(Grid.GRID.grid(10, 6))
-                                .build())
+                .addLines(Lines.builder(Grid.GRID.grid(10, 4))
+                        .addSegment(Grid.GRID.grid(10, 6))
+                        .build())
                 .putSlotGroup(
                         SlotGroupKeys.GEMS,
                         SlotGroup.builder(2, 2, Grid.GRID.grid(10, 2), Grid.Direction.SE)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("gemsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("gemsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -207,10 +193,8 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.GEM,
                         Slot.builder(Grid.GRID.grid(10, 6))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("gemslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("gemslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -220,10 +204,19 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.LENS,
                         Slot.builder(Grid.GRID.grid(12, 6))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("lensslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("lensslot"), Tooltip.SLOT_FORMATTING))
+                                .build())
+                .build();
+    }
+
+    private Layout buildNanitesLayout() {
+        return Layout.builder()
+                .putSlot(
+                        SlotKeys.NANITES,
+                        Slot.builder(Grid.GRID.grid(0, 6))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("nanitesslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -233,28 +226,22 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.DUSTS,
                         SlotGroup.builder(1, 3, Grid.GRID.grid(0, 8), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("dustsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("dustsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
 
     private Layout buildHotIngotLayout() {
         return Layout.builder()
-                .addLines(
-                        Lines.builder(Grid.GRID.grid(2, 6))
-                                .addArrow(Grid.GRID.edge(2, 8, Grid.Direction.N))
-                                .build())
+                .addLines(Lines.builder(Grid.GRID.grid(2, 6))
+                        .addArrow(Grid.GRID.edge(2, 8, Grid.Direction.N))
+                        .build())
                 .putSlot(
                         SlotKeys.HOT_INGOT,
                         Slot.builder(Grid.GRID.grid(2, 6))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans(
-                                                        "hotingotslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("hotingotslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -264,28 +251,23 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.INGOTS,
                         SlotGroup.builder(1, 3, Grid.GRID.grid(2, 8), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("ingotsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("ingotsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
 
     private Layout buildMultiIngotsLayout() {
         return Layout.builder()
-                .addLines(
-                        Lines.builder(Grid.GRID.grid(2, 8))
-                                .addArrow(Grid.GRID.edge(4, 8, Grid.Direction.W))
-                                .build())
+                .addLines(Lines.builder(Grid.GRID.grid(2, 8))
+                        .addArrow(Grid.GRID.edge(4, 8, Grid.Direction.W))
+                        .build())
                 .putSlotGroup(
                         SlotGroupKeys.MULTI_INGOTS,
                         SlotGroup.builder(2, 2, Grid.GRID.grid(4, 8), Grid.Direction.SE)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans(
-                                                        "multiingotsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("multiingotsslot"),
+                                        Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -295,11 +277,9 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.ALLOY_PLATE,
                         Slot.builder(Grid.GRID.grid(8, 6))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans(
-                                                        "alloyplateslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("alloyplateslot"),
+                                        Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -309,28 +289,23 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.PLATES,
                         SlotGroup.builder(1, 3, Grid.GRID.grid(8, 8), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("platesslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("platesslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
 
     private Layout buildMultiPlatesLayout() {
         return Layout.builder()
-                .addLines(
-                        Lines.builder(Grid.GRID.grid(8, 8))
-                                .addArrow(Grid.GRID.edge(10, 8, Grid.Direction.W))
-                                .build())
+                .addLines(Lines.builder(Grid.GRID.grid(8, 8))
+                        .addArrow(Grid.GRID.edge(10, 8, Grid.Direction.W))
+                        .build())
                 .putSlotGroup(
                         SlotGroupKeys.MULTI_PLATES,
                         SlotGroup.builder(2, 2, Grid.GRID.grid(10, 8), Grid.Direction.SE)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans(
-                                                        "multiplatesslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("multiplatesslot"),
+                                        Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -340,10 +315,8 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.RODS,
                         SlotGroup.builder(1, 2, Grid.GRID.grid(0, 14), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("rodsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("rodsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -353,10 +326,8 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.BOLTS,
                         SlotGroup.builder(1, 2, Grid.GRID.grid(2, 14), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("boltsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("boltsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -366,10 +337,8 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.RING,
                         Slot.builder(Grid.GRID.grid(4, 14))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("ringslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("ringslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -379,10 +348,8 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.ROUND,
                         Slot.builder(Grid.GRID.grid(4, 16))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("roundslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("roundslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -392,10 +359,8 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.SPRINGS,
                         SlotGroup.builder(1, 2, Grid.GRID.grid(6, 14), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("springsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("springsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -405,10 +370,8 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.GEARS,
                         SlotGroup.builder(1, 2, Grid.GRID.grid(8, 14), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("gearsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("gearsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -418,10 +381,8 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.ROTOR,
                         Slot.builder(Grid.GRID.grid(10, 14))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("rotorslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("rotorslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -431,10 +392,8 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.CASING,
                         Slot.builder(Grid.GRID.grid(10, 16))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("casingslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("casingslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -444,10 +403,8 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.BARS,
                         Slot.builder(Grid.GRID.grid(12, 14))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("barsslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("barsslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -457,11 +414,8 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.FRAME_BOX,
                         Slot.builder(Grid.GRID.grid(12, 16))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans(
-                                                        "frameboxslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("frameboxslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -471,10 +425,8 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.WIRES,
                         SlotGroup.builder(3, 2, Grid.GRID.grid(2, 20), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("wiresslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("wiresslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -484,28 +436,22 @@ class LayoutHandler {
                 .putSlot(
                         SlotKeys.FINE_WIRE,
                         Slot.builder(Grid.GRID.grid(2, 18))
-                                .setTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans(
-                                                        "finewireslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("finewireslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
 
     private Layout buildCablesLayout() {
         return Layout.builder()
-                .addLines(
-                        Lines.builder(Grid.GRID.grid(2, 22))
-                                .addArrow(Grid.GRID.edge(2, 24, Grid.Direction.N))
-                                .build())
+                .addLines(Lines.builder(Grid.GRID.grid(2, 22))
+                        .addArrow(Grid.GRID.edge(2, 24, Grid.Direction.N))
+                        .build())
                 .putSlotGroup(
                         SlotGroupKeys.CABLES,
                         SlotGroup.builder(3, 2, Grid.GRID.grid(2, 24), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("cablesslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("cablesslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
@@ -515,28 +461,23 @@ class LayoutHandler {
                 .putSlotGroup(
                         SlotGroupKeys.PIPES,
                         SlotGroup.builder(3, 2, Grid.GRID.grid(10, 20), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("pipesslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("pipesslot"), Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
 
     private Layout buildSpecialPipesLayout() {
         return Layout.builder()
-                .addLines(
-                        Lines.builder(Grid.GRID.grid(10, 22))
-                                .addArrow(Grid.GRID.edge(10, 24, Grid.Direction.N))
-                                .build())
+                .addLines(Lines.builder(Grid.GRID.grid(10, 22))
+                        .addArrow(Grid.GRID.edge(10, 24, Grid.Direction.N))
+                        .build())
                 .putSlotGroup(
                         SlotGroupKeys.SPECIAL_PIPES,
                         SlotGroup.builder(3, 2, Grid.GRID.grid(10, 24), Grid.Direction.S)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans(
-                                                        "specialpipesslot"),
-                                                Tooltip.SLOT_FORMATTING))
+                                .setDefaultTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("specialpipesslot"),
+                                        Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }

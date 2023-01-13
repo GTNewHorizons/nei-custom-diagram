@@ -20,28 +20,21 @@ class LayoutHandler {
     }
 
     static final class SlotGroupKeys {
-        static final Layout.SlotGroupKey RAW_ORE_MACERATE =
-                Layout.SlotGroupKey.create("raw-ore-macerate");
-        static final Layout.SlotGroupKey CRUSHED_ORE_MACERATE =
-                Layout.SlotGroupKey.create("crushed-ore-macerate");
-        static final Layout.SlotGroupKey CRUSHED_ORE_WASH =
-                Layout.SlotGroupKey.create("crushed-ore-wash");
+        static final Layout.SlotGroupKey RAW_ORE_MACERATE = Layout.SlotGroupKey.create("raw-ore-macerate");
+        static final Layout.SlotGroupKey CRUSHED_ORE_MACERATE = Layout.SlotGroupKey.create("crushed-ore-macerate");
+        static final Layout.SlotGroupKey CRUSHED_ORE_WASH = Layout.SlotGroupKey.create("crushed-ore-wash");
         static final Layout.SlotGroupKey CRUSHED_ORE_BATH_MERCURY =
                 Layout.SlotGroupKey.create("crushed-ore-bath-mercury");
         static final Layout.SlotGroupKey CRUSHED_ORE_BATH_SODIUM_PERSULFATE =
                 Layout.SlotGroupKey.create("crushed-ore-bath-sodium-persulfate");
-        static final Layout.SlotGroupKey PURIFIED_ORE_MACERATE =
-                Layout.SlotGroupKey.create("purified-ore-macerate");
-        static final Layout.SlotGroupKey PURIFIED_ORE_SIFT =
-                Layout.SlotGroupKey.create("purified-ore-sift");
-        static final Layout.SlotGroupKey IMPURE_DUST_CENTRIFUGE =
-                Layout.SlotGroupKey.create("impure-dust-centrifuge");
+        static final Layout.SlotGroupKey PURIFIED_ORE_MACERATE = Layout.SlotGroupKey.create("purified-ore-macerate");
+        static final Layout.SlotGroupKey PURIFIED_ORE_SIFT = Layout.SlotGroupKey.create("purified-ore-sift");
+        static final Layout.SlotGroupKey IMPURE_DUST_CENTRIFUGE = Layout.SlotGroupKey.create("impure-dust-centrifuge");
         static final Layout.SlotGroupKey PURIFIED_DUST_CENTRIFUGE =
                 Layout.SlotGroupKey.create("purified-dust-centrifuge");
         static final Layout.SlotGroupKey PURIFIED_DUST_ELECTROMAGNETIC_SEPARATE =
                 Layout.SlotGroupKey.create("purified-dust-electromagnetic-separate");
-        static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE =
-                Layout.SlotGroupKey.create("ore-thermal-centrifuge");
+        static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE = Layout.SlotGroupKey.create("ore-thermal-centrifuge");
         static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE_MACERATE =
                 Layout.SlotGroupKey.create("ore-thermal-centrifuge-macerate");
         static final Layout.SlotGroupKey ADDITIONAL_RECIPE_OUTPUTS =
@@ -92,14 +85,10 @@ class LayoutHandler {
     }
 
     private Layout buildRawOreLayout() {
-        Slot inputSlot =
-                Slot.builder(Grid.GRID.grid(6, 4))
-                        .setDrawFunction(Draw::drawBigSlot)
-                        .setTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("oreslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        Slot inputSlot = Slot.builder(Grid.GRID.grid(6, 4))
+                .setDrawFunction(Draw::drawBigSlot)
+                .setTooltip(Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("oreslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         AllDiagramsButton allDiagramsButton = new AllDiagramsButton(info, Grid.GRID.grid(0, 0));
 
@@ -110,22 +99,17 @@ class LayoutHandler {
     }
 
     private Layout buildRawOreMacerateLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(6, 4))
-                        .addSegment(Grid.GRID.grid(4, 4))
-                        .addArrow(Grid.GRID.edge(4, 10, Grid.Direction.N))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(6, 4))
+                .addSegment(Grid.GRID.grid(4, 4))
+                .addArrow(Grid.GRID.edge(4, 10, Grid.Direction.N))
+                .build();
 
-        CustomInteractable label =
-                labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(4, 8));
+        CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(4, 8));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(1, 2, Grid.GRID.grid(4, 10), Grid.Direction.S)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("maceratorslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        SlotGroup outputSlots = SlotGroup.builder(1, 2, Grid.GRID.grid(4, 10), Grid.Direction.S)
+                .setDefaultTooltip(
+                        Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("maceratorslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -135,22 +119,17 @@ class LayoutHandler {
     }
 
     private Layout buildCrushedOreMacerateLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(4, 10))
-                        .addSegment(Grid.GRID.grid(2, 10))
-                        .addArrow(Grid.GRID.edge(2, 14, Grid.Direction.N))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(4, 10))
+                .addSegment(Grid.GRID.grid(2, 10))
+                .addArrow(Grid.GRID.edge(2, 14, Grid.Direction.N))
+                .build();
 
-        CustomInteractable label =
-                labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(2, 12));
+        CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(2, 12));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(1, 2, Grid.GRID.grid(2, 14), Grid.Direction.S)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("maceratorslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        SlotGroup outputSlots = SlotGroup.builder(1, 2, Grid.GRID.grid(2, 14), Grid.Direction.S)
+                .setDefaultTooltip(
+                        Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("maceratorslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -160,25 +139,20 @@ class LayoutHandler {
     }
 
     private Layout buildCrushedOreWashLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(4, 10))
-                        .addSegment(Grid.GRID.grid(5, 10))
-                        .addSegment(Grid.GRID.grid(5, 8))
-                        .addSegment(Grid.GRID.grid(8, 8))
-                        .addArrow(Grid.GRID.edge(8, 10, Grid.Direction.N))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(4, 10))
+                .addSegment(Grid.GRID.grid(5, 10))
+                .addSegment(Grid.GRID.grid(5, 8))
+                .addSegment(Grid.GRID.grid(8, 8))
+                .addArrow(Grid.GRID.edge(8, 10, Grid.Direction.N))
+                .build();
 
         CustomInteractable label =
-                labelHandler.buildLabel(
-                        LabelHandler.ItemLabel.ORE_WASHING_PLANT, Grid.GRID.grid(8, 8));
+                labelHandler.buildLabel(LabelHandler.ItemLabel.ORE_WASHING_PLANT, Grid.GRID.grid(8, 8));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(1, 2, Grid.GRID.grid(8, 10), Grid.Direction.S)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("orewashingplantslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        SlotGroup outputSlots = SlotGroup.builder(1, 2, Grid.GRID.grid(8, 10), Grid.Direction.S)
+                .setDefaultTooltip(Tooltip.create(
+                        Lang.GREGTECH_5_ORE_PROCESSING.trans("orewashingplantslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -188,32 +162,25 @@ class LayoutHandler {
     }
 
     private Layout buildCrushedOreBathMercuryLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(4, 10))
-                        .addSegment(Grid.GRID.grid(0, 10))
-                        .addArrow(Grid.GRID.edge(0, 6, Grid.Direction.S))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(4, 10))
+                .addSegment(Grid.GRID.grid(0, 10))
+                .addArrow(Grid.GRID.edge(0, 6, Grid.Direction.S))
+                .build();
 
-        CustomInteractable label =
-                labelHandler.buildLabel(
-                        LabelHandler.ItemLabel.CHEMICAL_BATH, Grid.GRID.grid(0, 8));
+        CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.CHEMICAL_BATH, Grid.GRID.grid(0, 8));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(1, 3, Grid.GRID.grid(0, 6), Grid.Direction.N)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("chemicalbathslot"),
+        SlotGroup outputSlots = SlotGroup.builder(1, 3, Grid.GRID.grid(0, 6), Grid.Direction.N)
+                .setDefaultTooltip(Tooltip.create(
+                        Lang.GREGTECH_5_ORE_PROCESSING.trans("chemicalbathslot"), Tooltip.SLOT_FORMATTING))
+                .setSlot(
+                        0,
+                        0,
+                        SlotGroup.slotBuilder()
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("chemicalbathfluidslot"),
                                         Tooltip.SLOT_FORMATTING))
-                        .setSlot(
-                                0, 0,
-                                SlotGroup.slotBuilder()
-                                        .setTooltip(
-                                                Tooltip.create(
-                                                        Lang.GREGTECH_5_ORE_PROCESSING.trans(
-                                                                "chemicalbathfluidslot"),
-                                                        Tooltip.SLOT_FORMATTING))
-                                        .build())
-                        .build();
+                                .build())
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -223,32 +190,25 @@ class LayoutHandler {
     }
 
     private Layout buildCrushedOreBathSodiumPersulfateLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(4, 10))
-                        .addSegment(Grid.GRID.grid(2, 10))
-                        .addArrow(Grid.GRID.edge(2, 6, Grid.Direction.S))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(4, 10))
+                .addSegment(Grid.GRID.grid(2, 10))
+                .addArrow(Grid.GRID.edge(2, 6, Grid.Direction.S))
+                .build();
 
-        CustomInteractable label =
-                labelHandler.buildLabel(
-                        LabelHandler.ItemLabel.CHEMICAL_BATH, Grid.GRID.grid(2, 8));
+        CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.CHEMICAL_BATH, Grid.GRID.grid(2, 8));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(1, 3, Grid.GRID.grid(2, 6), Grid.Direction.N)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("chemicalbathslot"),
+        SlotGroup outputSlots = SlotGroup.builder(1, 3, Grid.GRID.grid(2, 6), Grid.Direction.N)
+                .setDefaultTooltip(Tooltip.create(
+                        Lang.GREGTECH_5_ORE_PROCESSING.trans("chemicalbathslot"), Tooltip.SLOT_FORMATTING))
+                .setSlot(
+                        0,
+                        0,
+                        SlotGroup.slotBuilder()
+                                .setTooltip(Tooltip.create(
+                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("chemicalbathfluidslot"),
                                         Tooltip.SLOT_FORMATTING))
-                        .setSlot(
-                                0, 0,
-                                SlotGroup.slotBuilder()
-                                        .setTooltip(
-                                                Tooltip.create(
-                                                        Lang.GREGTECH_5_ORE_PROCESSING.trans(
-                                                                "chemicalbathfluidslot"),
-                                                        Tooltip.SLOT_FORMATTING))
-                                        .build())
-                        .build();
+                                .build())
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -258,22 +218,17 @@ class LayoutHandler {
     }
 
     private Layout buildPurifiedOreMacerateLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(8, 10))
-                        .addSegment(Grid.GRID.grid(10, 10))
-                        .addArrow(Grid.GRID.edge(10, 14, Grid.Direction.N))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(8, 10))
+                .addSegment(Grid.GRID.grid(10, 10))
+                .addArrow(Grid.GRID.edge(10, 14, Grid.Direction.N))
+                .build();
 
-        CustomInteractable label =
-                labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(10, 12));
+        CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(10, 12));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(1, 2, Grid.GRID.grid(10, 14), Grid.Direction.S)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("maceratorslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        SlotGroup outputSlots = SlotGroup.builder(1, 2, Grid.GRID.grid(10, 14), Grid.Direction.S)
+                .setDefaultTooltip(
+                        Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("maceratorslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -283,22 +238,17 @@ class LayoutHandler {
     }
 
     private Layout buildPurifiedOreSiftLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(8, 10))
-                        .addSegment(Grid.GRID.grid(10, 10))
-                        .addArrow(Grid.GRID.edge(10, 6, Grid.Direction.S))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(8, 10))
+                .addSegment(Grid.GRID.grid(10, 10))
+                .addArrow(Grid.GRID.edge(10, 6, Grid.Direction.S))
+                .build();
 
-        CustomInteractable label =
-                labelHandler.buildLabel(LabelHandler.ItemLabel.SIFTER, Grid.GRID.grid(10, 8));
+        CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.SIFTER, Grid.GRID.grid(10, 8));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(3, 3, Grid.GRID.grid(10, 6), Grid.Direction.N)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("sifterslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        SlotGroup outputSlots = SlotGroup.builder(3, 3, Grid.GRID.grid(10, 6), Grid.Direction.N)
+                .setDefaultTooltip(
+                        Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("sifterslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -308,22 +258,17 @@ class LayoutHandler {
     }
 
     private Layout buildImpureDustCentrifugeLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(2, 14))
-                        .addSegment(Grid.GRID.grid(0, 14))
-                        .addArrow(Grid.GRID.edge(0, 16, Grid.Direction.N))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(2, 14))
+                .addSegment(Grid.GRID.grid(0, 14))
+                .addArrow(Grid.GRID.edge(0, 16, Grid.Direction.N))
+                .build();
 
-        CustomInteractable label =
-                labelHandler.buildLabel(LabelHandler.ItemLabel.CENTRIFUGE, Grid.GRID.grid(0, 14));
+        CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.CENTRIFUGE, Grid.GRID.grid(0, 14));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(1, 2, Grid.GRID.grid(0, 16), Grid.Direction.S)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("centrifugeslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        SlotGroup outputSlots = SlotGroup.builder(1, 2, Grid.GRID.grid(0, 16), Grid.Direction.S)
+                .setDefaultTooltip(
+                        Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("centrifugeslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -333,22 +278,17 @@ class LayoutHandler {
     }
 
     private Layout buildPurifiedDustCentrifugeLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(10, 14))
-                        .addSegment(Grid.GRID.grid(8, 14))
-                        .addArrow(Grid.GRID.edge(8, 16, Grid.Direction.N))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(10, 14))
+                .addSegment(Grid.GRID.grid(8, 14))
+                .addArrow(Grid.GRID.edge(8, 16, Grid.Direction.N))
+                .build();
 
-        CustomInteractable label =
-                labelHandler.buildLabel(LabelHandler.ItemLabel.CENTRIFUGE, Grid.GRID.grid(8, 14));
+        CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.CENTRIFUGE, Grid.GRID.grid(8, 14));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(1, 2, Grid.GRID.grid(8, 16), Grid.Direction.S)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("centrifugeslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        SlotGroup outputSlots = SlotGroup.builder(1, 2, Grid.GRID.grid(8, 16), Grid.Direction.S)
+                .setDefaultTooltip(
+                        Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("centrifugeslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -358,24 +298,18 @@ class LayoutHandler {
     }
 
     private Layout buildPurifiedDustElectromagneticSeparateLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(10, 14))
-                        .addSegment(Grid.GRID.grid(12, 14))
-                        .addArrow(Grid.GRID.edge(12, 12, Grid.Direction.S))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(10, 14))
+                .addSegment(Grid.GRID.grid(12, 14))
+                .addArrow(Grid.GRID.edge(12, 12, Grid.Direction.S))
+                .build();
 
         CustomInteractable label =
-                labelHandler.buildLabel(
-                        LabelHandler.ItemLabel.ELECTROMAGNETIC_SEPARATOR, Grid.GRID.grid(12, 14));
+                labelHandler.buildLabel(LabelHandler.ItemLabel.ELECTROMAGNETIC_SEPARATOR, Grid.GRID.grid(12, 14));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(1, 3, Grid.GRID.grid(12, 12), Grid.Direction.N)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans(
-                                                "electromagneticseparatorslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        SlotGroup outputSlots = SlotGroup.builder(1, 3, Grid.GRID.grid(12, 12), Grid.Direction.N)
+                .setDefaultTooltip(Tooltip.create(
+                        Lang.GREGTECH_5_ORE_PROCESSING.trans("electromagneticseparatorslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -385,29 +319,23 @@ class LayoutHandler {
     }
 
     private Layout buildOreThermalCentrifugeLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(4, 10))
-                        .addSegment(Grid.GRID.grid(5, 10))
-                        .addSegment(Grid.GRID.grid(5, 12))
-                        .addSegment(Grid.GRID.grid(7, 12))
-                        .addSegment(Grid.GRID.grid(7, 10))
-                        .addSegment(Grid.GRID.grid(8, 10))
-                        .move(Grid.GRID.grid(6, 12))
-                        .addArrow(Grid.GRID.edge(6, 14, Grid.Direction.N))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(4, 10))
+                .addSegment(Grid.GRID.grid(5, 10))
+                .addSegment(Grid.GRID.grid(5, 12))
+                .addSegment(Grid.GRID.grid(7, 12))
+                .addSegment(Grid.GRID.grid(7, 10))
+                .addSegment(Grid.GRID.grid(8, 10))
+                .move(Grid.GRID.grid(6, 12))
+                .addArrow(Grid.GRID.edge(6, 14, Grid.Direction.N))
+                .build();
 
         CustomInteractable label =
-                labelHandler.buildLabel(
-                        LabelHandler.ItemLabel.THERMAL_CENTRIFUGE, Grid.GRID.grid(6, 12));
+                labelHandler.buildLabel(LabelHandler.ItemLabel.THERMAL_CENTRIFUGE, Grid.GRID.grid(6, 12));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(1, 2, Grid.GRID.grid(6, 14), Grid.Direction.S)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans(
-                                                "thermalcentrifugeslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        SlotGroup outputSlots = SlotGroup.builder(1, 2, Grid.GRID.grid(6, 14), Grid.Direction.S)
+                .setDefaultTooltip(Tooltip.create(
+                        Lang.GREGTECH_5_ORE_PROCESSING.trans("thermalcentrifugeslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -417,22 +345,17 @@ class LayoutHandler {
     }
 
     private Layout buildOreThermalCentrifugeMacerateLayout() {
-        Lines lines =
-                Lines.builder(Grid.GRID.grid(6, 14))
-                        .addSegment(Grid.GRID.grid(4, 14))
-                        .addArrow(Grid.GRID.edge(4, 16, Grid.Direction.N))
-                        .build();
+        Lines lines = Lines.builder(Grid.GRID.grid(6, 14))
+                .addSegment(Grid.GRID.grid(4, 14))
+                .addArrow(Grid.GRID.edge(4, 16, Grid.Direction.N))
+                .build();
 
-        CustomInteractable label =
-                labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(4, 14));
+        CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(4, 14));
 
-        SlotGroup outputSlots =
-                SlotGroup.builder(1, 2, Grid.GRID.grid(4, 16), Grid.Direction.S)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans("maceratorslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        SlotGroup outputSlots = SlotGroup.builder(1, 2, Grid.GRID.grid(4, 16), Grid.Direction.S)
+                .setDefaultTooltip(
+                        Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("maceratorslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .addLines(lines)
@@ -442,14 +365,10 @@ class LayoutHandler {
     }
 
     private Layout buildAdditionalRecipeOutputsLayout() {
-        SlotGroup outputSlots =
-                SlotGroup.builder(9, 2, Grid.GRID.grid(6, 20), Grid.Direction.S)
-                        .setDefaultTooltip(
-                                Tooltip.create(
-                                        Lang.GREGTECH_5_ORE_PROCESSING.trans(
-                                                "additionalrecipeoutputsslot"),
-                                        Tooltip.SLOT_FORMATTING))
-                        .build();
+        SlotGroup outputSlots = SlotGroup.builder(9, 2, Grid.GRID.grid(6, 20), Grid.Direction.S)
+                .setDefaultTooltip(Tooltip.create(
+                        Lang.GREGTECH_5_ORE_PROCESSING.trans("additionalrecipeoutputsslot"), Tooltip.SLOT_FORMATTING))
+                .build();
 
         return Layout.builder()
                 .putSlotGroup(SlotGroupKeys.ADDITIONAL_RECIPE_OUTPUTS, outputSlots)

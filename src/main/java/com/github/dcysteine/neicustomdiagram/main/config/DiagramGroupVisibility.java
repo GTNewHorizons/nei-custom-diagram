@@ -85,9 +85,7 @@ public enum DiagramGroupVisibility {
         try {
             return valueOf(name);
         } catch (IllegalArgumentException e) {
-            Logger.MOD.error(
-                    "Could not find DiagramGroupVisibility: [{}]. Falling back to ALWAYS_SHOWN.",
-                    name);
+            Logger.MOD.error("Could not find DiagramGroupVisibility: [{}]. Falling back to ALWAYS_SHOWN.", name);
 
             return ALWAYS_SHOWN;
         }

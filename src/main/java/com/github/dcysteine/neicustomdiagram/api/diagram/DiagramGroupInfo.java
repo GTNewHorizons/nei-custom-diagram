@@ -5,7 +5,6 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent
 import com.github.dcysteine.neicustomdiagram.api.diagram.layout.Grid;
 import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import com.google.auto.value.AutoValue;
-
 import java.util.function.Predicate;
 
 @AutoValue
@@ -63,17 +62,16 @@ public abstract class DiagramGroupInfo {
                 .setMaxRecipesPerPage(diagramsPerPage());
     }
 
-    public static Builder builder(
-        String groupName, String groupId, ItemComponent icon, int diagramsPerPage) {
-            return new AutoValue_DiagramGroupInfo.Builder()
-                    .setGroupName(groupName)
-                    .setGroupId(groupId)
-                    .setIcon(icon)
-                    .setDiagramsPerPage(diagramsPerPage)
-                    .setIgnoreNbt(true)
-                    .setEmptyDiagramPredicate(diagram -> false)
-                    .setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN)
-                    .setDescription("");
+    public static Builder builder(String groupName, String groupId, ItemComponent icon, int diagramsPerPage) {
+        return new AutoValue_DiagramGroupInfo.Builder()
+                .setGroupName(groupName)
+                .setGroupId(groupId)
+                .setIcon(icon)
+                .setDiagramsPerPage(diagramsPerPage)
+                .setIgnoreNbt(true)
+                .setEmptyDiagramPredicate(diagram -> false)
+                .setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN)
+                .setDescription("");
     }
 
     public abstract Builder toBuilder();
@@ -81,12 +79,19 @@ public abstract class DiagramGroupInfo {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder setGroupName(String groupName);
+
         public abstract Builder setGroupId(String groupId);
+
         public abstract Builder setIcon(ItemComponent icon);
+
         public abstract Builder setDiagramsPerPage(int diagramsPerPage);
+
         public abstract Builder setIgnoreNbt(boolean ignoreNbt);
+
         public abstract Builder setEmptyDiagramPredicate(Predicate<Diagram> emptyDiagramPredicate);
+
         public abstract Builder setDefaultVisibility(DiagramGroupVisibility visibility);
+
         public abstract Builder setDescription(String description);
 
         public abstract DiagramGroupInfo build();

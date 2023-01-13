@@ -10,11 +10,10 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroupInfo;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.item.ItemStack;
-
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.item.ItemStack;
 
 /** Singleton class that handles any NEI integration that needs to be done. */
 public enum NeiIntegration {
@@ -98,8 +97,7 @@ public enum NeiIntegration {
             }
 
             event.registerHandlerInfo(
-                    info.groupId(), NeiCustomDiagram.MOD_NAME, NeiCustomDiagram.MOD_ID,
-                    info::buildHandlerInfo);
+                    info.groupId(), NeiCustomDiagram.MOD_NAME, NeiCustomDiagram.MOD_ID, info::buildHandlerInfo);
             Logger.MOD.info("Registered handler for diagram group [{}]!", info.groupId());
         }
 
