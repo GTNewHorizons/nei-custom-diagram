@@ -13,6 +13,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import gregtech.api.enums.ItemList;
+import gregtech.api.enums.OrePrefixes;
+import gregtech.api.objects.ItemData;
 import gregtech.api.util.GT_ModHandler;
 import gregtech.api.util.GT_OreDictUnificator;
 import gregtech.api.util.GT_Recipe;
@@ -220,6 +222,7 @@ class RecipeHandler {
     final Set<Recipe> collidingRecipes;
     final List<Recipe> voidingRecipes;
     final List<Recipe> unequalCellRecipes;
+    final List<Recipe> smallVariantRecipes;
 
     RecipeHandler() {
         this.allRecipes = new HashMap<>();
@@ -228,6 +231,7 @@ class RecipeHandler {
         this.collidingRecipes = new LinkedHashSet<>();
         this.voidingRecipes = new ArrayList<>();
         this.unequalCellRecipes = new ArrayList<>();
+        this.smallVariantRecipes = new ArrayList<>();
     }
 
     /** This method must be called before any other methods are called. */
@@ -275,6 +279,10 @@ class RecipeHandler {
 
                 if (unequalCellRecipe(recipe)) {
                     unequalCellRecipes.add(recipe);
+                }
+
+                if (SmallVariantRecipe(recipe)) {
+                    smallVariantRecipes.add(recipe);
                 }
             }
         }
@@ -410,5 +418,54 @@ class RecipeHandler {
         }
 
         return countCells(recipe.inputs()) != countCells(recipe.outputs());
+    }
+
+    private static boolean SmallVariantRecipe(Recipe recipe) {
+        if (recipe.recipeMap() == RecipeMap.PACKAGER
+                || recipe.recipeMap() == RecipeMap.UNPACKAGER
+                || recipe.recipeMap() == RecipeMap.MACERATOR
+                || recipe.recipeMap() == RecipeMap.LATHE
+                || recipe.recipeMap() == RecipeMap.FLUID_EXTRACTOR
+                || recipe.recipeMap() == RecipeMap.IMPLOSION_COMPRESSOR
+                || recipe.recipeMap() == RecipeMap.ALLOY_SMELTER) {
+            // These recipemaps are meant to have tiny / small dusts or nuggets.
+            return false;
+        }
+        if (recipe.recipeMap() == RecipeMap.ASSEMBLING_MACHINE) {
+            List<Component> components = new ArrayList<>(recipe.outputs().keySet());
+            if (components.size() > 0) {
+                Component component = components.get(0);
+                if (component.type() == Component.ComponentType.ITEM) {
+                    ItemStack itemStack = ((ItemComponent) component).stack();
+                    ItemData itemData = GT_OreDictUnificator.getAssociation(itemStack);
+                    if (itemData != null
+                            && (itemData.mPrefix == OrePrefixes.cableGt01
+                                    || itemData.mPrefix == OrePrefixes.cableGt02
+                                    || itemData.mPrefix == OrePrefixes.cableGt04
+                                    || itemData.mPrefix == OrePrefixes.cableGt08
+                                    || itemData.mPrefix == OrePrefixes.cableGt12
+                                    || itemData.mPrefix == OrePrefixes.cableGt16)) {
+                        // Allow using small dusts for cable insulation.
+                        return false;
+                    }
+                }
+            }
+        }
+        return hasSmallVariant(recipe.inputs()) || hasSmallVariant(recipe.outputs());
+    }
+
+    private static boolean hasSmallVariant(Map<Component, Integer> componentMap) {
+        for (Component component : componentMap.keySet()) {
+            if (component.type() != Component.ComponentType.ITEM) continue;
+            ItemStack itemStack = ((ItemComponent) component).stack();
+            ItemData itemData = GT_OreDictUnificator.getAssociation(itemStack);
+            if (itemData == null) continue;
+            if (itemData.mPrefix == OrePrefixes.dustTiny
+                    || itemData.mPrefix == OrePrefixes.dustSmall
+                    || itemData.mPrefix == OrePrefixes.nugget) {
+                return true;
+            }
+        }
+        return false;
     }
 }
