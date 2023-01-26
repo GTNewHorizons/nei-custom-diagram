@@ -14,16 +14,17 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.objects.ItemData;
 import gregtech.api.util.GT_ModHandler;
 import gregtech.api.util.GT_OreDictUnificator;
 import gregtech.api.util.GT_Recipe;
 import gregtech.api.util.GT_Utility;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -281,7 +282,7 @@ class RecipeHandler {
                     unequalCellRecipes.add(recipe);
                 }
 
-                if (SmallVariantRecipe(recipe)) {
+                if (smallVariantRecipe(recipe)) {
                     smallVariantRecipes.add(recipe);
                 }
             }
@@ -420,52 +421,46 @@ class RecipeHandler {
         return countCells(recipe.inputs()) != countCells(recipe.outputs());
     }
 
-    private static boolean SmallVariantRecipe(Recipe recipe) {
-        if (recipe.recipeMap() == RecipeMap.PACKAGER
-                || recipe.recipeMap() == RecipeMap.UNPACKAGER
-                || recipe.recipeMap() == RecipeMap.MACERATOR
-                || recipe.recipeMap() == RecipeMap.LATHE
-                || recipe.recipeMap() == RecipeMap.FLUID_EXTRACTOR
-                || recipe.recipeMap() == RecipeMap.IMPLOSION_COMPRESSOR
-                || recipe.recipeMap() == RecipeMap.ALLOY_SMELTER) {
+    private static final ImmutableSet<OrePrefixes> SMALL_VARIANT_ORE_PREFIXES =
+            ImmutableSet.of(OrePrefixes.dustTiny, OrePrefixes.dustSmall, OrePrefixes.nugget);
+    private static final ImmutableSet<OrePrefixes> CABLE_ORE_PREFIXES = ImmutableSet.of(
+            OrePrefixes.cableGt01,
+            OrePrefixes.cableGt02,
+            OrePrefixes.cableGt04,
+            OrePrefixes.cableGt08,
+            OrePrefixes.cableGt12,
+            OrePrefixes.cableGt16);
+    private static final ImmutableSet<RecipeMap> RECIPE_MAPS_TO_IGNORE_FOR_SMALL_VARIANT = ImmutableSet.of(
             // These recipemaps are meant to have tiny / small dusts or nuggets.
+            RecipeMap.PACKAGER,
+            RecipeMap.UNPACKAGER,
+            RecipeMap.MACERATOR,
+            RecipeMap.LATHE,
+            RecipeMap.FLUID_EXTRACTOR,
+            RecipeMap.IMPLOSION_COMPRESSOR,
+            RecipeMap.ALLOY_SMELTER);
+
+    private static boolean smallVariantRecipe(Recipe recipe) {
+        if (RECIPE_MAPS_TO_IGNORE_FOR_SMALL_VARIANT.contains(recipe.recipeMap())) {
             return false;
         }
-        if (recipe.recipeMap() == RecipeMap.ASSEMBLING_MACHINE) {
-            List<Component> components = new ArrayList<>(recipe.outputs().keySet());
-            if (components.size() > 0) {
-                Component component = components.get(0);
-                if (component.type() == Component.ComponentType.ITEM) {
-                    ItemStack itemStack = ((ItemComponent) component).stack();
-                    ItemData itemData = GT_OreDictUnificator.getAssociation(itemStack);
-                    if (itemData != null
-                            && (itemData.mPrefix == OrePrefixes.cableGt01
-                                    || itemData.mPrefix == OrePrefixes.cableGt02
-                                    || itemData.mPrefix == OrePrefixes.cableGt04
-                                    || itemData.mPrefix == OrePrefixes.cableGt08
-                                    || itemData.mPrefix == OrePrefixes.cableGt12
-                                    || itemData.mPrefix == OrePrefixes.cableGt16)) {
-                        // Allow using small dusts for cable insulation.
-                        return false;
-                    }
-                }
-            }
+
+        Set<OrePrefixes> orePrefixes = getOrePrefixes(recipe.outputs().keySet());
+        if (recipe.recipeMap() == RecipeMap.ASSEMBLING_MACHINE
+                && Sets.intersection(orePrefixes, CABLE_ORE_PREFIXES).size() > 0) {
+            // Allow using small dusts for cable insulation.
+            return false;
+        } else {
+            orePrefixes.addAll(getOrePrefixes(recipe.inputs().keySet()));
+            return Sets.intersection(orePrefixes, SMALL_VARIANT_ORE_PREFIXES).size() > 0;
         }
-        return hasSmallVariant(recipe.inputs()) || hasSmallVariant(recipe.outputs());
     }
 
-    private static boolean hasSmallVariant(Map<Component, Integer> componentMap) {
-        for (Component component : componentMap.keySet()) {
-            if (component.type() != Component.ComponentType.ITEM) continue;
-            ItemStack itemStack = ((ItemComponent) component).stack();
-            ItemData itemData = GT_OreDictUnificator.getAssociation(itemStack);
-            if (itemData == null) continue;
-            if (itemData.mPrefix == OrePrefixes.dustTiny
-                    || itemData.mPrefix == OrePrefixes.dustSmall
-                    || itemData.mPrefix == OrePrefixes.nugget) {
-                return true;
-            }
-        }
-        return false;
+    private static Set<OrePrefixes> getOrePrefixes(Set<Component> componentSet) {
+        return componentSet.stream()
+                .map(GregTechOreDictUtil::getItemData) // Checks for ComponentType.ITEM for us
+                .filter(Optional::isPresent)
+                .map(itemData -> itemData.get().mPrefix)
+                .collect(Collectors.toCollection(HashSet::new));
     }
 }

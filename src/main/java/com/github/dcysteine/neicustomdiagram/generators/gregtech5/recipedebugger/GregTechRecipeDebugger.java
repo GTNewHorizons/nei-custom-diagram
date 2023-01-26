@@ -16,7 +16,6 @@ import com.google.common.collect.Lists;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.util.GT_OreDictUnificator;
 import gregtech.api.util.GT_Utility;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,7 +51,8 @@ public final class GregTechRecipeDebugger implements DiagramGenerator {
 
         SMALL_VARIANT_RECIPES(
                 "-small-variant-recipes",
-                ItemComponent.create(GT_OreDictUnificator.get(OrePrefixes.dustTiny, Materials.Salt, 1)),
+                GregTechOreDictUtil.getComponent(OrePrefixes.dustTiny, Materials.Salt)
+                        .get(),
                 "smallvariantrecipesbutton");
 
         /** The suffix to append to the group ID, to get the custom behavior ID for this view. */
