@@ -1,6 +1,16 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.component;
 
+import java.util.Comparator;
+import java.util.Optional;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.FluidStack;
+
 import codechicken.nei.NEIClientUtils;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.TextFormatting;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
@@ -11,24 +21,19 @@ import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.base.Splitter;
-import java.util.Comparator;
-import java.util.Optional;
-import javax.annotation.Nullable;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.FluidStack;
 
 /**
- * A display component is a component that may have additional display information attached, such as
- * stack size or tooltip.
+ * A display component is a component that may have additional display information attached, such as stack size or
+ * tooltip.
  *
- * <p>Note that instances of this class will only compare equal if <em>all</em> of their fields
- * match, including tooltip!
+ * <p>
+ * Note that instances of this class will only compare equal if <em>all</em> of their fields match, including tooltip!
  */
 @AutoValue
 public abstract class DisplayComponent implements Comparable<DisplayComponent> {
-    public static final Comparator<DisplayComponent> COMPARATOR = Comparator.<DisplayComponent, Component>comparing(
-                    DisplayComponent::component)
+
+    public static final Comparator<DisplayComponent> COMPARATOR = Comparator
+            .<DisplayComponent, Component>comparing(DisplayComponent::component)
             .thenComparing(d -> d.stackSize().orElse(-1));
 
     /** NBT strings will be split if they are too long. */
@@ -42,8 +47,7 @@ public abstract class DisplayComponent implements Comparable<DisplayComponent> {
     public abstract Optional<String> additionalInfo();
 
     /**
-     * Returns a tooltip containing additional information for this particular display component;
-     * may be empty.
+     * Returns a tooltip containing additional information for this particular display component; may be empty.
      */
     public abstract Tooltip additionalTooltip();
 
@@ -64,14 +68,14 @@ public abstract class DisplayComponent implements Comparable<DisplayComponent> {
     /** Returns a localized description of the item or fluid stack, for display in a tooltip. */
     public Tooltip descriptionTooltip() {
         Tooltip.Builder builder = Tooltip.builder().addTextLine(description());
-        stackSize().ifPresent(stackSize -> builder.setFormatting(TextFormatting.create(true))
-                .addTextLine(Lang.API.transf("stacksize", stackSize)));
+        stackSize().ifPresent(
+                stackSize -> builder.setFormatting(TextFormatting.create(true))
+                        .addTextLine(Lang.API.transf("stacksize", stackSize)));
 
         if (component().nbt().isPresent()) {
             NBTTagCompound nbt = component().nbt().get();
             if (NEIClientUtils.shiftKey()) {
-                builder.addSpacing()
-                        .setFormatting(Tooltip.TRIVIAL_FORMATTING)
+                builder.addSpacing().setFormatting(Tooltip.TRIVIAL_FORMATTING)
                         .addAllTextLines(NBT_SPLITTER.split(nbt.toString()));
             } else {
                 builder.addSpacing().setFormatting(Tooltip.INFO_FORMATTING).addTextLine(Lang.API.trans("hasnbt"));
@@ -124,43 +128,35 @@ public abstract class DisplayComponent implements Comparable<DisplayComponent> {
     }
 
     public static Builder builder(Component component) {
-        return new AutoValue_DisplayComponent.Builder()
-                .setComponent(component)
+        return new AutoValue_DisplayComponent.Builder().setComponent(component)
                 .setAdditionalTooltip(Tooltip.EMPTY_TOOLTIP);
     }
 
     public static Builder builder(ItemStack itemStack) {
-        return new AutoValue_DisplayComponent.Builder()
-                .setComponent(ItemComponent.create(itemStack))
-                .setStackSize(itemStack.stackSize)
-                .setAdditionalTooltip(Tooltip.EMPTY_TOOLTIP);
+        return new AutoValue_DisplayComponent.Builder().setComponent(ItemComponent.create(itemStack))
+                .setStackSize(itemStack.stackSize).setAdditionalTooltip(Tooltip.EMPTY_TOOLTIP);
     }
 
     public static Builder builderWithNbt(ItemStack itemStack) {
-        return new AutoValue_DisplayComponent.Builder()
-                .setComponent(ItemComponent.createWithNbt(itemStack))
-                .setStackSize(itemStack.stackSize)
-                .setAdditionalTooltip(Tooltip.EMPTY_TOOLTIP);
+        return new AutoValue_DisplayComponent.Builder().setComponent(ItemComponent.createWithNbt(itemStack))
+                .setStackSize(itemStack.stackSize).setAdditionalTooltip(Tooltip.EMPTY_TOOLTIP);
     }
 
     public static Builder builder(FluidStack fluidStack) {
-        return new AutoValue_DisplayComponent.Builder()
-                .setComponent(FluidComponent.create(fluidStack))
-                .setStackSize(fluidStack.amount)
-                .setAdditionalTooltip(Tooltip.EMPTY_TOOLTIP);
+        return new AutoValue_DisplayComponent.Builder().setComponent(FluidComponent.create(fluidStack))
+                .setStackSize(fluidStack.amount).setAdditionalTooltip(Tooltip.EMPTY_TOOLTIP);
     }
 
     public static Builder builderWithNbt(FluidStack fluidStack) {
-        return new AutoValue_DisplayComponent.Builder()
-                .setComponent(FluidComponent.createWithNbt(fluidStack))
-                .setStackSize(fluidStack.amount)
-                .setAdditionalTooltip(Tooltip.EMPTY_TOOLTIP);
+        return new AutoValue_DisplayComponent.Builder().setComponent(FluidComponent.createWithNbt(fluidStack))
+                .setStackSize(fluidStack.amount).setAdditionalTooltip(Tooltip.EMPTY_TOOLTIP);
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {
+
         public abstract Builder setComponent(Component component);
 
         public abstract Builder setStackSize(Optional<Integer> stackSize);

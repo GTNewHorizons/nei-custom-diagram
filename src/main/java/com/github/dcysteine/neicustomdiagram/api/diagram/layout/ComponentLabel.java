@@ -11,6 +11,7 @@ import com.google.auto.value.AutoValue;
 /** A label that looks like a component. */
 @AutoValue
 public abstract class ComponentLabel implements BoundedDrawable {
+
     public static ComponentLabel create(Component component, Point pos) {
         return new AutoValue_ComponentLabel(component, pos);
     }

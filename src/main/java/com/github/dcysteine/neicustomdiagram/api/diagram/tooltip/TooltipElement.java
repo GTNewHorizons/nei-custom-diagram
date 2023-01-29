@@ -1,6 +1,7 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.tooltip;
 
 import codechicken.lib.gui.GuiDraw;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.layout.Grid;
@@ -11,21 +12,22 @@ import com.google.auto.value.AutoOneOf;
 /**
  * An element in a tooltip line.
  *
- * <p>There are four types of elements:
+ * <p>
+ * There are four types of elements:
  * <ul>
- *     <li><b>Spacing:</b> an empty horizontal space, of the specified width in pixels.
- *     <li><b>Text:</b> a plain text string, which can be formatted.
- *     <li><b>Component Icon:</b> the icon of a component. This is unaffected by formatting.
- *     <li><b>Component Description:</b> the description of a component. Use this instead of trying
- *         to include {@link Component#description()} as plain text. This is necessary because
- *         component descriptions aren't set properly until after diagram generation happens. This
- *         will be affected by formatting just like normal text.
- *     <li><b>Formatting:</b> applies text formatting. The formatting will persist until overridden
- *         by another formatting element, or until the line ends.
+ * <li><b>Spacing:</b> an empty horizontal space, of the specified width in pixels.
+ * <li><b>Text:</b> a plain text string, which can be formatted.
+ * <li><b>Component Icon:</b> the icon of a component. This is unaffected by formatting.
+ * <li><b>Component Description:</b> the description of a component. Use this instead of trying to include
+ * {@link Component#description()} as plain text. This is necessary because component descriptions aren't set properly
+ * until after diagram generation happens. This will be affected by formatting just like normal text.
+ * <li><b>Formatting:</b> applies text formatting. The formatting will persist until overridden by another formatting
+ * element, or until the line ends.
  * </ul>
  */
 @AutoOneOf(TooltipElement.ElementType.class)
 public abstract class TooltipElement {
+
     public enum ElementType {
         SPACING,
         TEXT,
@@ -47,8 +49,7 @@ public abstract class TooltipElement {
     }
 
     public static TooltipElement ofComponentIcon(Component component) {
-        return AutoOneOf_TooltipElement.displayComponentIcon(
-                DisplayComponent.builder(component).build());
+        return AutoOneOf_TooltipElement.displayComponentIcon(DisplayComponent.builder(component).build());
     }
 
     public static TooltipElement ofComponentDescription(Component component) {
@@ -118,9 +119,9 @@ public abstract class TooltipElement {
     }
 
     /**
-     * Unlike most other draw methods, this method takes position coordinates as separate integers,
-     * and will draw with that point as the top-left, rather than the center. These differences are
-     * to facilitate our custom tooltip drawing code.
+     * Unlike most other draw methods, this method takes position coordinates as separate integers, and will draw with
+     * that point as the top-left, rather than the center. These differences are to facilitate our custom tooltip
+     * drawing code.
      */
     public void draw(int x, int y, TextFormatting formatting) {
         Point center = Point.create(x + width(formatting) / 2, y + height(formatting) / 2);

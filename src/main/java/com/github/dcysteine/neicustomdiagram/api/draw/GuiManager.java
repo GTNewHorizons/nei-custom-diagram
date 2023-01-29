@@ -1,17 +1,22 @@
 package com.github.dcysteine.neicustomdiagram.api.draw;
 
+import java.util.Optional;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+
+import org.lwjgl.opengl.GL11;
+
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.recipe.GuiRecipe;
+
 import com.github.dcysteine.neicustomdiagram.main.Reflection;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
-import java.util.Optional;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
-import org.lwjgl.opengl.GL11;
 
 /** Handles things like getting the mouse position, and scrolling. */
 public final class GuiManager {
+
     // Margins for glScissor, in pixels. These margins will be excluded from the scissor region.
     private static final int TOP_MARGIN = 31;
     private static final int BOTTOM_MARGIN = 5;
@@ -38,6 +43,7 @@ public final class GuiManager {
     private static final int SCROLLBAR_BACKGROUND_COLOUR_OPACITY = 0x90;
 
     public enum ScrollDirection {
+
         UP(-1),
         DOWN(1);
 
@@ -80,7 +86,8 @@ public final class GuiManager {
     /**
      * Checks for bad scroll state due to things like resizes or switching diagrams.
      *
-     * <p>{@link #scroll(ScrollDirection)} does not check bounds, because we will check them here.
+     * <p>
+     * {@link #scroll(ScrollDirection)} does not check bounds, because we will check them here.
      */
     public void checkScrollState(Dimension diagramDimension) {
         int scrollableHeight = computeScrollableHeight(diagramDimension);
@@ -125,8 +132,8 @@ public final class GuiManager {
         }
 
         // TODO move all of this to yet another helper class. Maybe in new gui/ directory.
-        //  Also move related methods in this class.
-        //  Maybe when / if we add a horizontal scrollbar?
+        // Also move related methods in this class.
+        // Maybe when / if we add a horizontal scrollbar?
         // We'll keep the scrollbar at 100% opacity for half the fade duration, then have it fade.
         int fade = Math.min(2 * scrollbarFade, SCROLLBAR_FADE_TICKS);
         int fgOpacity = SCROLLBAR_FOREGROUND_COLOUR_OPACITY * fade / SCROLLBAR_FADE_TICKS;
@@ -251,8 +258,7 @@ public final class GuiManager {
         int paddedHeight = diagramDimension.height() + VERTICAL_PADDING;
         int scrollbarCursorHeight = viewportDim.height() * viewportDim.height() / paddedHeight;
 
-        int mouseOffset =
-                getAbsoluteMousePosition().y() - (getViewportPosition().y() + scrollbarCursorHeight / 2);
+        int mouseOffset = getAbsoluteMousePosition().y() - (getViewportPosition().y() + scrollbarCursorHeight / 2);
         int scrollbarHeight = viewportDim.height() - scrollbarCursorHeight;
 
         scrollY = mouseOffset * computeScrollableHeight(diagramDimension) / scrollbarHeight;
@@ -262,7 +268,8 @@ public final class GuiManager {
     /**
      * Returns the top-left corner of the viewport.
      *
-     * <p>Note that this is incorrect for {@code glScissor}!
+     * <p>
+     * Note that this is incorrect for {@code glScissor}!
      */
     public Point getViewportPosition() {
         Optional<GuiRecipe> guiOptional = getGui();
@@ -290,9 +297,7 @@ public final class GuiManager {
 
     private int computeScrollableHeight(Dimension diagramDimension) {
         // Need to add padding to avoid clipping the bottom-most row.
-        return diagramDimension.height()
-                + VERTICAL_PADDING
-                - getViewportDimension().height();
+        return diagramDimension.height() + VERTICAL_PADDING - getViewportDimension().height();
     }
 
     private void setScissor() {
@@ -315,8 +320,10 @@ public final class GuiManager {
         // It also uses absolute screen coordinates, without taking into account the GUI scale
         // factor, so we must manually compute the scale.
         GL11.glScissor(
-                left * scaleFactor, bottom * scaleFactor,
-                viewportDim.width() * scaleFactor, viewportDim.height() * scaleFactor);
+                left * scaleFactor,
+                bottom * scaleFactor,
+                viewportDim.width() * scaleFactor,
+                viewportDim.height() * scaleFactor);
     }
 
     /** Returns empty {@link Optional} in cases such as the GUI being instantly closed. */

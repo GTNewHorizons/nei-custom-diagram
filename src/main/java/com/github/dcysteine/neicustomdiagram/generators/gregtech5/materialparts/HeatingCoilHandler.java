@@ -1,14 +1,17 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.materialparts;
 
+import net.minecraft.item.ItemStack;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedMap;
+
 import gregtech.api.enums.ItemList;
 import gregtech.common.blocks.GT_Block_Casings5;
-import net.minecraft.item.ItemStack;
 
 class HeatingCoilHandler {
+
     /** List of all heating coil items in GregTech. Unfortunately, must be manually updated. */
     private static final ImmutableList<ItemList> HEATING_COILS = ImmutableList.of(
             ItemList.Casing_Coil_Cupronickel,
@@ -34,8 +37,7 @@ class HeatingCoilHandler {
         ImmutableSortedMap.Builder<Long, Component> builder = ImmutableSortedMap.naturalOrder();
         for (ItemList item : HEATING_COILS) {
             ItemStack itemStack = item.get(1);
-            long heat = GT_Block_Casings5.getCoilHeatFromDamage(itemStack.getItemDamage())
-                    .getHeat();
+            long heat = GT_Block_Casings5.getCoilHeatFromDamage(itemStack.getItemDamage()).getHeat();
 
             builder.put(heat, ItemComponent.create(itemStack));
         }
@@ -45,7 +47,8 @@ class HeatingCoilHandler {
     /**
      * Returns a sorted map of heating coils that support the specified heat level.
      *
-     * <p>The returned map is a map of heating coil base heat capacity to heating coil.
+     * <p>
+     * The returned map is a map of heating coil base heat capacity to heating coil.
      */
     ImmutableSortedMap<Long, Component> getHeatingCoils(long heat) {
         return heatingCoilMap.tailMap(heat, true);

@@ -1,25 +1,28 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.component;
 
-import codechicken.nei.recipe.GuiCraftingRecipe;
-import codechicken.nei.recipe.GuiUsageRecipe;
-import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
-import com.github.dcysteine.neicustomdiagram.api.draw.Draw;
-import com.github.dcysteine.neicustomdiagram.api.draw.Point;
-import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
-import com.google.auto.value.AutoValue;
 import java.util.Comparator;
 import java.util.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
+import codechicken.nei.recipe.GuiCraftingRecipe;
+import codechicken.nei.recipe.GuiUsageRecipe;
+
+import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
+import com.github.dcysteine.neicustomdiagram.api.draw.Draw;
+import com.github.dcysteine.neicustomdiagram.api.draw.Point;
+import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
+import com.google.auto.value.AutoValue;
+
 @AutoValue
 public abstract class ItemComponent implements Component {
-    public static final Comparator<ItemComponent> COMPARATOR = Comparator.<ItemComponent, Integer>comparing(
-                    c -> Item.getIdFromItem(c.item()))
-            .thenComparing(ItemComponent::damage)
+
+    public static final Comparator<ItemComponent> COMPARATOR = Comparator
+            .<ItemComponent, Integer>comparing(c -> Item.getIdFromItem(c.item())).thenComparing(ItemComponent::damage)
             .thenComparing(c -> c.nbtWrapper().orElse(null), ImmutableNbtWrapper.COMPARATOR);
 
     public static final int DEFAULT_STACK_SIZE = 1;

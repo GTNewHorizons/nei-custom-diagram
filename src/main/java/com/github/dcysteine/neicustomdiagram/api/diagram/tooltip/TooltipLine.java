@@ -1,14 +1,16 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.tooltip;
 
+import net.minecraft.util.EnumChatFormatting;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.util.EnumChatFormatting;
 
 @AutoValue
 public abstract class TooltipLine {
+
     public abstract ImmutableList<TooltipElement> elements();
 
     public abstract int additionalSpacing();
@@ -54,9 +56,9 @@ public abstract class TooltipLine {
     public abstract String toPrettyString();
 
     /**
-     * Unlike most other draw methods, this method takes position coordinates as separate integers,
-     * and will draw with that point as the top-left, rather than the center. These differences are
-     * to facilitate our custom tooltip drawing code.
+     * Unlike most other draw methods, this method takes position coordinates as separate integers, and will draw with
+     * that point as the top-left, rather than the center. These differences are to facilitate our custom tooltip
+     * drawing code.
      */
     public void draw(int x, int y) {
         int currX = x;
@@ -79,6 +81,7 @@ public abstract class TooltipLine {
     }
 
     public static final class Builder {
+
         private final ImmutableList.Builder<TooltipElement> elementsBuilder;
         private int additionalSpacing;
 

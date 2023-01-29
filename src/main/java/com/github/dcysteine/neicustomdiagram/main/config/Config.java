@@ -1,15 +1,19 @@
 package com.github.dcysteine.neicustomdiagram.main.config;
 
+import java.io.File;
+import java.util.List;
+
+import net.minecraftforge.common.config.Configuration;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroupInfo;
 import com.github.dcysteine.neicustomdiagram.main.Logger;
 import cpw.mods.fml.relauncher.FMLInjectionData;
-import java.io.File;
-import java.util.List;
-import net.minecraftforge.common.config.Configuration;
 
 public final class Config {
-    static final File CONFIG_FILE =
-            new File((File) FMLInjectionData.data()[6], "config" + File.separator + "NEICustomDiagram.cfg");
+
+    static final File CONFIG_FILE = new File(
+            (File) FMLInjectionData.data()[6],
+            "config" + File.separator + "NEICustomDiagram.cfg");
     static final Configuration CONFIG = new Configuration(CONFIG_FILE);
 
     // Static class.

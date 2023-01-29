@@ -1,5 +1,10 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.materialtools;
 
+import java.util.List;
+import java.util.Optional;
+
+import net.minecraft.item.ItemStack;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
@@ -16,18 +21,21 @@ import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechFormatting;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Lists;
+
 import gregtech.api.enums.Materials;
 import gregtech.api.items.GT_MetaGenerated_Tool;
 import gregtech.api.objects.ItemData;
 import gregtech.common.items.GT_MetaGenerated_Tool_01;
-import java.util.List;
-import java.util.Optional;
-import net.minecraft.item.ItemStack;
 
 public final class GregTechMaterialTools implements DiagramGenerator {
-    public static final ItemComponent ICON =
-            ItemComponent.createWithNbt(GT_MetaGenerated_Tool_01.INSTANCE.getToolWithStats(
-                    GT_MetaGenerated_Tool_01.HARDHAMMER, 1, Materials.Aluminium, Materials.Wood, null));
+
+    public static final ItemComponent ICON = ItemComponent.createWithNbt(
+            GT_MetaGenerated_Tool_01.INSTANCE.getToolWithStats(
+                    GT_MetaGenerated_Tool_01.HARDHAMMER,
+                    1,
+                    Materials.Aluminium,
+                    Materials.Wood,
+                    null));
 
     private final DiagramGroupInfo info;
 
@@ -75,9 +83,7 @@ public final class GregTechMaterialTools implements DiagramGenerator {
     /** Returns either a single-element list, or an empty list. */
     private List<Diagram> getDiagram(Interactable.RecipeType unused, Component component) {
         // Try handling fluids and fluid display stacks by converting into a filled cell.
-        component = GregTechFluidDictUtil.fillCell(component)
-                .map(Component.class::cast)
-                .orElse(component);
+        component = GregTechFluidDictUtil.fillCell(component).map(Component.class::cast).orElse(component);
 
         Materials material = null;
 

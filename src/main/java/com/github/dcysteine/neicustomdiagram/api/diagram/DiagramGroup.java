@@ -1,5 +1,18 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.NEIClientUtils;
 import codechicken.nei.PositionedStack;
@@ -9,6 +22,7 @@ import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.ICraftingHandler;
 import codechicken.nei.recipe.IUsageHandler;
 import codechicken.nei.recipe.RecipeItemInputHandler;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.FluidComponent;
@@ -21,18 +35,9 @@ import com.github.dcysteine.neicustomdiagram.api.draw.GuiManager;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.google.common.collect.ImmutableList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 
 public class DiagramGroup implements ICraftingHandler, IUsageHandler {
+
     protected final DiagramGroupInfo info;
     protected final DiagramMatcher matcher;
     protected final Supplier<DiagramState> diagramStateSupplier;
@@ -98,8 +103,7 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
         Collection<Diagram> matchingDiagrams = matchDiagrams(id, recipeType, stacks);
 
         if (!ConfigOptions.SHOW_EMPTY_DIAGRAMS.get()) {
-            matchingDiagrams = matchingDiagrams.stream()
-                    .filter(diagram -> !info.emptyDiagramPredicate().test(diagram))
+            matchingDiagrams = matchingDiagrams.stream().filter(diagram -> !info.emptyDiagramPredicate().test(diagram))
                     .collect(Collectors.toList());
         }
 
@@ -109,7 +113,8 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
     /**
      * Helper method responsible for finding all matching diagrams.
      *
-     * <p>Subclasses should generally override / extend this method, leaving the general logic in
+     * <p>
+     * Subclasses should generally override / extend this method, leaving the general logic in
      * {@link #loadDiagrams(String, Interactable.RecipeType, Object...)} un-overridden.
      */
     protected Collection<Diagram> matchDiagrams(String id, Interactable.RecipeType recipeType, Object... stacks) {
@@ -124,16 +129,16 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
         switch (id) {
             case "item":
                 ItemStack itemStack = (ItemStack) stacks[0];
-                ItemComponent itemComponent =
-                        info.ignoreNbt() ? ItemComponent.create(itemStack) : ItemComponent.createWithNbt(itemStack);
+                ItemComponent itemComponent = info.ignoreNbt() ? ItemComponent.create(itemStack)
+                        : ItemComponent.createWithNbt(itemStack);
 
                 return matcher.match(recipeType, itemComponent);
 
             case "liquid":
             case "fluid":
                 FluidStack fluidStack = (FluidStack) stacks[0];
-                FluidComponent fluidComponent =
-                        info.ignoreNbt() ? FluidComponent.create(fluidStack) : FluidComponent.createWithNbt(fluidStack);
+                FluidComponent fluidComponent = info.ignoreNbt() ? FluidComponent.create(fluidStack)
+                        : FluidComponent.createWithNbt(fluidStack);
 
                 return matcher.match(recipeType, fluidComponent);
         }
@@ -222,8 +227,8 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
     }
 
     /**
-     * Note that for item components, the code here seems to be getting overridden (more precisely,
-     * intercepted and handled first) by the code in {@link RecipeItemInputHandler}.
+     * Note that for item components, the code here seems to be getting overridden (more precisely, intercepted and
+     * handled first) by the code in {@link RecipeItemInputHandler}.
      */
     @Override
     public boolean keyTyped(GuiRecipe<?> gui, char keyChar, int keyCode, int recipe) {
@@ -238,8 +243,8 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
     }
 
     /**
-     * Note that for item components, the code here seems to be getting overridden (more precisely,
-     * intercepted and handled first) by the code in {@link RecipeItemInputHandler}.
+     * Note that for item components, the code here seems to be getting overridden (more precisely, intercepted and
+     * handled first) by the code in {@link RecipeItemInputHandler}.
      */
     @Override
     public boolean mouseClicked(GuiRecipe<?> gui, int button, int recipe) {
@@ -266,8 +271,8 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
         if (!mouseInBounds() && !guiManager.mouseInScrollBounds()) {
             return false;
         }
-        GuiManager.ScrollDirection direction =
-                scroll > 0 ? GuiManager.ScrollDirection.UP : GuiManager.ScrollDirection.DOWN;
+        GuiManager.ScrollDirection direction = scroll > 0 ? GuiManager.ScrollDirection.UP
+                : GuiManager.ScrollDirection.DOWN;
 
         if (NEIClientUtils.shiftKey()) {
             diagramState.scroll(direction);

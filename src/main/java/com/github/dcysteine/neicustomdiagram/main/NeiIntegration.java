@@ -1,26 +1,31 @@
 package com.github.dcysteine.neicustomdiagram.main;
 
+import java.util.List;
+import java.util.Optional;
+
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.item.ItemStack;
+
 import codechicken.nei.event.NEIRegisterHandlerInfosEvent;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerObjectHandler;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.IRecipeHandler;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroupInfo;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import java.util.List;
-import java.util.Optional;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.item.ItemStack;
 
 /** Singleton class that handles any NEI integration that needs to be done. */
 public enum NeiIntegration {
+
     // Singleton class; enforced by being an enum.
     INSTANCE;
 
     private static class ObjectHandler implements IContainerObjectHandler {
+
         private static Optional<DiagramGroup> getDiagramGroup(GuiContainer guiContainer) {
             if (!(guiContainer instanceof GuiRecipe)) {
                 return Optional.empty();
@@ -71,9 +76,7 @@ public enum NeiIntegration {
 
         @Override
         public boolean shouldShowTooltip(GuiContainer guiContainer) {
-            return getDiagramGroup(guiContainer)
-                    .map(diagramGroup -> !diagramGroup.mouseInBounds())
-                    .orElse(true);
+            return getDiagramGroup(guiContainer).map(diagramGroup -> !diagramGroup.mouseInBounds()).orElse(true);
         }
     }
 
@@ -97,7 +100,10 @@ public enum NeiIntegration {
             }
 
             event.registerHandlerInfo(
-                    info.groupId(), NeiCustomDiagram.MOD_NAME, NeiCustomDiagram.MOD_ID, info::buildHandlerInfo);
+                    info.groupId(),
+                    NeiCustomDiagram.MOD_NAME,
+                    NeiCustomDiagram.MOD_ID,
+                    info::buildHandlerInfo);
             Logger.MOD.info("Registered handler for diagram group [{}]!", info.groupId());
         }
 

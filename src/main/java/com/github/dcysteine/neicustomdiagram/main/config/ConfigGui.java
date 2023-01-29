@@ -1,15 +1,19 @@
 package com.github.dcysteine.neicustomdiagram.main.config;
 
-import com.github.dcysteine.neicustomdiagram.main.NeiCustomDiagram;
-import cpw.mods.fml.client.config.GuiConfig;
-import cpw.mods.fml.client.config.IConfigElement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 
+import com.github.dcysteine.neicustomdiagram.main.NeiCustomDiagram;
+
+import cpw.mods.fml.client.config.GuiConfig;
+import cpw.mods.fml.client.config.IConfigElement;
+
 public final class ConfigGui extends GuiConfig {
+
     public ConfigGui(GuiScreen parent) {
         super(
                 parent,

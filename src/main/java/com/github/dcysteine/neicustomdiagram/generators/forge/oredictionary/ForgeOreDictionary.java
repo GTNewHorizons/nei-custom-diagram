@@ -1,6 +1,13 @@
 package com.github.dcysteine.neicustomdiagram.generators.forge.oredictionary;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import net.minecraft.init.Items;
+
 import codechicken.lib.gui.GuiDraw;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
@@ -20,18 +27,15 @@ import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import com.github.dcysteine.neicustomdiagram.util.ComponentTransformer;
 import com.github.dcysteine.neicustomdiagram.util.OreDictUtil;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import net.minecraft.init.Items;
 
 /**
  * Generates diagrams showing Forge ore dictionary data for any item.
  *
- * <p>This diagram generator generates its diagrams dynamically, and so does not support showing all
- * diagrams.
+ * <p>
+ * This diagram generator generates its diagrams dynamically, and so does not support showing all diagrams.
  */
 public final class ForgeOreDictionary implements DiagramGenerator {
+
     public static final ItemComponent ICON = ItemComponent.create(Items.book, 0);
 
     private static final Layout.SlotGroupKey SLOT_GROUP_KEY = Layout.SlotGroupKey.create("key");
@@ -41,9 +45,9 @@ public final class ForgeOreDictionary implements DiagramGenerator {
     public ForgeOreDictionary(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.FORGE_ORE_DICTIONARY.trans("groupname"), groupId, ICON, 2)
                 .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
-                .setDescription("This diagram displays Forge ore dictionary prefixes"
-                        + " and registered items."
-                        + "\nMostly useful for modpack development.")
+                .setDescription(
+                        "This diagram displays Forge ore dictionary prefixes" + " and registered items."
+                                + "\nMostly useful for modpack development.")
                 .build();
     }
 
@@ -58,16 +62,14 @@ public final class ForgeOreDictionary implements DiagramGenerator {
     }
 
     private static Collection<Diagram> generateDiagrams(Interactable.RecipeType recipeType, Component component) {
-        return OreDictUtil.getOreNames(component).stream()
-                .map(ForgeOreDictionary::generateDiagram)
+        return OreDictUtil.getOreNames(component).stream().map(ForgeOreDictionary::generateDiagram)
                 .collect(Collectors.toList());
     }
 
     private static Diagram generateDiagram(String oreName) {
         List<ItemComponent> components = OreDictUtil.getComponents(oreName);
         List<List<DisplayComponent>> displayComponentPermutations = components.stream()
-                .map(OreDictUtil::getPermutations)
-                .map(ComponentTransformer::transformToDisplay)
+                .map(OreDictUtil::getPermutations).map(ComponentTransformer::transformToDisplay)
                 .collect(Collectors.toList());
 
         Diagram.Builder builder = Diagram.builder().addLayout(buildLayout(oreName));
@@ -78,19 +80,13 @@ public final class ForgeOreDictionary implements DiagramGenerator {
 
     private static Layout buildLayout(String oreName) {
         boolean small = GuiDraw.getStringWidth(oreName) > Grid.TOTAL_WIDTH - 4;
-        Text oreNameText = Text.builder(oreName, Grid.GRID.grid(6, 0), Grid.Direction.N)
-                .setSmall(small)
-                .build();
+        Text oreNameText = Text.builder(oreName, Grid.GRID.grid(6, 0), Grid.Direction.N).setSmall(small).build();
         Interactable oreNameLabel = CustomInteractable.builder(oreNameText)
                 .setTooltip(Tooltip.create(Lang.FORGE_ORE_DICTIONARY.trans("orenamelabel"), Tooltip.SLOT_FORMATTING))
                 .build();
 
-        return Layout.builder()
-                .addInteractable(oreNameLabel)
-                .putSlotGroup(
-                        SLOT_GROUP_KEY,
-                        SlotGroup.builder(9, 8, Grid.GRID.grid(6, 1), Grid.Direction.S)
-                                .build())
+        return Layout.builder().addInteractable(oreNameLabel)
+                .putSlotGroup(SLOT_GROUP_KEY, SlotGroup.builder(9, 8, Grid.GRID.grid(6, 1), Grid.Direction.S).build())
                 .build();
     }
 }

@@ -1,6 +1,11 @@
 package com.github.dcysteine.neicustomdiagram.main;
 
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import codechicken.nei.api.API;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroupInfo;
@@ -22,14 +27,13 @@ import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /** Registry of diagram generators. Add your diagram generator here! */
 public enum Registry {
+
     // Singleton class; enforced by being an enum.
     INSTANCE;
 
@@ -43,10 +47,16 @@ public enum Registry {
 
         // Add your diagram generator here!
         entriesBuilder.add(RegistryEntry.create("debug.ruler", DebugRuler::new));
-        entriesBuilder.add(RegistryEntry.create(
-                "enderstorage.chestoverview", EnderStorageChestOverview::new, ModDependency.ENDER_STORAGE));
-        entriesBuilder.add(RegistryEntry.create(
-                "enderstorage.tankoverview", EnderStorageTankOverview::new, ModDependency.ENDER_STORAGE));
+        entriesBuilder.add(
+                RegistryEntry.create(
+                        "enderstorage.chestoverview",
+                        EnderStorageChestOverview::new,
+                        ModDependency.ENDER_STORAGE));
+        entriesBuilder.add(
+                RegistryEntry.create(
+                        "enderstorage.tankoverview",
+                        EnderStorageTankOverview::new,
+                        ModDependency.ENDER_STORAGE));
         entriesBuilder.add(RegistryEntry.create("forge.fluidcontainers", ForgeFluidContainers::new));
         entriesBuilder.add(RegistryEntry.create("forge.oredictionary", ForgeOreDictionary::new));
         entriesBuilder.add(RegistryEntry.create("gregtech.circuits", GregTechCircuits::new, ModDependency.GREGTECH_5));
@@ -57,8 +67,8 @@ public enum Registry {
                 RegistryEntry.create("gregtech.materialtools", GregTechMaterialTools::new, ModDependency.GREGTECH_5));
         entriesBuilder.add(
                 RegistryEntry.create("gregtech.oredictionary", GregTechOreDictionary::new, ModDependency.GREGTECH_5));
-        entriesBuilder.add(
-                RegistryEntry.create("gregtech.oreprefixes", GregTechOrePrefixes::new, ModDependency.GREGTECH_5));
+        entriesBuilder
+                .add(RegistryEntry.create("gregtech.oreprefixes", GregTechOrePrefixes::new, ModDependency.GREGTECH_5));
         entriesBuilder.add(
                 RegistryEntry.create("gregtech.oreprocessing", GregTechOreProcessing::new, ModDependency.GREGTECH_5));
         entriesBuilder.add(
@@ -68,6 +78,7 @@ public enum Registry {
     }
 
     public enum ModDependency {
+
         // If you're adding a new mod dependency here, don't forget to also add it to the list of
         // dependencies in NeiCustomDiagram.java (if necessary).
         ENDER_STORAGE("EnderStorage"),
@@ -76,6 +87,7 @@ public enum Registry {
 
         // GregTech 5 shares a mod ID with GregTech 6, so we must also check the mod version.
         GREGTECH_5("gregtech") {
+
             @Override
             public boolean isLoaded() {
                 if (super.isLoaded()) {
@@ -93,6 +105,7 @@ public enum Registry {
 
         // GregTech 6 shares a mod ID with GregTech 5, so we must also check the mod version.
         GREGTECH_6("gregtech") {
+
             @Override
             public boolean isLoaded() {
                 if (super.isLoaded()) {
@@ -124,12 +137,13 @@ public enum Registry {
 
     @AutoValue
     protected abstract static class RegistryEntry {
-        protected static RegistryEntry create(
-                String groupIdSuffix,
-                Function<String, DiagramGenerator> generatorConstructor,
-                ModDependency... hardDependencies) {
+
+        protected static RegistryEntry create(String groupIdSuffix,
+                Function<String, DiagramGenerator> generatorConstructor, ModDependency... hardDependencies) {
             return new AutoValue_Registry_RegistryEntry(
-                    GROUP_ID_PREFIX + groupIdSuffix, generatorConstructor, ImmutableSet.copyOf(hardDependencies));
+                    GROUP_ID_PREFIX + groupIdSuffix,
+                    generatorConstructor,
+                    ImmutableSet.copyOf(hardDependencies));
         }
 
         protected abstract String groupId();
@@ -143,8 +157,7 @@ public enum Registry {
         }
 
         protected List<ModDependency> missingDependencies() {
-            return hardDependencies().stream()
-                    .filter(modDependency -> !modDependency.isLoaded())
+            return hardDependencies().stream().filter(modDependency -> !modDependency.isLoaded())
                     .collect(Collectors.toList());
         }
     }
@@ -156,8 +169,8 @@ public enum Registry {
     public void initialize() {
         Logger.MOD.info("Initializing diagram groups...");
 
-        ImmutableSet<String> hardDisabledDiagramGroups =
-                ImmutableSet.copyOf(ConfigOptions.HARD_DISABLED_DIAGRAM_GROUPS.get());
+        ImmutableSet<String> hardDisabledDiagramGroups = ImmutableSet
+                .copyOf(ConfigOptions.HARD_DISABLED_DIAGRAM_GROUPS.get());
         ImmutableList.Builder<DiagramGenerator> generatorsBuilder = ImmutableList.builder();
         ImmutableList.Builder<DiagramGroupInfo> infoListBuilder = ImmutableList.builder();
         for (RegistryEntry entry : entries) {
@@ -208,12 +221,11 @@ public enum Registry {
     }
 
     /**
-     * Call this after diagram generation to clear out static references so that objects can get
-     * garbage-collected.
+     * Call this after diagram generation to clear out static references so that objects can get garbage-collected.
      *
-     * <p>In particular, diagram generators can have quite heavy memory usage, and are no longer
-     * used after diagram generation. This method will clear references to them so that they can be
-     * garbage-collected.
+     * <p>
+     * In particular, diagram generators can have quite heavy memory usage, and are no longer used after diagram
+     * generation. This method will clear references to them so that they can be garbage-collected.
      */
     public void cleanUp() {
         generators = null;

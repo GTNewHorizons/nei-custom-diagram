@@ -1,24 +1,25 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
 import com.github.dcysteine.neicustomdiagram.api.diagram.layout.Layout;
 import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
- * Abstract extension of {@link Diagram} that supports showing and hiding sub-diagrams based on
- * custom diagram state.
+ * Abstract extension of {@link Diagram} that supports showing and hiding sub-diagrams based on custom diagram state.
  *
- * <p>To use this class, extend it and implement {@link #activeDiagrams(DiagramState)} to return a
- * collection of diagrams that should be shown based on the current diagram state. You'll probably
- * want to add a member variable that stores all diagrams, and then return a subset of that in
- * {@code activeDiagrams(DiagramState)}.
+ * <p>
+ * To use this class, extend it and implement {@link #activeDiagrams(DiagramState)} to return a collection of diagrams
+ * that should be shown based on the current diagram state. You'll probably want to add a member variable that stores
+ * all diagrams, and then return a subset of that in {@code activeDiagrams(DiagramState)}.
  */
 public abstract class CompositeDiagram extends Diagram {
+
     /** The passed-in layout and interactables will always be shown. */
     public CompositeDiagram(Layout layout, ImmutableList<? extends Interactable> interactables) {
         super(layout, interactables);
@@ -41,8 +42,7 @@ public abstract class CompositeDiagram extends Diagram {
 
     @Override
     public Dimension dimension(DiagramState diagramState) {
-        return activeDiagrams(diagramState).stream()
-                .map(diagram -> diagram.dimension(diagramState))
+        return activeDiagrams(diagramState).stream().map(diagram -> diagram.dimension(diagramState))
                 .reduce(super.dimension(diagramState), Dimension::max);
     }
 

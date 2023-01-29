@@ -4,12 +4,13 @@ import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import gregtech.api.enums.Materials;
 
 public final class GregTechFormatting {
+
     // Static class.
     private GregTechFormatting() {}
 
     private static String getMaterialName(Materials material) {
         // TODO maybe we can delete this null check? Fixed by:
-        //  https://github.com/GTNewHorizons/bartworks/pull/35
+        // https://github.com/GTNewHorizons/bartworks/pull/35
         return material.mLocalizedName.equals("null") ? material.mName : material.mLocalizedName;
     }
 

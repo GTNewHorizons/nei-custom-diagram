@@ -1,5 +1,12 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.oreprocessing;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
+
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
@@ -13,24 +20,18 @@ import com.github.dcysteine.neicustomdiagram.util.DiagramUtil;
 import com.github.dcysteine.neicustomdiagram.util.bartworks.BartWorksOreDictUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.common.collect.ImmutableList;
+
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.common.blocks.GT_Block_Ores_Abstract;
 import gtPlusPlus.core.block.base.BlockBaseOre;
 import gtPlusPlus.core.material.Material;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
 
 /** Generates ore processing diagrams for GregTech ores. */
 public final class GregTechOreProcessing implements DiagramGenerator {
-    public static final ItemComponent ICON =
-            GregTechOreDictUtil.getAllComponents(OrePrefixes.ore, Materials.Aluminium).stream()
-                    .filter(GregTechOreProcessing::isGregTechOreBlock)
-                    .findFirst()
-                    .get();
+
+    public static final ItemComponent ICON = GregTechOreDictUtil.getAllComponents(OrePrefixes.ore, Materials.Aluminium)
+            .stream().filter(GregTechOreProcessing::isGregTechOreBlock).findFirst().get();
 
     private static final ImmutableList<OrePrefixes> OTHER_ORE_PREFIXES = ImmutableList.of(
             OrePrefixes.oreBlackgranite,
@@ -58,8 +59,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
                 // We'll always insert the ore block itself, so require at least 2
                 // components to be inserted to be non-empty.
                 .setEmptyDiagramPredicate(DiagramUtil.buildEmptyDiagramPredicate(2))
-                .setDescription("This diagram displays GregTech ore processing products.")
-                .build();
+                .setDescription("This diagram displays GregTech ore processing products.").build();
 
         this.labelHandler = new LabelHandler();
         this.layoutHandler = new LayoutHandler(this.info, this.labelHandler);
@@ -91,8 +91,8 @@ public final class GregTechOreProcessing implements DiagramGenerator {
                 continue;
             }
 
-            OTHER_ORE_PREFIXES.forEach(
-                    prefix -> rawOres.addAll(GregTechOreDictUtil.getAllComponents(prefix, material)));
+            OTHER_ORE_PREFIXES
+                    .forEach(prefix -> rawOres.addAll(GregTechOreDictUtil.getAllComponents(prefix, material)));
 
             buildDiagram(matcherBuilder, rawOres);
         }
@@ -107,8 +107,8 @@ public final class GregTechOreProcessing implements DiagramGenerator {
                 List<ItemComponent> rawOres = new ArrayList<>();
                 rawOres.add(rawOre.get());
 
-                OTHER_ORE_PREFIXES.forEach(prefix ->
-                        BartWorksOreDictUtil.getComponent(prefix, werkstoff).ifPresent(rawOres::add));
+                OTHER_ORE_PREFIXES.forEach(
+                        prefix -> BartWorksOreDictUtil.getComponent(prefix, werkstoff).ifPresent(rawOres::add));
 
                 buildDiagram(matcherBuilder, rawOres);
             }

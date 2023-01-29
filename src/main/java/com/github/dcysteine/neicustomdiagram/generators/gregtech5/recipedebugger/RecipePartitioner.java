@@ -1,5 +1,11 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.recipedebugger;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.FluidComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
@@ -9,30 +15,27 @@ import com.google.common.collect.Lists;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnel;
 import com.google.common.hash.PrimitiveSink;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Class that helps us handle huge lists of recipes by partitioning them with bloom filters.
  *
- * <p>Programmed circuits will be ignored for the bloom filter check. This is necessary for the
- * unnecessary circuits view check to work.
+ * <p>
+ * Programmed circuits will be ignored for the bloom filter check. This is necessary for the unnecessary circuits view
+ * check to work.
  */
 class RecipePartitioner {
+
     private static final int MIN_SIZE_TO_PARTITION = 2048;
 
     /**
-     * This seems like a "magic number" that works pretty well. Much larger numbers seem to perform
-     * worse.
+     * This seems like a "magic number" that works pretty well. Much larger numbers seem to perform worse.
      */
     private static final int PARTITION_SIZE = 128;
 
     private static final int INSERTIONS_PER_RECIPE = 3;
 
     private enum ComponentFunnel implements Funnel<Component> {
+
         INSTANCE;
 
         @Override
@@ -69,12 +72,10 @@ class RecipePartitioner {
 
         partitions = new HashMap<>();
         for (List<RecipeHandler.Recipe> partition : Lists.partition(recipeList, PARTITION_SIZE)) {
-            BloomFilter<Component> bloomFilter =
-                    BloomFilter.create(ComponentFunnel.INSTANCE, INSERTIONS_PER_RECIPE * partition.size());
+            BloomFilter<Component> bloomFilter = BloomFilter
+                    .create(ComponentFunnel.INSTANCE, INSERTIONS_PER_RECIPE * partition.size());
 
-            partition.stream()
-                    .flatMap(recipe ->
-                            RecipeHandler.filterCircuits(recipe.inputs().keySet()).stream())
+            partition.stream().flatMap(recipe -> RecipeHandler.filterCircuits(recipe.inputs().keySet()).stream())
                     .forEach(bloomFilter::put);
 
             partitions.put(bloomFilter, partition);

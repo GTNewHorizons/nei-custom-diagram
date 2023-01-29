@@ -1,7 +1,10 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.interactable;
 
+import java.util.function.Consumer;
+
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramState;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.FluidComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
@@ -9,43 +12,37 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.draw.BoundedDrawable;
 import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
-import java.util.function.Consumer;
 
 /** This class is a flexible way to create arbitrary interactables, but requires a lot of setup. */
 public class CustomInteractable implements Interactable {
+
     protected final BoundedDrawable drawable;
     protected final Tooltip tooltip;
     protected final Consumer<RecipeType> interact;
 
     /**
-     * This function will be called before {@code label.draw()}, with {@code position} as a
-     * parameter.
+     * This function will be called before {@code label.draw()}, with {@code position} as a parameter.
      *
-     * <p>You can use this to do something like draw a slot under the label.
+     * <p>
+     * You can use this to do something like draw a slot under the label.
      */
     protected final Consumer<Point> drawBackground;
 
     /**
-     * This function will be called after {@code label.draw()}, with {@code position} as a
-     * parameter.
+     * This function will be called after {@code label.draw()}, with {@code position} as a parameter.
      *
-     * <p>You can use this to do something like draw additional info text over the label.
+     * <p>
+     * You can use this to do something like draw additional info text over the label.
      */
     protected final Consumer<Point> drawForeground;
 
     /**
-     * This function will be called when mousing over this interactable, with {@code position} as a
-     * parameter.
+     * This function will be called when mousing over this interactable, with {@code position} as a parameter.
      */
     protected final Consumer<Point> drawOverlay;
 
-    protected CustomInteractable(
-            BoundedDrawable drawable,
-            Tooltip tooltip,
-            Consumer<RecipeType> interact,
-            Consumer<Point> drawBackground,
-            Consumer<Point> drawForeground,
-            Consumer<Point> drawOverlay) {
+    protected CustomInteractable(BoundedDrawable drawable, Tooltip tooltip, Consumer<RecipeType> interact,
+            Consumer<Point> drawBackground, Consumer<Point> drawForeground, Consumer<Point> drawOverlay) {
         this.drawable = drawable;
         this.tooltip = tooltip;
         this.interact = interact;
@@ -114,6 +111,7 @@ public class CustomInteractable implements Interactable {
     }
 
     public static final class Builder {
+
         private final BoundedDrawable drawable;
         private Tooltip tooltip;
         private Consumer<RecipeType> interact;
@@ -146,8 +144,8 @@ public class CustomInteractable implements Interactable {
         /**
          * You probably want to call this with one of these method references:
          * <ul>
-         *     <li>{@link ItemComponent#interact(RecipeType)}
-         *     <li>{@link FluidComponent#interact(RecipeType)}
+         * <li>{@link ItemComponent#interact(RecipeType)}
+         * <li>{@link FluidComponent#interact(RecipeType)}
          * </ul>
          */
         public Builder setInteract(Consumer<RecipeType> interact) {
@@ -156,10 +154,10 @@ public class CustomInteractable implements Interactable {
         }
 
         /**
-         * This function will be called before {@code label.draw()}, with {@code position} as a
-         * parameter.
+         * This function will be called before {@code label.draw()}, with {@code position} as a parameter.
          *
-         * <p>You can use this to do something like draw a slot under the label.
+         * <p>
+         * You can use this to do something like draw a slot under the label.
          */
         public Builder setDrawBackground(Consumer<Point> drawBackground) {
             this.drawBackground = drawBackground;
@@ -167,10 +165,10 @@ public class CustomInteractable implements Interactable {
         }
 
         /**
-         * This function will be called after {@code label.draw()}, with {@code position} as a
-         * parameter.
+         * This function will be called after {@code label.draw()}, with {@code position} as a parameter.
          *
-         * <p>You can use this to do something like draw additional info text over the label.
+         * <p>
+         * You can use this to do something like draw additional info text over the label.
          */
         public Builder setDrawForeground(Consumer<Point> drawForeground) {
             this.drawForeground = drawForeground;
@@ -178,8 +176,7 @@ public class CustomInteractable implements Interactable {
         }
 
         /**
-         * This function will be called when mousing over this interactable, with {@code position}
-         * as a parameter.
+         * This function will be called when mousing over this interactable, with {@code position} as a parameter.
          */
         public Builder setDrawOverlay(Consumer<Point> drawOverlay) {
             this.drawOverlay = drawOverlay;

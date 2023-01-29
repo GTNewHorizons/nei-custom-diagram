@@ -1,5 +1,8 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.layout;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramState;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
@@ -10,19 +13,20 @@ import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * A slot group is a rectangular group of slots, which can be used to display related stacks.
  *
- * <p>Regardless of which direction was used when positioning the slot group, when accessing the
- * slots, {@code (0, 0)} will always be the top-left slot.
+ * <p>
+ * Regardless of which direction was used when positioning the slot group, when accessing the slots, {@code (0, 0)} will
+ * always be the top-left slot.
  *
- * <p>Slots will be iterated over left-to-right, then top-to-bottom.
+ * <p>
+ * Slots will be iterated over left-to-right, then top-to-bottom.
  */
 @AutoValue
 public abstract class SlotGroup implements Drawable {
+
     public static Slot.Builder slotBuilder() {
         return Slot.builder(Point.create(0, 0));
     }
@@ -36,7 +40,8 @@ public abstract class SlotGroup implements Drawable {
     /**
      * The list of slots, which will always have size {@code width * height}.
      *
-     * <p>Slots will be iterated over left-to-right, then top-to-bottom.
+     * <p>
+     * Slots will be iterated over left-to-right, then top-to-bottom.
      */
     public abstract ImmutableList<Slot> slots();
 
@@ -58,16 +63,17 @@ public abstract class SlotGroup implements Drawable {
     public abstract String toPrettyString();
 
     /**
-     * Returns a builder, with {@code width x height} slots pre-constructed with no tooltip message
-     * and default appearance and width.
+     * Returns a builder, with {@code width x height} slots pre-constructed with no tooltip message and default
+     * appearance and width.
      *
-     * <p>{@code dir} specifies which direction the slot group will extend from {@code pos}.
+     * <p>
+     * {@code dir} specifies which direction the slot group will extend from {@code pos}.
      *
-     * <p>For example, if {@code dir = Direction.NW}, the center of the bottom-right slot would be
-     * placed at {@code pos}. If instead {@code dir = Direction.E}, then the center of the leftmost
-     * column of slots would be placed at {@code pos}. If this slot group has an even height, say
-     * {@code 8}, then {@code pos} would be the center of the margin between the fourth and fifth
-     * slots in the leftmost column.
+     * <p>
+     * For example, if {@code dir = Direction.NW}, the center of the bottom-right slot would be placed at {@code pos}.
+     * If instead {@code dir = Direction.E}, then the center of the leftmost column of slots would be placed at
+     * {@code pos}. If this slot group has an even height, say {@code 8}, then {@code pos} would be the center of the
+     * margin between the fourth and fifth slots in the leftmost column.
      */
     public static Builder builder(int width, int height, Point pos, Grid.Direction dir) {
         Preconditions.checkArgument(width > 0, "Width too small: %d", width);
@@ -77,6 +83,7 @@ public abstract class SlotGroup implements Drawable {
     }
 
     public static final class Builder {
+
         private final int width;
         private final int height;
         private final Point position;
@@ -114,8 +121,7 @@ public abstract class SlotGroup implements Drawable {
         }
 
         /**
-         * Sets the default draw function, which will be used for any slots that are not explicitly
-         * set.
+         * Sets the default draw function, which will be used for any slots that are not explicitly set.
          */
         public Builder setDefaultDrawFunction(BiConsumer<DiagramState, Point> defaultDrawFunction) {
             this.defaultDrawFunction = defaultDrawFunction;
@@ -123,8 +129,7 @@ public abstract class SlotGroup implements Drawable {
         }
 
         /**
-         * Sets the default draw function, which will be used for any slots that are not explicitly
-         * set.
+         * Sets the default draw function, which will be used for any slots that are not explicitly set.
          */
         public Builder setDefaultDrawFunction(Consumer<Point> defaultDrawFunction) {
             this.defaultDrawFunction = (ticker, point) -> defaultDrawFunction.accept(point);
@@ -134,9 +139,9 @@ public abstract class SlotGroup implements Drawable {
         /**
          * Sets a slot with a custom tooltip and/or draw function.
          *
-         * <p>The slot's position will be overridden during slot group construction, so for
-         * convenience, you can use {@link #slotBuilder()} to get a slot builder without specifying
-         * a position.
+         * <p>
+         * The slot's position will be overridden during slot group construction, so for convenience, you can use
+         * {@link #slotBuilder()} to get a slot builder without specifying a position.
          */
         public Builder setSlot(int x, int y, Slot slot) {
             slots[x][y] = slot;
@@ -159,9 +164,7 @@ public abstract class SlotGroup implements Drawable {
                     if (slots[i][j] != null) {
                         slotBuilder = slots[i][j].toBuilder().setPosition(currPos);
                     } else {
-                        slotBuilder = Slot.builder(currPos)
-                                .setSlotWidth(slotWidth)
-                                .setTooltip(defaultTooltip)
+                        slotBuilder = Slot.builder(currPos).setSlotWidth(slotWidth).setTooltip(defaultTooltip)
                                 .setDrawFunction(defaultDrawFunction);
                     }
 

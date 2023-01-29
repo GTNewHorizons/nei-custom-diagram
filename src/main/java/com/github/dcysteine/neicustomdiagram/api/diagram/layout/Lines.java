@@ -14,17 +14,21 @@ import com.google.common.collect.Iterables;
 /**
  * Immutable class holding line segments and arrows.
  *
- * <p>See {@link Draw.Colour} for colour encoding information.
+ * <p>
+ * See {@link Draw.Colour} for colour encoding information.
  */
 @AutoValue
 public abstract class Lines implements Drawable {
+
     /**
      * Immutable class representing a line segment or arrow drawn between two points.
      *
-     * <p>Order of the points matters only if this segment is being drawn as an arrow.
+     * <p>
+     * Order of the points matters only if this segment is being drawn as an arrow.
      */
     @AutoValue
     public abstract static class Segment {
+
         public static Segment create(Point a, Point b) {
             Preconditions.checkArgument(a.isOrthogonal(b), "Points aren't orthogonal: [%s] [%s]", a, b);
 
@@ -84,12 +88,13 @@ public abstract class Lines implements Drawable {
     /**
      * Fluent builder for {@code Lines}.
      *
-     * <p>This builder is initialized with a position, and keeps track of its current position.
-     * This allows segments to be specified with just a single point: the segment will be drawn
-     * between the builder's position and the new point, and then the builder will set its position
-     * to the new point, kind of like a real pen.
+     * <p>
+     * This builder is initialized with a position, and keeps track of its current position. This allows segments to be
+     * specified with just a single point: the segment will be drawn between the builder's position and the new point,
+     * and then the builder will set its position to the new point, kind of like a real pen.
      */
     public static final class Builder {
+
         private int colour;
         private Point currentPosition;
 

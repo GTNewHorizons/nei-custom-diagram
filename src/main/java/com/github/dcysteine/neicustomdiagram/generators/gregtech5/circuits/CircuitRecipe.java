@@ -1,5 +1,16 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.circuits;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import net.minecraft.item.ItemStack;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
@@ -13,27 +24,19 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Table;
 import gregtech.api.util.GT_Recipe;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import net.minecraft.item.ItemStack;
 
 /**
- * This class holds all of the valid input permutations for a given circuit's recipes in the circuit
- * assembling machine.
+ * This class holds all of the valid input permutations for a given circuit's recipes in the circuit assembling machine.
  */
 @AutoValue
 abstract class CircuitRecipe {
+
     static final int MAX_ITEM_INPUTS = 6;
 
     /** Helper class that holds display components describing a {@link GT_Recipe}. */
     @AutoValue
     abstract static class Recipe {
+
         private static Recipe create(GT_Recipe recipe) {
             ImmutableList.Builder<ImmutableList<DisplayComponent>> itemInputsBuilder = ImmutableList.builder();
             for (ItemStack itemStack : recipe.mInputs) {
@@ -44,15 +47,15 @@ abstract class CircuitRecipe {
                 ItemComponent itemComponent = ItemComponent.create(itemStack);
                 List<Component> reverseUnifiedItems = GregTechOreDictUtil.reverseUnify(itemComponent);
 
-                itemInputsBuilder.add(ImmutableList.copyOf(reverseUnifiedItems.stream()
-                        .map(c -> DisplayComponent.builder(c)
-                                .setStackSize(itemStack.stackSize)
-                                .build())
-                        .collect(Collectors.toList())));
+                itemInputsBuilder.add(
+                        ImmutableList.copyOf(
+                                reverseUnifiedItems.stream()
+                                        .map(c -> DisplayComponent.builder(c).setStackSize(itemStack.stackSize).build())
+                                        .collect(Collectors.toList())));
             }
 
-            DisplayComponent fluidInput =
-                    Iterables.getOnlyElement(GregTechRecipeUtil.buildComponentsFromFluidInputs(recipe));
+            DisplayComponent fluidInput = Iterables
+                    .getOnlyElement(GregTechRecipeUtil.buildComponentsFromFluidInputs(recipe));
             DisplayComponent output = Iterables.getOnlyElement(GregTechRecipeUtil.buildComponentsFromOutputs(recipe));
 
             return new AutoValue_CircuitRecipe_Recipe(
@@ -107,13 +110,13 @@ abstract class CircuitRecipe {
                 continue;
             }
             if (requiresCleanroom != recipe.requiresCleanroom()) {
-                Logger.GREGTECH_5_CIRCUITS.warn(
-                        "Expected recipe to have cleanroom requirement [{}]: [{}]", requiresCleanroom, recipe);
+                Logger.GREGTECH_5_CIRCUITS
+                        .warn("Expected recipe to have cleanroom requirement [{}]: [{}]", requiresCleanroom, recipe);
                 continue;
             }
             if (requiresLowGravity != recipe.requiresLowGravity()) {
-                Logger.GREGTECH_5_CIRCUITS.warn(
-                        "Expected recipe to have low gravity requirement [{}]: [{}]", requiresLowGravity, recipe);
+                Logger.GREGTECH_5_CIRCUITS
+                        .warn("Expected recipe to have low gravity requirement [{}]: [{}]", requiresLowGravity, recipe);
                 continue;
             }
 
@@ -123,10 +126,8 @@ abstract class CircuitRecipe {
             fluidInputsBuilder.add(recipe.fluidInput());
         }
 
-        ImmutableList<ImmutableSortedSet<DisplayComponent>> itemInputs =
-                ImmutableList.copyOf(itemInputsBuilderList.stream()
-                        .map(ImmutableSortedSet.Builder::build)
-                        .collect(Collectors.toList()));
+        ImmutableList<ImmutableSortedSet<DisplayComponent>> itemInputs = ImmutableList.copyOf(
+                itemInputsBuilderList.stream().map(ImmutableSortedSet.Builder::build).collect(Collectors.toList()));
         ImmutableSortedSet<DisplayComponent> fluidInputs = fluidInputsBuilder.build();
 
         boolean missingCombinations = false;
@@ -136,8 +137,7 @@ abstract class CircuitRecipe {
         long expectedNumberOfRecipes = fluidInputs.size();
         try {
             expectedNumberOfRecipes *= itemInputs.stream().mapToLong(Set::size).reduce(1, Math::multiplyExact);
-            expectedNumberOfRecipes /= recipes.stream()
-                    .mapToLong(Recipe::itemInputsPermutationMultiplier)
+            expectedNumberOfRecipes /= recipes.stream().mapToLong(Recipe::itemInputsPermutationMultiplier)
                     .reduce(1, Math::multiplyExact);
         } catch (ArithmeticException e) {
             Logger.GREGTECH_5_CIRCUITS.error(
@@ -159,13 +159,18 @@ abstract class CircuitRecipe {
         }
 
         return new AutoValue_CircuitRecipe(
-                missingCombinations, requiresCleanroom, requiresLowGravity, itemInputs, fluidInputs, output);
+                missingCombinations,
+                requiresCleanroom,
+                requiresLowGravity,
+                itemInputs,
+                fluidInputs,
+                output);
     }
 
     static List<CircuitRecipe> buildCircuitRecipes(Iterable<GT_Recipe> rawRecipes) {
         // TODO for now, we assume that all recipes with the same number of ingredients and the same
-        //  output stack size are permutations of the same recipe.
-        //  If this stops being true, then we'll need to add handling for that.
+        // output stack size are permutations of the same recipe.
+        // If this stops being true, then we'll need to add handling for that.
 
         // Table of recipe input size, recipe output stack size to set of recipes.
         Table<Integer, Integer, Set<Recipe>> recipeTable = HashBasedTable.create();
@@ -187,13 +192,13 @@ abstract class CircuitRecipe {
         return recipeTable.rowMap().entrySet().stream()
                 // We use reverse sort order here because circuit recipes with fewer ingredients
                 // tend to be more advanced, so we want to show those later.
-                .sorted(Map.Entry.<Integer, Map<Integer, Set<Recipe>>>comparingByKey()
-                        .reversed())
-                .flatMap(entry -> entry.getValue().entrySet().stream()
-                        // For recipes with the same number of input ingredients, we will
-                        // sort them by output stack size, ascending.
-                        .sorted(Map.Entry.comparingByKey())
-                        .map(innerEntry -> create(entry.getKey(), innerEntry.getValue())))
+                .sorted(Map.Entry.<Integer, Map<Integer, Set<Recipe>>>comparingByKey().reversed())
+                .flatMap(
+                        entry -> entry.getValue().entrySet().stream()
+                                // For recipes with the same number of input ingredients, we will
+                                // sort them by output stack size, ascending.
+                                .sorted(Map.Entry.comparingByKey())
+                                .map(innerEntry -> create(entry.getKey(), innerEntry.getValue())))
                 .collect(Collectors.toList());
     }
 

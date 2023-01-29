@@ -1,5 +1,18 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.oreprocessing;
 
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.github.dcysteine.neicustomdiagram.main.Logger;
@@ -12,25 +25,17 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
+
 import gregtech.api.enums.Materials;
 import gregtech.api.util.GT_OreDictUnificator;
 import gregtech.api.util.GT_Recipe;
 import gregtech.api.util.GT_Utility;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 
 /** Class that caches GregTech recipe data and stores it in a map, for fast lookup later. */
 class RecipeHandler {
+
     enum RecipeMap {
+
         MACERATOR(GT_Recipe.GT_Recipe_Map.sMaceratorRecipes),
         ORE_WASHING_PLANT(GT_Recipe.GT_Recipe_Map.sOreWasherRecipes),
         THERMAL_CENTRIFUGE(GT_Recipe.GT_Recipe_Map.sThermalCentrifugeRecipes),
@@ -53,10 +58,11 @@ class RecipeHandler {
     /**
      * Enum containing fluids that we will look up crushed ore recipes for in the chemical bath.
      *
-     * <p>These are the GregTech display item stack, and so are {@link ItemComponent}s rather than
-     * {@code FluidComponent}s.
+     * <p>
+     * These are the GregTech display item stack, and so are {@link ItemComponent}s rather than {@code FluidComponent}s.
      */
     enum ChemicalBathFluid {
+
         MERCURY(ItemComponent.create(GT_Utility.getFluidDisplayStack(Materials.Mercury.mFluid))),
 
         SODIUM_PERSULFATE(ItemComponent.create(GT_Utility.getFluidDisplayStack(Materials.SodiumPersulfate.mFluid)));
@@ -68,22 +74,24 @@ class RecipeHandler {
         }
 
         /**
-         * Note that the keys are GregTech fluid display items, not fluids. This is for convenience,
-         * because {@link GregTechRecipeUtil} returns GregTech fluid display items (when possible).
+         * Note that the keys are GregTech fluid display items, not fluids. This is for convenience, because
+         * {@link GregTechRecipeUtil} returns GregTech fluid display items (when possible).
          */
-        static final ImmutableMap<ItemComponent, ChemicalBathFluid> VALUES_MAP = ImmutableMap.copyOf(
-                Arrays.stream(values()).collect(Collectors.toMap(c -> c.fluid, Function.identity())));
+        static final ImmutableMap<ItemComponent, ChemicalBathFluid> VALUES_MAP = ImmutableMap
+                .copyOf(Arrays.stream(values()).collect(Collectors.toMap(c -> c.fluid, Function.identity())));
     }
 
     /**
      * Helper class containing the input fluid amount, as well as the recipe outputs.
      *
-     * <p>This class is stored in {@code chemicalBathFluidData} below. Unlike {@code recipeData}, we
-     * cannot just map to {@code ImmutableList<DisplayComponent>}, because we must also store the
-     * additional information of how much of the chemical bath fluid is required as input.
+     * <p>
+     * This class is stored in {@code chemicalBathFluidData} below. Unlike {@code recipeData}, we cannot just map to
+     * {@code ImmutableList<DisplayComponent>}, because we must also store the additional information of how much of the
+     * chemical bath fluid is required as input.
      */
     @AutoValue
     public abstract static class ChemicalBathFluidRecipe {
+
         public static ChemicalBathFluidRecipe create(int inputFluidAmount, ImmutableList<DisplayComponent> outputs) {
             return new AutoValue_RecipeHandler_ChemicalBathFluidRecipe(inputFluidAmount, outputs);
         }
@@ -94,18 +102,19 @@ class RecipeHandler {
     }
 
     /**
-     * Map of recipe type to multimap. The multimaps are maps of input {@link ItemComponent}s to
-     * lists of {@link DisplayComponent}s representing the outputs for each recipe for that input.
+     * Map of recipe type to multimap. The multimaps are maps of input {@link ItemComponent}s to lists of
+     * {@link DisplayComponent}s representing the outputs for each recipe for that input.
      *
-     * <p>We usually don't look up recipe outputs by fluid, so fluid inputs will be skipped when
-     * building this data. We have separate data structures for the few fluid lookups that we do.
+     * <p>
+     * We usually don't look up recipe outputs by fluid, so fluid inputs will be skipped when building this data. We
+     * have separate data structures for the few fluid lookups that we do.
      */
     private final EnumMap<RecipeMap, SetMultimap<ItemComponent, ImmutableList<DisplayComponent>>> recipeData;
 
     /**
      * Map of fluid to multimap. The multimaps are maps of input {@link ItemComponent}s to
-     * {@link ChemicalBathFluidRecipe}s containing the input fluid amount, as well as the chemical
-     * bath recipe outputs, for the given chemical bath fluid and input item.
+     * {@link ChemicalBathFluidRecipe}s containing the input fluid amount, as well as the chemical bath recipe outputs,
+     * for the given chemical bath fluid and input item.
      */
     private final EnumMap<ChemicalBathFluid, SetMultimap<ItemComponent, ChemicalBathFluidRecipe>> chemicalBathFluidData;
 
@@ -121,19 +130,18 @@ class RecipeHandler {
     /** This method must be called before any other methods are called. */
     @SuppressWarnings("unchecked")
     void initialize() {
-        Arrays.stream(ChemicalBathFluid.values())
-                .forEach(chemicalBathFluid -> chemicalBathFluidData.put(
-                        chemicalBathFluid,
-                        MultimapBuilder.hashKeys().hashSetValues().build()));
+        Arrays.stream(ChemicalBathFluid.values()).forEach(
+                chemicalBathFluid -> chemicalBathFluidData
+                        .put(chemicalBathFluid, MultimapBuilder.hashKeys().hashSetValues().build()));
 
         for (RecipeMap recipeMap : RecipeMap.values()) {
-            SetMultimap<ItemComponent, ImmutableList<DisplayComponent>> multimap =
-                    MultimapBuilder.hashKeys().hashSetValues().build();
+            SetMultimap<ItemComponent, ImmutableList<DisplayComponent>> multimap = MultimapBuilder.hashKeys()
+                    .hashSetValues().build();
             recipeData.put(recipeMap, multimap);
 
             for (GT_Recipe recipe : recipeMap.recipeMap.mRecipeList) {
-                ImmutableList<DisplayComponent> outputs =
-                        ImmutableList.copyOf(GregTechRecipeUtil.buildComponentsFromOutputs(recipe));
+                ImmutableList<DisplayComponent> outputs = ImmutableList
+                        .copyOf(GregTechRecipeUtil.buildComponentsFromOutputs(recipe));
 
                 Optional<ChemicalBathFluid> chemicalBathFluidOptional = Optional.empty();
                 int inputFluidAmount = 0;
@@ -150,8 +158,8 @@ class RecipeHandler {
                         DisplayComponent inputFluid = Iterables.getOnlyElement(fluidInputs);
 
                         if (inputFluid.stackSize().isPresent()) {
-                            chemicalBathFluidOptional =
-                                    Optional.ofNullable(ChemicalBathFluid.VALUES_MAP.get(inputFluid.component()));
+                            chemicalBathFluidOptional = Optional
+                                    .ofNullable(ChemicalBathFluid.VALUES_MAP.get(inputFluid.component()));
                             inputFluidAmount = inputFluid.stackSize().get();
                         } else {
                             Logger.GREGTECH_5_ORE_PROCESSING.warn(
@@ -173,9 +181,10 @@ class RecipeHandler {
                     // Need an effectively final variable here so that we can reference it within
                     // the lambda.
                     final int finalInputFluidAmount = inputFluidAmount;
-                    chemicalBathFluidOptional.ifPresent(chemicalBathFluid -> chemicalBathFluidData
-                            .get(chemicalBathFluid)
-                            .put(itemComponent, ChemicalBathFluidRecipe.create(finalInputFluidAmount, outputs)));
+                    chemicalBathFluidOptional.ifPresent(
+                            chemicalBathFluid -> chemicalBathFluidData.get(chemicalBathFluid).put(
+                                    itemComponent,
+                                    ChemicalBathFluidRecipe.create(finalInputFluidAmount, outputs)));
                 }
             }
         }
@@ -191,14 +200,15 @@ class RecipeHandler {
     }
 
     /**
-     * Returns the unique recipe output for recipes including {@code input}, or empty optional if
-     * there were zero such recipes, or if there were multiple recipes with differing outputs.
+     * Returns the unique recipe output for recipes including {@code input}, or empty optional if there were zero such
+     * recipes, or if there were multiple recipes with differing outputs.
      *
-     * <p>Also will log each case where multiple differing recipe outputs were found.
+     * <p>
+     * Also will log each case where multiple differing recipe outputs were found.
      */
     Optional<ImmutableList<DisplayComponent>> getUniqueRecipeOutput(RecipeMap recipeMap, ItemComponent input) {
-        Set<ImmutableList<DisplayComponent>> outputs =
-                recipeData.get(recipeMap).get((ItemComponent) GregTechOreDictUtil.unify(input));
+        Set<ImmutableList<DisplayComponent>> outputs = recipeData.get(recipeMap)
+                .get((ItemComponent) GregTechOreDictUtil.unify(input));
 
         if (outputs.size() > 1) {
             Logger.GREGTECH_5_ORE_PROCESSING.warn("Found {} recipes: [{}] [{}]", outputs.size(), recipeMap, input);
@@ -212,19 +222,19 @@ class RecipeHandler {
     }
 
     /**
-     * Returns the recipe data for chemical bath recipes including {@code chemicalBathFluid} and
-     * {@code input}, or empty optional if there were zero such recipes, or if there were multiple
-     * recipes with differing outputs or input fluid amount.
+     * Returns the recipe data for chemical bath recipes including {@code chemicalBathFluid} and {@code input}, or empty
+     * optional if there were zero such recipes, or if there were multiple recipes with differing outputs or input fluid
+     * amount.
      *
-     * <p>Also will log each case where multiple differing recipes were found.
+     * <p>
+     * Also will log each case where multiple differing recipes were found.
      */
-    Optional<ChemicalBathFluidRecipe> getUniqueChemicalBathOutput(
-            ChemicalBathFluid chemicalBathFluid, ItemComponent input) {
-        Set<ChemicalBathFluidRecipe> outputs =
-                chemicalBathFluidData.get(chemicalBathFluid).get(input);
+    Optional<ChemicalBathFluidRecipe> getUniqueChemicalBathOutput(ChemicalBathFluid chemicalBathFluid,
+            ItemComponent input) {
+        Set<ChemicalBathFluidRecipe> outputs = chemicalBathFluidData.get(chemicalBathFluid).get(input);
         if (outputs.size() > 1) {
-            Logger.GREGTECH_5_ORE_PROCESSING.warn(
-                    "Found {} chemical bath recipes: [{}] [{}]", outputs.size(), chemicalBathFluid, input);
+            Logger.GREGTECH_5_ORE_PROCESSING
+                    .warn("Found {} chemical bath recipes: [{}] [{}]", outputs.size(), chemicalBathFluid, input);
 
             return Optional.empty();
         } else if (outputs.isEmpty()) {

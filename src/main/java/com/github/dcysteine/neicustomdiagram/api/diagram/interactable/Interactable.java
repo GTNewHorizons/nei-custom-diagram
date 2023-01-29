@@ -5,10 +5,10 @@ import com.github.dcysteine.neicustomdiagram.api.draw.BoundedDrawable;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 
 /**
- * This interface represents anything that is drawn on the screen and can be moused over or clicked
- * on.
+ * This interface represents anything that is drawn on the screen and can be moused over or clicked on.
  */
 public interface Interactable extends BoundedDrawable {
+
     enum RecipeType {
         CRAFTING,
         USAGE;
@@ -21,8 +21,9 @@ public interface Interactable extends BoundedDrawable {
     /**
      * Method that is called when mousing over an interactable.
      *
-     * <p>Not all interactables are going to want to draw an overlay; in particular, interactables
-     * with odd bounding boxes, like text, probably won't want to override this.
+     * <p>
+     * Not all interactables are going to want to draw an overlay; in particular, interactables with odd bounding boxes,
+     * like text, probably won't want to override this.
      */
     default void drawOverlay(DiagramState diagramState) {
         // Default implementation is to do nothing.
@@ -31,7 +32,8 @@ public interface Interactable extends BoundedDrawable {
     /**
      * Unlike the other draw methods, tooltips are drawn with absolute mouse coordinates.
      *
-     * <p>This is due to how the handle tooltip method gets called.
+     * <p>
+     * This is due to how the handle tooltip method gets called.
      */
     default void drawTooltip(DiagramState diagramState, Point mousePos) {
         // Default implementation is to do nothing.

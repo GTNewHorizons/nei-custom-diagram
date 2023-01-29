@@ -4,6 +4,7 @@ import com.dreammaster.gthandler.CustomItemList;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 
 public class DreamcraftUtil {
+
     // Static class.
     private DreamcraftUtil() {}
 

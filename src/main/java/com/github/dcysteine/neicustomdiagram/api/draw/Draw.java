@@ -1,36 +1,42 @@
 package com.github.dcysteine.neicustomdiagram.api.draw;
 
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.fluids.Fluid;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
+
 import com.github.dcysteine.neicustomdiagram.api.Formatter;
 import com.github.dcysteine.neicustomdiagram.api.diagram.layout.Grid;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.TooltipLine;
 import com.google.auto.value.AutoValue;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.fluids.Fluid;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 /** GUI drawing library. */
 public final class Draw {
+
     public static final int ICON_WIDTH = 16;
     public static final int TEXT_HEIGHT = 8;
 
     /**
      * Some pre-defined colours, for convenience.
      *
-     * <p>Colours are encoded as four {@code byte}s packed into an {@code int}:
+     * <p>
+     * Colours are encoded as four {@code byte}s packed into an {@code int}:
      * <ul>
-     *     <li>{@code 0xFF000000}: Alpha channel ({@code 0xFF} is fully opaque)
-     *     <li>{@code 0x00FF0000}: Red channel
-     *     <li>{@code 0x0000FF00}: Green channel
-     *     <li>{@code 0x000000FF}: Blue channel
+     * <li>{@code 0xFF000000}: Alpha channel ({@code 0xFF} is fully opaque)
+     * <li>{@code 0x00FF0000}: Red channel
+     * <li>{@code 0x0000FF00}: Green channel
+     * <li>{@code 0x000000FF}: Blue channel
      * </ul>
      */
     public static final class Colour {
+
         public static final int BLACK = 0xFF000000;
         public static final int WHITE = 0xFFFFFFFF;
         public static final int GREY = 0xFF404040;
@@ -53,6 +59,7 @@ public final class Draw {
     /** Struct class holding coordinates for mod textures. */
     @AutoValue
     public abstract static class TextureData {
+
         private static final String TEXTURE_PATH = "neicustomdiagram:textures/slots.png";
 
         public static final TextureData SLOT = create(0, 0, 18, 18);
@@ -78,10 +85,12 @@ public final class Draw {
     /**
      * Draws a line of thickness 2 between the two points.
      *
-     * <p><em>Horrible things</em> will happen if the two points aren't orthogonal.
-     * And by <em>horrible</em> I mean you'll get a rectangle instead of a line.
+     * <p>
+     * <em>Horrible things</em> will happen if the two points aren't orthogonal. And by <em>horrible</em> I mean you'll
+     * get a rectangle instead of a line.
      *
-     * <p>See {@link Draw.Colour} for colour encoding information.
+     * <p>
+     * See {@link Draw.Colour} for colour encoding information.
      */
     public static void drawLine(Point a, Point b, int colour) {
         int x = Math.min(a.x(), b.x()) - 1;
@@ -97,10 +106,12 @@ public final class Draw {
     /**
      * Draws an arrowhead pointing at the second point.
      *
-     * <p><em>Horrible things</em> will happen if the two points aren't orthogonal.
-     * And by <em>horrible</em> I mean you'll get a mess of rectangles.
+     * <p>
+     * <em>Horrible things</em> will happen if the two points aren't orthogonal. And by <em>horrible</em> I mean you'll
+     * get a mess of rectangles.
      *
-     * <p>See {@link Draw.Colour} for colour encoding information.
+     * <p>
+     * See {@link Draw.Colour} for colour encoding information.
      */
     public static void drawArrowhead(Point a, Point b, int colour) {
         // (diffX, diffY) is a unit vector pointing from b to a.
@@ -122,7 +133,7 @@ public final class Draw {
      * Draws some text centered on the given point.
      *
      * @param colour See {@link Draw.Colour} for colour encoding information.
-     * @param small Whether to draw half-scale text.
+     * @param small  Whether to draw half-scale text.
      * @param shadow Whether to draw a shadow for the text.
      */
     public static void drawText(String text, Point pos, int colour, boolean small, boolean shadow) {
@@ -160,7 +171,8 @@ public final class Draw {
     /**
      * Draws stack size for a component centered on the given point.
      *
-     * <p>This will be drawn in the bottom-right corner of the component. Keep this short!
+     * <p>
+     * This will be drawn in the bottom-right corner of the component. Keep this short!
      */
     public static void drawStackSize(int stackSize, Point pos) {
         String text = Formatter.smartFormatInteger(stackSize);
@@ -171,15 +183,16 @@ public final class Draw {
     /**
      * Draws additional information for a component centered on the given point.
      *
-     * <p>This will be drawn in the top-left corner of the component. Keep this short!
+     * <p>
+     * This will be drawn in the top-left corner of the component. Keep this short!
      */
     public static void drawAdditionalInfo(String text, Point pos, boolean small) {
         drawTextOverIcon(text, pos, Grid.Direction.NW, Colour.YELLOW, small, true);
     }
 
     /** Draws text offset in the specified direction over an icon. */
-    public static void drawTextOverIcon(
-            String text, Point pos, Grid.Direction dir, int colour, boolean small, boolean shadow) {
+    public static void drawTextOverIcon(String text, Point pos, Grid.Direction dir, int colour, boolean small,
+            boolean shadow) {
         int textWidth = GuiDraw.getStringWidth(text);
         int textHeight = TEXT_HEIGHT;
         if (small) {
@@ -187,17 +200,17 @@ public final class Draw {
             textHeight /= 2;
         }
 
-        Point textCenter =
-                pos.translate(dir.xFactor * (ICON_WIDTH - textWidth) / 2, dir.yFactor * (ICON_WIDTH - textHeight) / 2);
+        Point textCenter = pos
+                .translate(dir.xFactor * (ICON_WIDTH - textWidth) / 2, dir.yFactor * (ICON_WIDTH - textHeight) / 2);
         drawText(text, textCenter, colour, small, shadow);
     }
 
     /**
      * Unlike the other draw methods, tooltips are drawn with absolute mouse coordinates.
      *
-     * <p>This is due to how the handle tooltip method gets called.
-     * It ends up being quite convenient for us though, as it's much easier to calculate screen
-     * boundaries with absolute coordinates.
+     * <p>
+     * This is due to how the handle tooltip method gets called. It ends up being quite convenient for us though, as
+     * it's much easier to calculate screen boundaries with absolute coordinates.
      */
     public static void drawTooltip(Tooltip tooltip, Point mousePos) {
         if (tooltip.lines().isEmpty()) {
@@ -289,12 +302,18 @@ public final class Draw {
         // Some fluids don't set their icon colour, so we have to blend in the colour ourselves.
         int colour = fluid.getColor();
         GL11.glColor3ub(
-                (byte) ((colour & 0xFF0000) >> 16), (byte) ((colour & 0x00FF00) >> 8), (byte) (colour & 0x0000FF));
+                (byte) ((colour & 0xFF0000) >> 16),
+                (byte) ((colour & 0x00FF00) >> 8),
+                (byte) (colour & 0x0000FF));
 
         GL11.glDisable(GL11.GL_LIGHTING);
         GuiDraw.changeTexture(TextureMap.locationBlocksTexture);
         GuiDraw.gui.drawTexturedModelRectFromIcon(
-                pos.x() - ICON_WIDTH / 2, pos.y() - ICON_WIDTH / 2, icon, ICON_WIDTH, ICON_WIDTH);
+                pos.x() - ICON_WIDTH / 2,
+                pos.y() - ICON_WIDTH / 2,
+                icon,
+                ICON_WIDTH,
+                ICON_WIDTH);
         GL11.glEnable(GL11.GL_LIGHTING);
 
         // Reset colour blending.
@@ -304,8 +323,8 @@ public final class Draw {
     /**
      * Draws a coloured square centered on the given point.
      *
-     * <p>See {@link Draw.Colour} for colour encoding information. You probably want to use a
-     * semi-transparent value here.
+     * <p>
+     * See {@link Draw.Colour} for colour encoding information. You probably want to use a semi-transparent value here.
      */
     public static void drawOverlay(Point pos, int colour) {
         GL11.glDisable(GL11.GL_LIGHTING);

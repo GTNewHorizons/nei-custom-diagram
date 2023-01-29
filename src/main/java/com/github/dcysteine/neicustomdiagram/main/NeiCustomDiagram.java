@@ -1,8 +1,11 @@
 package com.github.dcysteine.neicustomdiagram.main;
 
+import net.minecraftforge.common.MinecraftForge;
+
 import com.github.dcysteine.neicustomdiagram.main.config.Config;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigGuiFactory;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -12,7 +15,6 @@ import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraftforge.common.MinecraftForge;
 
 /** Main entry point for NEI Custom Diagram. */
 @Mod(
@@ -23,11 +25,11 @@ import net.minecraftforge.common.MinecraftForge;
         dependencies = NeiCustomDiagram.MOD_DEPENDENCIES,
         guiFactory = ConfigGuiFactory.CLASS_NAME)
 public final class NeiCustomDiagram {
+
     public static final String MOD_ID = "neicustomdiagram";
     public static final String MOD_NAME = "NEI Custom Diagram";
     public static final String MOD_VERSION = "GRADLETOKEN_VERSION";
-    public static final String MOD_DEPENDENCIES = "required-after:NotEnoughItems;"
-            + "after:dreamcraft;"
+    public static final String MOD_DEPENDENCIES = "required-after:NotEnoughItems;" + "after:dreamcraft;"
             + "after:gregtech;"
             + "after:bartworks;"
             + "after:miscutils;"

@@ -1,6 +1,10 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.layout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import codechicken.lib.gui.GuiDraw;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramState;
 import com.github.dcysteine.neicustomdiagram.api.draw.BoundedDrawable;
 import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
@@ -10,16 +14,16 @@ import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Immutable class representing a text label.
  *
- * <p>Multi-line text is supported.
+ * <p>
+ * Multi-line text is supported.
  */
 @AutoValue
 public abstract class Text implements BoundedDrawable {
+
     private static final Splitter SPLITTER = Splitter.on('\n');
 
     public abstract String text();
@@ -61,11 +65,13 @@ public abstract class Text implements BoundedDrawable {
     /**
      * Returns a new single-line text builder.
      *
-     * <p>{@code dir} specifies which direction the text will extend from {@code pos}.
+     * <p>
+     * {@code dir} specifies which direction the text will extend from {@code pos}.
      *
-     * <p>For example, if {@code dir = Direction.NW}, the lower-right corner of the text's bounding
-     * box would be placed at {@code pos}. If instead {@code dir = Direction.E}, then the center of
-     * the left side of the text's bounding box would be placed at {@code pos}.
+     * <p>
+     * For example, if {@code dir = Direction.NW}, the lower-right corner of the text's bounding box would be placed at
+     * {@code pos}. If instead {@code dir = Direction.E}, then the center of the left side of the text's bounding box
+     * would be placed at {@code pos}.
      */
     public static Builder builder(String text, Point pos, Grid.Direction dir) {
         return new Builder(text, pos, dir);
@@ -78,6 +84,7 @@ public abstract class Text implements BoundedDrawable {
     }
 
     public static final class Builder {
+
         private final String text;
         private final Point position;
         private final Grid.Direction direction;
@@ -127,6 +134,7 @@ public abstract class Text implements BoundedDrawable {
     }
 
     public static final class MultiLineBuilder {
+
         public static final int LINE_HEIGHT = Draw.TEXT_HEIGHT + 2;
 
         private final Point position;
@@ -199,11 +207,9 @@ public abstract class Text implements BoundedDrawable {
                 y -= textLines.size() * lineHeight;
             }
             for (String line : textLines) {
-                list.add(builder(line, Point.create(position.x(), y), direction)
-                        .setColour(colour)
-                        .setSmall(small)
-                        .setShadow(shadow)
-                        .build());
+                list.add(
+                        builder(line, Point.create(position.x(), y), direction).setColour(colour).setSmall(small)
+                                .setShadow(shadow).build());
                 y += lineHeight;
             }
 

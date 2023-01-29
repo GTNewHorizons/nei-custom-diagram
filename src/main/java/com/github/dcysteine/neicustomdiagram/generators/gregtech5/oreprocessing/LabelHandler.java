@@ -1,5 +1,7 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.oreprocessing;
 
+import java.util.EnumMap;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.CustomInteractable;
 import com.github.dcysteine.neicustomdiagram.api.diagram.layout.ComponentLabel;
@@ -8,10 +10,11 @@ import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import gregtech.api.enums.ItemList;
-import java.util.EnumMap;
 
 class LabelHandler {
+
     enum ItemLabel {
+
         MACERATOR(ItemList.Machine_HV_Macerator, "maceratorlabel"),
         ORE_WASHING_PLANT(ItemList.Machine_HV_OreWasher, "orewashingplantlabel"),
         CHEMICAL_BATH(ItemList.Machine_HV_ChemicalBath, "chemicalbathlabel"),
@@ -49,8 +52,8 @@ class LabelHandler {
 
     CustomInteractable buildLabel(ItemLabel itemLabel, Point pos) {
         ComponentLabel label = ComponentLabel.create(componentMap.get(itemLabel), pos);
-        Tooltip tooltip =
-                Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans(itemLabel.tooltipKey), Tooltip.INFO_FORMATTING);
+        Tooltip tooltip = Tooltip
+                .create(Lang.GREGTECH_5_ORE_PROCESSING.trans(itemLabel.tooltipKey), Tooltip.INFO_FORMATTING);
 
         return CustomInteractable.builder(label).setTooltip(tooltip).build();
     }

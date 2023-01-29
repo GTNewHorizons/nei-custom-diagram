@@ -1,5 +1,7 @@
 package com.github.dcysteine.neicustomdiagram.util.gregtech5;
 
+import net.minecraft.init.Items;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.CustomInteractable;
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
@@ -8,9 +10,9 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import gregtech.api.enums.Materials;
-import net.minecraft.init.Items;
 
 public final class GregTechDiagramUtil {
+
     public static final ItemComponent ICON = ItemComponent.create(Items.book, 0);
 
     // Static class.
@@ -18,8 +20,7 @@ public final class GregTechDiagramUtil {
 
     public static Interactable buildMaterialInfoButton(Point pos, Materials material) {
         Tooltip.Builder tooltipBuilder = Tooltip.builder()
-                .addTextLine(GregTechFormatting.getMaterialDescription(material))
-                .setFormatting(Tooltip.INFO_FORMATTING)
+                .addTextLine(GregTechFormatting.getMaterialDescription(material)).setFormatting(Tooltip.INFO_FORMATTING)
                 .addTextLine(material.mChemicalFormula);
 
         if (material.isRadioactive() || material.mHeatDamage != 0) {
@@ -35,8 +36,6 @@ public final class GregTechDiagramUtil {
             }
         }
 
-        return CustomInteractable.builder(ComponentLabel.create(ICON, pos))
-                .setTooltip(tooltipBuilder.build())
-                .build();
+        return CustomInteractable.builder(ComponentLabel.create(ICON, pos)).setTooltip(tooltipBuilder.build()).build();
     }
 }

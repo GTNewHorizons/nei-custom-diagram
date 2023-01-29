@@ -9,6 +9,7 @@ import com.github.dcysteine.neicustomdiagram.main.Lang;
 
 /** A handy way to build a button that will load all diagrams in a diagram group. */
 public class AllDiagramsButton extends CustomInteractable {
+
     public AllDiagramsButton(DiagramGroupInfo info, Point pos, String tooltip) {
         super(
                 ComponentLabel.create(info.icon(), pos),

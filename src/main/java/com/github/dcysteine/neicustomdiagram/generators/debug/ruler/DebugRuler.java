@@ -1,5 +1,9 @@
 package com.github.dcysteine.neicustomdiagram.generators.debug.ruler;
 
+import java.util.Collection;
+
+import net.minecraft.init.Items;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
@@ -19,16 +23,16 @@ import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import com.google.common.collect.Lists;
-import java.util.Collection;
-import net.minecraft.init.Items;
 
 /**
  * Generates a debug diagram that helps measure available NEI space.
  *
- * <p>As a bonus, also allows viewing NBT data of whichever component it is invoked with, and the
- * NEI tab icon functions as a compass!
+ * <p>
+ * As a bonus, also allows viewing NBT data of whichever component it is invoked with, and the NEI tab icon functions as
+ * a compass!
  */
 public final class DebugRuler implements DiagramGenerator {
+
     public static final ItemComponent ICON = ItemComponent.create(Items.compass, 0);
 
     private static final int RULER_WIDTH_PIXELS = Grid.TOTAL_WIDTH;
@@ -47,12 +51,12 @@ public final class DebugRuler implements DiagramGenerator {
     private Layout layout;
 
     public DebugRuler(String groupId) {
-        this.info = DiagramGroupInfo.builder(Lang.DEBUG_RULER.trans("groupname"), groupId, ICON, 1)
-                .setIgnoreNbt(false)
+        this.info = DiagramGroupInfo.builder(Lang.DEBUG_RULER.trans("groupname"), groupId, ICON, 1).setIgnoreNbt(false)
                 .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
-                .setDescription("This diagram has markings to measure the GUI height in pixels."
-                        + "\nYou can also use it to view NBT data for any item."
-                        + "\nThe tab icon also works as a compass!")
+                .setDescription(
+                        "This diagram has markings to measure the GUI height in pixels."
+                                + "\nYou can also use it to view NBT data for any item."
+                                + "\nThe tab icon also works as a compass!")
                 .build();
     }
 
@@ -68,12 +72,12 @@ public final class DebugRuler implements DiagramGenerator {
     }
 
     private Collection<Diagram> generateDiagrams(Interactable.RecipeType recipeType, Component component) {
-        return Lists.newArrayList(Diagram.builder()
-                .addLayout(layout)
-                .insertIntoSlot(
-                        Layout.SlotKey.create(String.format(SLOT_KEY_FORMAT_STRING, 0, 0)),
-                        DisplayComponent.builder(component).build())
-                .build());
+        return Lists.newArrayList(
+                Diagram.builder().addLayout(layout)
+                        .insertIntoSlot(
+                                Layout.SlotKey.create(String.format(SLOT_KEY_FORMAT_STRING, 0, 0)),
+                                DisplayComponent.builder(component).build())
+                        .build());
     }
 
     private static Layout buildLayout() {
@@ -104,15 +108,14 @@ public final class DebugRuler implements DiagramGenerator {
                 layoutBuilder.putSlot(
                         Layout.SlotKey.create(String.format(SLOT_KEY_FORMAT_STRING, i, j)),
                         Slot.builder(Grid.GRID.grid(2 * i, 2 * j))
-                                .setTooltip(Tooltip.create(
-                                        Lang.DEBUG_RULER.transf("slotlabel", i + 1, j + 1), Tooltip.INFO_FORMATTING))
+                                .setTooltip(
+                                        Tooltip.create(
+                                                Lang.DEBUG_RULER.transf("slotlabel", i + 1, j + 1),
+                                                Tooltip.INFO_FORMATTING))
                                 .build());
             }
         }
 
-        return layoutBuilder
-                .addLines(rulerColour1.build())
-                .addLines(rulerColour2.build())
-                .build();
+        return layoutBuilder.addLines(rulerColour1.build()).addLines(rulerColour2.build()).build();
     }
 }

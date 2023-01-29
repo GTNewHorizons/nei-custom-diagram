@@ -1,5 +1,11 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.lenses;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
@@ -14,22 +20,20 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Sets;
 import com.google.common.collect.SortedSetMultimap;
+
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.objects.ItemData;
 import gregtech.api.util.GT_Recipe;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 class RecipeHandler {
+
     static final String LENS_COLOUR_ORE_NAME_PREFIX = "craftingLens";
 
     @AutoValue
     abstract static class Lens implements Comparable<Lens> {
-        private static final Comparator<Lens> COMPARATOR =
-                Comparator.comparing(Lens::colour).thenComparing(Lens::itemComponent);
+
+        private static final Comparator<Lens> COMPARATOR = Comparator.comparing(Lens::colour)
+                .thenComparing(Lens::itemComponent);
 
         static Lens create(LensColour colour, ItemComponent itemComponent) {
             return new AutoValue_RecipeHandler_Lens(colour, itemComponent);
@@ -47,6 +51,7 @@ class RecipeHandler {
 
     @AutoValue
     abstract static class Recipe implements Comparable<Recipe> {
+
         private static final Comparator<Recipe> COMPARATOR = Comparator.comparing(Recipe::input);
 
         static Recipe create(ItemComponent input, DisplayComponent output) {
@@ -75,8 +80,7 @@ class RecipeHandler {
     RecipeHandler() {
         lensRecipes = MultimapBuilder.treeKeys().treeSetValues().build();
         lensColours = MultimapBuilder.enumKeys(LensColour.class).treeSetValues().build();
-        colourRecipes =
-                MultimapBuilder.enumKeys(LensColour.class).treeSetValues().build();
+        colourRecipes = MultimapBuilder.enumKeys(LensColour.class).treeSetValues().build();
     }
 
     /** This method must be called before any other methods are called. */
@@ -106,9 +110,7 @@ class RecipeHandler {
         // input formatting. So use plain ItemComponent here.
         // TODO if we ever do need the recipe input formatting, we'll need to change something here.
         List<ItemComponent> inputs = GregTechRecipeUtil.buildComponentsFromItemInputs(recipe).stream()
-                .map(DisplayComponent::component)
-                .map(ItemComponent.class::cast)
-                .collect(Collectors.toList());
+                .map(DisplayComponent::component).map(ItemComponent.class::cast).collect(Collectors.toList());
         List<DisplayComponent> outputs = GregTechRecipeUtil.buildComponentsFromItemOutputs(recipe);
 
         if (inputs.size() != 2 || outputs.size() != 1) {
@@ -131,16 +133,14 @@ class RecipeHandler {
         DisplayComponent output = outputs.get(0);
 
         List<String> lensColourOreNames = OreDictUtil.getOreNames(lensItemComponent).stream()
-                .filter(oreName -> oreName.startsWith(LENS_COLOUR_ORE_NAME_PREFIX))
-                .collect(Collectors.toList());
+                .filter(oreName -> oreName.startsWith(LENS_COLOUR_ORE_NAME_PREFIX)).collect(Collectors.toList());
         if (lensColourOreNames.size() > 1) {
-            Logger.GREGTECH_5_LENSES.warn(
-                    "Found a multi-coloured lens: [{}] [{}]", lensItemComponent, lensColourOreNames);
+            Logger.GREGTECH_5_LENSES
+                    .warn("Found a multi-coloured lens: [{}] [{}]", lensItemComponent, lensColourOreNames);
             return;
         }
 
-        LensColour colour = lensColourOreNames.isEmpty()
-                ? LensColour.UNIQUE
+        LensColour colour = lensColourOreNames.isEmpty() ? LensColour.UNIQUE
                 : LensColour.get(Iterables.getOnlyElement(lensColourOreNames));
         Lens lens = Lens.create(colour, lensItemComponent);
 

@@ -1,5 +1,11 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.circuits;
 
+import java.util.EnumMap;
+import java.util.function.Supplier;
+
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.CustomInteractable;
 import com.github.dcysteine.neicustomdiagram.api.diagram.layout.ComponentLabel;
@@ -8,20 +14,17 @@ import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import gregtech.api.enums.ItemList;
-import java.util.EnumMap;
-import java.util.function.Supplier;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 
 class LabelHandler {
+
     enum ItemLabel {
+
         CRAFTING_TABLE(() -> ItemComponent.create(Blocks.crafting_table, 0).get(), "craftingtablelabel"),
-        ASSEMBLING_MACHINE(
-                () -> GregTechOreDictUtil.getComponent(ItemList.Machine_HV_Assembler), "assemblingmachinelabel"),
-        ASSEMBLING_LINE(
-                () -> GregTechOreDictUtil.getComponent(ItemList.Machine_Multi_Assemblyline), "assemblinglinelabel"),
-        CIRCUIT_ASSEMBLING_MACHINE(
-                () -> GregTechOreDictUtil.getComponent(ItemList.Machine_HV_CircuitAssembler),
+        ASSEMBLING_MACHINE(() -> GregTechOreDictUtil.getComponent(ItemList.Machine_HV_Assembler),
+                "assemblingmachinelabel"),
+        ASSEMBLING_LINE(() -> GregTechOreDictUtil.getComponent(ItemList.Machine_Multi_Assemblyline),
+                "assemblinglinelabel"),
+        CIRCUIT_ASSEMBLING_MACHINE(() -> GregTechOreDictUtil.getComponent(ItemList.Machine_HV_CircuitAssembler),
                 "circuitassemblingmachinelabel"),
         CLEAN_ROOM(() -> GregTechOreDictUtil.getComponent(ItemList.Machine_Multi_Cleanroom), "requirescleanroomlabel"),
         LOW_GRAVITY(() -> ItemComponent.create(Items.feather, 0), "requireslowgravitylabel");

@@ -1,11 +1,13 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.tooltip;
 
+import net.minecraft.util.EnumChatFormatting;
+
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSortedSet;
-import net.minecraft.util.EnumChatFormatting;
 
 @AutoValue
 public abstract class TextFormatting {
+
     public static TextFormatting create(boolean small, EnumChatFormatting... formatting) {
         return builder().setSmall(small).addAllFormatting(formatting).build();
     }
@@ -17,12 +19,11 @@ public abstract class TextFormatting {
     public abstract boolean small();
 
     /**
-     * We use a sorted set here (with natural ordering) to ensure that colour codes are iterated
-     * over before formatting codes. This ordering is necessary to get formatting to apply
-     * correctly.
+     * We use a sorted set here (with natural ordering) to ensure that colour codes are iterated over before formatting
+     * codes. This ordering is necessary to get formatting to apply correctly.
      *
      * @see <a href="https://minecraft.fandom.com/wiki/Formatting_codes">
-     *     https://minecraft.fandom.com/wiki/Formatting_codes</a>
+     *      https://minecraft.fandom.com/wiki/Formatting_codes</a>
      */
     public abstract ImmutableSortedSet<EnumChatFormatting> formatting();
 
@@ -43,6 +44,7 @@ public abstract class TextFormatting {
 
     @AutoValue.Builder
     public abstract static class Builder {
+
         public abstract Builder setSmall(boolean small);
 
         public abstract Builder setFormatting(Iterable<EnumChatFormatting> formatting);

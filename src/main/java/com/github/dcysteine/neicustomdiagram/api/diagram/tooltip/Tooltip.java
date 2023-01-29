@@ -1,5 +1,9 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.tooltip;
 
+import java.util.Arrays;
+
+import net.minecraft.util.EnumChatFormatting;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.draw.Draw;
@@ -8,12 +12,11 @@ import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import java.util.Arrays;
-import net.minecraft.util.EnumChatFormatting;
 
 /** Class holding a tooltip, with options for using a default colour. */
 @AutoValue
 public abstract class Tooltip {
+
     private static final Splitter SPLITTER = Splitter.on('\n');
 
     public static final Tooltip EMPTY_TOOLTIP = builder().build();
@@ -22,8 +25,8 @@ public abstract class Tooltip {
     public static final TextFormatting INFO_FORMATTING = TextFormatting.create(false, EnumChatFormatting.YELLOW);
     public static final TextFormatting URGENT_FORMATTING = TextFormatting.create(false, EnumChatFormatting.RED);
     public static final TextFormatting TRIVIAL_FORMATTING = TextFormatting.create(false, EnumChatFormatting.GRAY);
-    public static final TextFormatting SPECIAL_FORMATTING =
-            TextFormatting.create(false, EnumChatFormatting.LIGHT_PURPLE);
+    public static final TextFormatting SPECIAL_FORMATTING = TextFormatting
+            .create(false, EnumChatFormatting.LIGHT_PURPLE);
 
     /** The default vertical space between tooltip lines. */
     public static final int LINE_SPACING = 2;
@@ -38,14 +41,14 @@ public abstract class Tooltip {
     }
 
     public int height() {
-        return Tooltip.LINE_SPACING * (lines().size() - 1)
-                + lines().stream().mapToInt(TooltipLine::height).sum();
+        return Tooltip.LINE_SPACING * (lines().size() - 1) + lines().stream().mapToInt(TooltipLine::height).sum();
     }
 
     /**
      * Unlike the other draw methods, tooltips are drawn with absolute mouse coordinates.
      *
-     * <p>This is due to how the handle tooltip method gets called.
+     * <p>
+     * This is due to how the handle tooltip method gets called.
      */
     public void draw(Point mousePos) {
         Draw.drawTooltip(this, mousePos);
@@ -93,6 +96,7 @@ public abstract class Tooltip {
     }
 
     public static final class Builder {
+
         private final ImmutableList.Builder<TooltipLine> linesBuilder;
         private TextFormatting currentFormatting;
 
@@ -115,8 +119,7 @@ public abstract class Tooltip {
 
         /** Adds some vertical spacing. */
         public Builder addSpacing() {
-            return addLine(
-                    TooltipLine.builder().setAdditionalSpacing(LINE_SPACING).build());
+            return addLine(TooltipLine.builder().setAdditionalSpacing(LINE_SPACING).build());
         }
 
         /** Adds some vertical spacing. */
@@ -131,36 +134,27 @@ public abstract class Tooltip {
 
         public Builder addAllTextLines(Iterable<String> textLines) {
             for (String textLine : textLines) {
-                addLine(TooltipLine.builder()
-                        .addFormatting(currentFormatting)
-                        .addText(textLine)
-                        .build());
+                addLine(TooltipLine.builder().addFormatting(currentFormatting).addText(textLine).build());
             }
 
             return this;
         }
 
         public Builder addDisplayComponent(DisplayComponent displayComponent) {
-            return addLine(TooltipLine.builder()
-                    .addFormatting(currentFormatting)
-                    .addDisplayComponentIcon(displayComponent)
-                    .addComponentDescription(displayComponent.component())
-                    .build());
+            return addLine(
+                    TooltipLine.builder().addFormatting(currentFormatting).addDisplayComponentIcon(displayComponent)
+                            .addComponentDescription(displayComponent.component()).build());
         }
 
         public Builder addComponent(Component component) {
-            return addLine(TooltipLine.builder()
-                    .addFormatting(currentFormatting)
-                    .addComponentIcon(component)
-                    .addComponentDescription(component)
-                    .build());
+            return addLine(
+                    TooltipLine.builder().addFormatting(currentFormatting).addComponentIcon(component)
+                            .addComponentDescription(component).build());
         }
 
         public Builder addComponentDescription(Component component) {
-            return addLine(TooltipLine.builder()
-                    .addFormatting(currentFormatting)
-                    .addComponentDescription(component)
-                    .build());
+            return addLine(
+                    TooltipLine.builder().addFormatting(currentFormatting).addComponentDescription(component).build());
         }
 
         public Builder addAllDisplayComponents(Iterable<? extends DisplayComponent> displayComponents) {

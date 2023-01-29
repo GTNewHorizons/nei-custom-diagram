@@ -1,5 +1,15 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.circuits;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import javax.annotation.Nullable;
+
 import com.dreammaster.gthandler.CustomItemList;
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.BW_Meta_Items;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
@@ -15,29 +25,25 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Sets;
+
 import gregtech.api.enums.ItemList;
 import gregtech.api.util.GT_ModHandler;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import javax.annotation.Nullable;
 
 class CircuitLineHandler {
+
     @AutoValue
     abstract static class CircuitLineCircuits {
+
         private static final CircuitLineCircuits EMPTY = new AutoValue_CircuitLineHandler_CircuitLineCircuits(
-                Optional.empty(), Optional.empty(), Optional.empty());
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty());
 
         /** The previous circuit in the circuit line, if it exists. */
         abstract Optional<DisplayComponent> previousCircuit();
 
         /**
-         * The current circuit in the circuit line, or empty optional if this circuit is not part of
-         * a circuit line.
+         * The current circuit in the circuit line, or empty optional if this circuit is not part of a circuit line.
          */
         abstract Optional<DisplayComponent> currentCircuit();
 
@@ -49,6 +55,7 @@ class CircuitLineHandler {
         }
 
         private static final class Builder {
+
             @Nullable
             private ItemComponent previousCircuit;
 
@@ -104,23 +111,24 @@ class CircuitLineHandler {
     private ImmutableList<ItemComponent> additionalDiagramItems;
 
     /**
-     * Circuit parts that have tiers go into their own sub-list; single circuit parts go into a
-     * one-element sub-list.
+     * Circuit parts that have tiers go into their own sub-list; single circuit parts go into a one-element sub-list.
      */
     private ImmutableList<ImmutableList<ItemComponent>> circuitParts;
 
     /**
      * Map of circuit to adjacent circuits in the circuit line.
      *
-     * <p>To make it easier for callers, all circuits will map to an instance of
-     * {@link CircuitLineCircuits}, but those instances will be empty for individual circuits.
+     * <p>
+     * To make it easier for callers, all circuits will map to an instance of {@link CircuitLineCircuits}, but those
+     * instances will be empty for individual circuits.
      */
     private ImmutableMap<ItemComponent, CircuitLineCircuits> circuitLineCircuits;
 
     /**
      * Map of circuit to list of circuits of the same tier.
      *
-     * <p>The returned list will always include at least the key circuit.
+     * <p>
+     * The returned list will always include at least the key circuit.
      */
     private ImmutableListMultimap<ItemComponent, DisplayComponent> tierCircuits;
 
@@ -129,114 +137,114 @@ class CircuitLineHandler {
         ImmutableList.Builder<CircuitLine> circuitLinesBuilder = ImmutableList.builder();
         if (Registry.ModDependency.BARTWORKS.isLoaded()) {
             CircuitLine.Builder circuitLineBuilder = CircuitLine.builder()
-                    .addBoard(
-                            ItemComponent.create(BW_Meta_Items.getNEWCIRCUITS().getStack(3)))
-                    .setStartTier(0);
+                    .addBoard(ItemComponent.create(BW_Meta_Items.getNEWCIRCUITS().getStack(3))).setStartTier(0);
 
-            IntStream.rangeClosed(4, 14)
-                    .mapToObj(i ->
-                            ItemComponent.create(BW_Meta_Items.getNEWCIRCUITS().getStack(i)))
+            IntStream.rangeClosed(4, 14).mapToObj(i -> ItemComponent.create(BW_Meta_Items.getNEWCIRCUITS().getStack(i)))
                     .forEach(circuitLineBuilder::addCircuit);
 
             circuitLinesBuilder.add(circuitLineBuilder.build());
         }
-        circuitLinesBuilder.add(CircuitLine.builder()
-                .addBoards(
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Coated_Basic),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Phenolic_Good))
-                .setStartTier(0)
-                .addCircuits(
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Primitive),
-                        ItemComponent.create(GT_ModHandler.getIC2Item("electronicCircuit", 1L)),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Good))
-                .build());
-        circuitLinesBuilder.add(CircuitLine.builder()
-                .addBoards(
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Coated_Basic),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Phenolic_Good))
-                .setStartTier(1)
-                .addCircuits(
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Basic),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Integrated_Good),
-                        ItemComponent.create(GT_ModHandler.getIC2Item("advancedCircuit", 1L)))
-                .build());
-        circuitLinesBuilder.add(CircuitLine.builder()
-                .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Plastic_Advanced))
-                .setStartTier(2)
-                .addCircuits(
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Processor),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Advanced),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Data),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Elite))
-                .build());
-        circuitLinesBuilder.add(CircuitLine.builder()
-                .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Epoxy_Advanced))
-                .setStartTier(3)
-                .addCircuits(
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Nanoprocessor),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Nanocomputer),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Elitenanocomputer),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Master))
-                .build());
-        circuitLinesBuilder.add(CircuitLine.builder()
-                .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Fiberglass_Advanced))
-                .setStartTier(4)
-                .addCircuits(
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Quantumprocessor),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Quantumcomputer),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Masterquantumcomputer),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Quantummainframe))
-                .build());
-        circuitLinesBuilder.add(CircuitLine.builder()
-                .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Multifiberglass_Elite))
-                .setStartTier(5)
-                .addCircuits(
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Crystalprocessor),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Crystalcomputer),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Ultimatecrystalcomputer),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Crystalmainframe))
-                .build());
-        circuitLinesBuilder.add(CircuitLine.builder()
-                .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Wetware_Extreme))
-                .setStartTier(6)
-                .addCircuits(
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Neuroprocessor),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Wetwarecomputer),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Wetwaresupercomputer),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Wetwaremainframe))
-                .build());
-        circuitLinesBuilder.add(CircuitLine.builder()
-                .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Bio_Ultra))
-                .setStartTier(7)
-                .addCircuits(
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Bioprocessor),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Biowarecomputer),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Biowaresupercomputer),
-                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Biomainframe))
-                .build());
+        circuitLinesBuilder
+                .add(
+                        CircuitLine.builder()
+                                .addBoards(
+                                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Coated_Basic),
+                                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Phenolic_Good))
+                                .setStartTier(0)
+                                .addCircuits(
+                                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Primitive),
+                                        ItemComponent.create(GT_ModHandler.getIC2Item("electronicCircuit", 1L)),
+                                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Good))
+                                .build());
+        circuitLinesBuilder
+                .add(
+                        CircuitLine.builder()
+                                .addBoards(
+                                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Coated_Basic),
+                                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Phenolic_Good))
+                                .setStartTier(1)
+                                .addCircuits(
+                                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Basic),
+                                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Integrated_Good),
+                                        ItemComponent.create(GT_ModHandler.getIC2Item("advancedCircuit", 1L)))
+                                .build());
+        circuitLinesBuilder.add(
+                CircuitLine.builder()
+                        .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Plastic_Advanced))
+                        .setStartTier(2)
+                        .addCircuits(
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Processor),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Advanced),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Data),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Elite))
+                        .build());
+        circuitLinesBuilder.add(
+                CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Epoxy_Advanced))
+                        .setStartTier(3)
+                        .addCircuits(
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Nanoprocessor),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Nanocomputer),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Elitenanocomputer),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Master))
+                        .build());
+        circuitLinesBuilder.add(
+                CircuitLine.builder()
+                        .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Fiberglass_Advanced))
+                        .setStartTier(4)
+                        .addCircuits(
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Quantumprocessor),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Quantumcomputer),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Masterquantumcomputer),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Quantummainframe))
+                        .build());
+        circuitLinesBuilder.add(
+                CircuitLine.builder()
+                        .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Multifiberglass_Elite))
+                        .setStartTier(5)
+                        .addCircuits(
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Crystalprocessor),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Crystalcomputer),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Ultimatecrystalcomputer),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Crystalmainframe))
+                        .build());
+        circuitLinesBuilder.add(
+                CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Wetware_Extreme))
+                        .setStartTier(6)
+                        .addCircuits(
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Neuroprocessor),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Wetwarecomputer),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Wetwaresupercomputer),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Wetwaremainframe))
+                        .build());
+        circuitLinesBuilder.add(
+                CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Bio_Ultra))
+                        .setStartTier(7)
+                        .addCircuits(
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Bioprocessor),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Biowarecomputer),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Biowaresupercomputer),
+                                GregTechOreDictUtil.getComponent(ItemList.Circuit_Biomainframe))
+                        .build());
         // If we need to add any more circuit lines, we'll probably just want to add an entire
         // second page of circuit lines.
         circuitLines = circuitLinesBuilder.build();
 
         ImmutableList.Builder<CircuitLine> individualCircuitsBuilder = ImmutableList.builder();
         if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
-            individualCircuitsBuilder.add(CircuitLine.builder()
-                    .addBoard(DreamcraftUtil.getComponent(CustomItemList.NandChipBoard))
-                    .setStartTier(0)
-                    .addCircuit(GregTechOreDictUtil.getComponent(ItemList.NandChip))
-                    .build());
+            individualCircuitsBuilder.add(
+                    CircuitLine.builder().addBoard(DreamcraftUtil.getComponent(CustomItemList.NandChipBoard))
+                            .setStartTier(0).addCircuit(GregTechOreDictUtil.getComponent(ItemList.NandChip)).build());
         } else {
-            individualCircuitsBuilder.add(CircuitLine.builder()
-                    .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Phenolic_Good))
-                    .setStartTier(0)
-                    .addCircuit(GregTechOreDictUtil.getComponent(ItemList.NandChip))
-                    .build());
+            individualCircuitsBuilder.add(
+                    CircuitLine.builder()
+                            .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Phenolic_Good))
+                            .setStartTier(0).addCircuit(GregTechOreDictUtil.getComponent(ItemList.NandChip)).build());
         }
-        individualCircuitsBuilder.add(CircuitLine.builder()
-                .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Plastic_Advanced))
-                .setStartTier(1)
-                .addCircuit(GregTechOreDictUtil.getComponent(ItemList.Circuit_Microprocessor))
-                .build());
+        individualCircuitsBuilder.add(
+                CircuitLine.builder()
+                        .addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Plastic_Advanced))
+                        .setStartTier(1).addCircuit(GregTechOreDictUtil.getComponent(ItemList.Circuit_Microprocessor))
+                        .build());
         individualCircuits = individualCircuitsBuilder.build();
 
         ImmutableList.Builder<ItemComponent> additionalDiagramItemsBuilder = ImmutableList.builder();
@@ -246,36 +254,40 @@ class CircuitLineHandler {
         additionalDiagramItems = additionalDiagramItemsBuilder.build();
 
         ImmutableList.Builder<ImmutableList<ItemComponent>> circuitPartsBuilder = ImmutableList.builder();
-        circuitPartsBuilder.add(ImmutableList.of(
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_Resistor),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_ResistorSMD),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_ResistorASMD),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_ResistorXSMD)));
-        circuitPartsBuilder.add(ImmutableList.of(
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_Diode),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_DiodeSMD),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_DiodeASMD),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_DiodeXSMD)));
-        circuitPartsBuilder.add(ImmutableList.of(
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_Transistor),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_TransistorSMD),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_TransistorASMD),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_TransistorXSMD)));
-        circuitPartsBuilder.add(ImmutableList.of(
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_Capacitor),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_CapacitorSMD),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_CapacitorASMD),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_CapacitorXSMD)));
-        circuitPartsBuilder.add(ImmutableList.of(
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_Coil),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_InductorSMD),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_InductorASMD),
-                GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_InductorXSMD)));
+        circuitPartsBuilder.add(
+                ImmutableList.of(
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_Resistor),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_ResistorSMD),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_ResistorASMD),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_ResistorXSMD)));
+        circuitPartsBuilder.add(
+                ImmutableList.of(
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_Diode),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_DiodeSMD),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_DiodeASMD),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_DiodeXSMD)));
+        circuitPartsBuilder.add(
+                ImmutableList.of(
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_Transistor),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_TransistorSMD),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_TransistorASMD),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_TransistorXSMD)));
+        circuitPartsBuilder.add(
+                ImmutableList.of(
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_Capacitor),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_CapacitorSMD),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_CapacitorASMD),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_CapacitorXSMD)));
+        circuitPartsBuilder.add(
+                ImmutableList.of(
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_Coil),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_InductorSMD),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_InductorASMD),
+                        GregTechOreDictUtil.getComponent(ItemList.Circuit_Parts_InductorXSMD)));
         circuitParts = circuitPartsBuilder.build();
 
         ImmutableMap.Builder<ItemComponent, CircuitLineCircuits> circuitLineCircuitsBuilder = ImmutableMap.builder();
-        ListMultimap<Integer, ItemComponent> tierCircuitsMap =
-                MultimapBuilder.hashKeys().arrayListValues().build();
+        ListMultimap<Integer, ItemComponent> tierCircuitsMap = MultimapBuilder.hashKeys().arrayListValues().build();
         for (CircuitLine circuitLine : circuitLines) {
             ItemComponent previousCircuit = null;
             ImmutableList<ItemComponent> circuits = circuitLine.circuits();
@@ -285,10 +297,8 @@ class CircuitLineHandler {
 
                 circuitLineCircuitsBuilder.put(
                         currentCircuit,
-                        CircuitLineCircuits.builder(currentCircuit, tier)
-                                .setPreviousCircuit(previousCircuit)
-                                .setNextCircuit(i < circuits.size() - 1 ? circuits.get(i + 1) : null)
-                                .build());
+                        CircuitLineCircuits.builder(currentCircuit, tier).setPreviousCircuit(previousCircuit)
+                                .setNextCircuit(i < circuits.size() - 1 ? circuits.get(i + 1) : null).build());
                 previousCircuit = currentCircuit;
 
                 tierCircuitsMap.put(tier, currentCircuit);
@@ -301,10 +311,9 @@ class CircuitLineHandler {
         }
         circuitLineCircuits = circuitLineCircuitsBuilder.build();
 
-        ImmutableListMultimap.Builder<ItemComponent, DisplayComponent> tierCircuitsBuilder =
-                ImmutableListMultimap.builder();
-        for (Map.Entry<Integer, Collection<ItemComponent>> entry :
-                tierCircuitsMap.asMap().entrySet()) {
+        ImmutableListMultimap.Builder<ItemComponent, DisplayComponent> tierCircuitsBuilder = ImmutableListMultimap
+                .builder();
+        for (Map.Entry<Integer, Collection<ItemComponent>> entry : tierCircuitsMap.asMap().entrySet()) {
             Collection<ItemComponent> circuits = entry.getValue();
             List<DisplayComponent> displayCircuits = circuits.stream()
                     .map(circuit -> GregTechCircuits.buildCircuitDisplayComponent(circuit, entry.getKey()))

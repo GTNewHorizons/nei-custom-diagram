@@ -1,5 +1,10 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.layout;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramState;
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
@@ -10,27 +15,27 @@ import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Immutable class representing a diagram layout.
  *
- * <p>Slots and slot groups in the layout are associated with a string key, so that they can easily
- * be referenced when placing stacks.
+ * <p>
+ * Slots and slot groups in the layout are associated with a string key, so that they can easily be referenced when
+ * placing stacks.
  */
 @AutoValue
 public abstract class Layout implements Drawable {
+
     /** Interface to act as a common ancestor of {@link SlotKey} and {@link SlotGroupKey}. */
     public interface Key {
+
         String key();
     }
 
     /** Class that wraps string; used to add type-checking of slot keys and slot group keys. */
     @AutoValue
     public abstract static class SlotKey implements Key {
+
         public static SlotKey create(String key) {
             return new AutoValue_Layout_SlotKey(key);
         }
@@ -42,6 +47,7 @@ public abstract class Layout implements Drawable {
     /** Class that wraps string; used to add type-checking of slot keys and slot group keys. */
     @AutoValue
     public abstract static class SlotGroupKey implements Key {
+
         public static SlotGroupKey create(String key) {
             return new AutoValue_Layout_SlotGroupKey(key);
         }
@@ -90,8 +96,9 @@ public abstract class Layout implements Drawable {
     /**
      * Interactables are not included here, because they will be handled by {@link Diagram}.
      *
-     * <p>This means that interactables <b>will not be included</b> in the calculations for
-     * {@link #maxX()} and {@link #maxY()}!
+     * <p>
+     * This means that interactables <b>will not be included</b> in the calculations for {@link #maxX()} and
+     * {@link #maxY()}!
      */
     private Iterable<Drawable> drawables() {
         return Iterables.concat(lines(), slotGroups().values(), slots().values(), labels());
@@ -108,6 +115,7 @@ public abstract class Layout implements Drawable {
 
     @AutoValue.Builder
     public abstract static class Builder {
+
         public abstract Builder setLines(Iterable<Lines> lines);
 
         public abstract ImmutableList.Builder<Lines> linesBuilder();

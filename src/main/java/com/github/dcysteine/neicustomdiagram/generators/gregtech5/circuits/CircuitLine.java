@@ -1,24 +1,26 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.circuits;
 
-import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
-import com.google.auto.value.AutoValue;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+
 @AutoValue
 abstract class CircuitLine {
+
     /**
      * The highest tier of circuit that will appear in any circuit line.
      *
-     * <p>This is {@code 0}-indexed, so the number of tiers that we'll support is actually equal to
-     * {@code MAX_TIER + 1}.
+     * <p>
+     * This is {@code 0}-indexed, so the number of tiers that we'll support is actually equal to {@code MAX_TIER + 1}.
      *
-     * <p>If you adjust this, don't forget to tweak the overview diagram layout in
-     * {@link LayoutHandler}! The {@code y}-coordinate of slots below the circuit lines slots will
-     * probably need to be adjusted.
+     * <p>
+     * If you adjust this, don't forget to tweak the overview diagram layout in {@link LayoutHandler}! The
+     * {@code y}-coordinate of slots below the circuit lines slots will probably need to be adjusted.
      */
     static final int MAX_TIER = 10;
 
@@ -36,6 +38,7 @@ abstract class CircuitLine {
     }
 
     static final class Builder {
+
         private final List<ItemComponent> boards;
         private int startTier;
         private final List<ItemComponent> circuits;

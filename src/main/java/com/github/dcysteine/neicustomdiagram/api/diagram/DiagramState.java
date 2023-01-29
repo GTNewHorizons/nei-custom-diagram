@@ -1,21 +1,24 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram;
 
 import codechicken.nei.NEIClientUtils;
+
 import com.github.dcysteine.neicustomdiagram.api.draw.GuiManager;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 
 /**
  * Class that keeps track of any mutable state for diagrams.
  *
- * <p>The base implementation just keeps track of the tick count, for cycling through groups of
- * components or animations. However, this class can be extended to include custom state.
+ * <p>
+ * The base implementation just keeps track of the tick count, for cycling through groups of components or animations.
+ * However, this class can be extended to include custom state.
  */
 public class DiagramState {
+
     /**
      * Defines the length of a cycle, in ticks.
      *
-     * <p>Cycles are used to time slow animations, such as cycling through components to show in a
-     * slot.
+     * <p>
+     * Cycles are used to time slow animations, such as cycling through components to show in a slot.
      */
     public static final int TICKS_PER_CYCLE = 20;
 

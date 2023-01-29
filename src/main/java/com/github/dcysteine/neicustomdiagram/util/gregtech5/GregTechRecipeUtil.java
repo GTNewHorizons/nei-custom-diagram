@@ -1,5 +1,14 @@
 package com.github.dcysteine.neicustomdiagram.util.gregtech5;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
 import com.github.dcysteine.neicustomdiagram.api.Formatter;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
@@ -9,17 +18,12 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+
 import gregtech.api.util.GT_OreDictUnificator;
 import gregtech.api.util.GT_Recipe;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 
 public final class GregTechRecipeUtil {
+
     private static final Joiner STRING_JOINER = Joiner.on(' ');
 
     // Static class.
@@ -40,9 +44,7 @@ public final class GregTechRecipeUtil {
         return findRecipe(recipes, ImmutableList.of(input), ImmutableList.of(output));
     }
 
-    public static List<GT_Recipe> findRecipe(
-            GT_Recipe.GT_Recipe_Map recipes,
-            Collection<? extends Component> inputs,
+    public static List<GT_Recipe> findRecipe(GT_Recipe.GT_Recipe_Map recipes, Collection<? extends Component> inputs,
             Collection<? extends Component> outputs) {
         List<FluidStack> inputFluids = new ArrayList<>();
         List<ItemStack> inputItems = new ArrayList<>();
@@ -126,17 +128,15 @@ public final class GregTechRecipeUtil {
             }
 
             ItemComponent itemComponent = ItemComponent.createWithNbt(itemStack);
-            DisplayComponent.Builder builder =
-                    DisplayComponent.builder(itemComponent).setStackSize(itemStack.stackSize);
+            DisplayComponent.Builder builder = DisplayComponent.builder(itemComponent)
+                    .setStackSize(itemStack.stackSize);
 
             List<Component> reverseUnifiedItems = GregTechOreDictUtil.reverseUnify(itemComponent);
             if (reverseUnifiedItems.size() > 1) {
-                builder.setAdditionalInfo("*")
-                        .setAdditionalTooltip(Tooltip.builder()
-                                .setFormatting(Tooltip.INFO_FORMATTING)
+                builder.setAdditionalInfo("*").setAdditionalTooltip(
+                        Tooltip.builder().setFormatting(Tooltip.INFO_FORMATTING)
                                 .addTextLine(Lang.GREGTECH_5_UTIL.trans("reverseunifieditems"))
-                                .setFormatting(Tooltip.DEFAULT_FORMATTING)
-                                .addAllComponents(reverseUnifiedItems)
+                                .setFormatting(Tooltip.DEFAULT_FORMATTING).addAllComponents(reverseUnifiedItems)
                                 .build());
             }
 
@@ -154,13 +154,10 @@ public final class GregTechRecipeUtil {
             }
 
             FluidComponent fluidComponent = FluidComponent.createWithNbt(fluidStack);
-            Component component = GregTechFluidDictUtil.fluidToDisplayItem(fluidComponent)
-                    .map(Component.class::cast)
+            Component component = GregTechFluidDictUtil.fluidToDisplayItem(fluidComponent).map(Component.class::cast)
                     .orElse(fluidComponent);
 
-            list.add(DisplayComponent.builder(component)
-                    .setStackSize(fluidStack.amount)
-                    .build());
+            list.add(DisplayComponent.builder(component).setStackSize(fluidStack.amount).build());
         }
 
         return list;
@@ -174,7 +171,7 @@ public final class GregTechRecipeUtil {
     }
 
     // TODO maybe show recipe voltage tier in tooltip? (Also for fluids, below)
-    //  Unfortunately, we'll need the recipe map to do this, as amperage is not stored in recipe.
+    // Unfortunately, we'll need the recipe map to do this, as amperage is not stored in recipe.
     public static List<DisplayComponent> buildComponentsFromItemOutputs(GT_Recipe recipe) {
         List<DisplayComponent> results = new ArrayList<>();
 
@@ -192,11 +189,13 @@ public final class GregTechRecipeUtil {
             if (chance < 100_00) {
                 double normalizedChance = chance / 100d;
                 // Truncate the decimal portion where possible.
-                String formattedChance =
-                        chance % 100 == 0 ? Integer.toString(chance / 100) : Formatter.formatFloat(normalizedChance);
+                String formattedChance = chance % 100 == 0 ? Integer.toString(chance / 100)
+                        : Formatter.formatFloat(normalizedChance);
 
-                tooltips.add(Tooltip.create(
-                        Lang.GREGTECH_5_UTIL.transf("outputchance", normalizedChance), Tooltip.INFO_FORMATTING));
+                tooltips.add(
+                        Tooltip.create(
+                                Lang.GREGTECH_5_UTIL.transf("outputchance", normalizedChance),
+                                Tooltip.INFO_FORMATTING));
                 additionalInfoStrings.add(formattedChance + "%");
             }
 
@@ -229,12 +228,10 @@ public final class GregTechRecipeUtil {
             }
 
             FluidComponent fluidComponent = FluidComponent.createWithNbt(fluidStack);
-            Component component = GregTechFluidDictUtil.fluidToDisplayItem(fluidComponent)
-                    .map(Component.class::cast)
+            Component component = GregTechFluidDictUtil.fluidToDisplayItem(fluidComponent).map(Component.class::cast)
                     .orElse(fluidComponent);
 
-            DisplayComponent.Builder builder =
-                    DisplayComponent.builder(component).setStackSize(fluidStack.amount);
+            DisplayComponent.Builder builder = DisplayComponent.builder(component).setStackSize(fluidStack.amount);
 
             Optional<Tooltip> specialConditionsTooltipOptional = buildSpecialConditionsTooltip(recipe);
             if (specialConditionsTooltipOptional.isPresent()) {
@@ -249,7 +246,7 @@ public final class GregTechRecipeUtil {
     }
 
     // TODO these special values only apply for certain recipe types.
-    //  Do we ever run into cases where they don't apply?
+    // Do we ever run into cases where they don't apply?
     public static boolean requiresCleanroom(GT_Recipe recipe) {
         return recipe.mSpecialValue == -200 || recipe.mSpecialValue == -300;
     }

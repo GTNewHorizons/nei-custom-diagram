@@ -1,24 +1,28 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.component;
 
-import codechicken.nei.recipe.GuiCraftingRecipe;
-import codechicken.nei.recipe.GuiUsageRecipe;
-import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
-import com.github.dcysteine.neicustomdiagram.api.draw.Draw;
-import com.github.dcysteine.neicustomdiagram.api.draw.Point;
-import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
-import com.google.auto.value.AutoValue;
 import java.util.Comparator;
 import java.util.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
+import codechicken.nei.recipe.GuiCraftingRecipe;
+import codechicken.nei.recipe.GuiUsageRecipe;
+
+import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
+import com.github.dcysteine.neicustomdiagram.api.draw.Draw;
+import com.github.dcysteine.neicustomdiagram.api.draw.Point;
+import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
+import com.google.auto.value.AutoValue;
+
 @AutoValue
 public abstract class FluidComponent implements Component {
-    public static final Comparator<FluidComponent> COMPARATOR = Comparator.<FluidComponent, Integer>comparing(
-                    c -> c.fluid().getID())
+
+    public static final Comparator<FluidComponent> COMPARATOR = Comparator
+            .<FluidComponent, Integer>comparing(c -> c.fluid().getID())
             .thenComparing(c -> c.nbtWrapper().orElse(null), ImmutableNbtWrapper.COMPARATOR);
 
     public static final int DEFAULT_STACK_SIZE = 1_000;
