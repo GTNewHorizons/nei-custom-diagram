@@ -42,21 +42,12 @@ public abstract class Text implements BoundedDrawable {
     public abstract boolean shadow();
 
     @Override
-    public Dimension dimension() {
-        int width = GuiDraw.getStringWidth(text());
-        int height = Draw.TEXT_HEIGHT;
-
-        if (small()) {
-            width /= 2;
-            height /= 2;
-        }
-
-        return Dimension.create(width, height);
-    }
+    public abstract Dimension dimension();
 
     @Override
     public void draw(DiagramState diagramState) {
-        Draw.drawText(text(), position(), colour(), small(), shadow());
+        Point topLeft = position().translate(-dimension().width() / 2, -dimension().height() / 2);
+        Draw.drawText(text(), topLeft, colour(), small(), shadow());
     }
 
     @ToPrettyString
@@ -126,10 +117,11 @@ public abstract class Text implements BoundedDrawable {
                 width /= 2;
                 height /= 2;
             }
+            Dimension dimension = Dimension.create(width, height);
 
             Point center = position.translate(direction.xFactor * width / 2, direction.yFactor * height / 2);
 
-            return new AutoValue_Text(text, center, colour, small, shadow);
+            return new AutoValue_Text(text, center, colour, small, shadow, dimension);
         }
     }
 
@@ -201,11 +193,21 @@ public abstract class Text implements BoundedDrawable {
             }
 
             int y = position.y();
-            if (direction.yFactor < 0) {
-                // If we're extending the multi-line text upwards, then we need to move to start at
-                // the top of the area so that we build the lines top-to-bottom.
-                y -= textLines.size() * lineHeight;
+            // Move to top of text area.
+            switch (direction.yFactor) {
+                case -1:
+                    y -= textLines.size() * lineHeight;
+                    break;
+
+                case 0:
+                    y -= textLines.size() * lineHeight / 2;
+                    break;
+
+                case 1:
+                    // We're already at the top.
+                    break;
             }
+
             for (String line : textLines) {
                 list.add(
                         builder(line, Point.create(position.x(), y), direction).setColour(colour).setSmall(small)

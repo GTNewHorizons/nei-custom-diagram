@@ -31,7 +31,6 @@ class RecipePartitioner {
      * This seems like a "magic number" that works pretty well. Much larger numbers seem to perform worse.
      */
     private static final int PARTITION_SIZE = 128;
-
     private static final int INSERTIONS_PER_RECIPE = 3;
 
     private enum ComponentFunnel implements Funnel<Component> {

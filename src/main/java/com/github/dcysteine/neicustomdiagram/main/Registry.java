@@ -9,6 +9,7 @@ import codechicken.nei.api.API;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroupInfo;
+import com.github.dcysteine.neicustomdiagram.generators.debug.nbtviewer.NbtViewer;
 import com.github.dcysteine.neicustomdiagram.generators.debug.ruler.DebugRuler;
 import com.github.dcysteine.neicustomdiagram.generators.enderstorage.chestoverview.EnderStorageChestOverview;
 import com.github.dcysteine.neicustomdiagram.generators.enderstorage.tankoverview.EnderStorageTankOverview;
@@ -46,6 +47,7 @@ public enum Registry {
         ImmutableList.Builder<RegistryEntry> entriesBuilder = ImmutableList.builder();
 
         // Add your diagram generator here!
+        entriesBuilder.add(RegistryEntry.create("debug.nbtviewer", NbtViewer::new));
         entriesBuilder.add(RegistryEntry.create("debug.ruler", DebugRuler::new));
         entriesBuilder.add(
                 RegistryEntry.create(

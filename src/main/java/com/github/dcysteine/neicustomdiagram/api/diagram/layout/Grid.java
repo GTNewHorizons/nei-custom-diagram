@@ -28,7 +28,6 @@ public abstract class Grid {
 
     public static final int TOTAL_WIDTH = 166;
     public static final int TOTAL_HEIGHT = 332;
-    public static final int STACK_WIDTH = 16;
     public static final int SLOT_WIDTH = 18;
     public static final int BIG_SLOT_WIDTH = 26;
     public static final int MARGIN_WIDTH = 6;

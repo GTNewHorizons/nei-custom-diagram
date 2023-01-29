@@ -62,11 +62,19 @@ public final class ConfigOptions {
                     + "\nChanging this option requires a restart to take effect.",
             true).register();
 
-    public static final Option<Integer> SCROLL_SPEED = new IntegerOption(
+    public static final Option<Integer> MOUSE_SCROLL_SPEED = new IntegerOption(
             Category.OPTIONS,
-            "scroll_speed",
+            "mouse_scroll_speed",
             12,
-            "Sets the scroll speed, in pixels." + " Use a negative value to invert the scroll direction.").register();
+            "Sets the mouse scroll wheel scroll speed, in pixels."
+                    + "\nUse a negative value to invert the scroll direction.").register();
+
+    public static final Option<Integer> KEYBOARD_SCROLL_SPEED = new IntegerOption(
+            Category.OPTIONS,
+            "keyboard_scroll_speed",
+            36,
+            "Sets the keyboard arrow keys scroll speed, in pixels."
+                    + "\nUse a negative value to invert the scroll direction.").register();
 
     public static final Option<Boolean> SHOW_EMPTY_DIAGRAMS = new BooleanOption(
             Category.OPTIONS,
@@ -95,10 +103,23 @@ public final class ConfigOptions {
             "Sets the maximum # of cycle components that will be shown in a tooltip" + " when <Shift> is held."
                     + "\nSet to 0 to disable this feature.").register();
 
+    public static final Option<Boolean> NBT_VIEWER_SMALL_TEXT = new BooleanOption(
+            Category.DIAGRAM_SPECIFIC,
+            "nbt_viewer_small_text",
+            false,
+            "Enables drawing smaller text in the NBT Viewer diagram.").register();
+
+    public static final Option<Boolean> NBT_VIEWER_NEWLINE_VALUES = new BooleanOption(
+            Category.DIAGRAM_SPECIFIC,
+            "nbt_viewer_newline_values",
+            false,
+            "Enables drawing values on a separate line in the NBT Viewer diagram.").register();
+
     public enum Category {
 
         OPTIONS("options"),
-        DIAGRAM_GROUPS("diagram_groups");
+        DIAGRAM_GROUPS("diagram_groups"),
+        DIAGRAM_SPECIFIC("diagram_specific"),;
 
         private final String name;
 
@@ -232,6 +253,10 @@ public final class ConfigOptions {
         Config.CONFIG.setCategoryComment(
                 Category.OPTIONS.toString(),
                 "General usage options." + " These should be safe to change without requiring a restart.");
+
+        Config.CONFIG.setCategoryComment(
+                Category.DIAGRAM_SPECIFIC.toString(),
+                "Diagram-specific options." + " Whether these require a restart depends on the diagram.");
 
         StringBuilder diagramGroupCategoryCommentBuilder = new StringBuilder();
         diagramGroupCategoryCommentBuilder.append(

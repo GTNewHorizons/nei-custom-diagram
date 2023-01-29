@@ -6,8 +6,8 @@ import com.google.auto.value.AutoValue;
  * Immutable class representing a width and height.
  *
  * <p>
- * While this class's contents are the same as those of {@link Point}, for type-safety, we treat this as a separate
- * class.
+ * While this class's contents are the same as those of {@link Point} and {@link Vector}, for type-safety, we treat this
+ * as a separate class.
  */
 @AutoValue
 public abstract class Dimension {
