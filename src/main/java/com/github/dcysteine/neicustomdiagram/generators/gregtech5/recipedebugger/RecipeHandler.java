@@ -1,8 +1,8 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.recipedebugger;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -437,7 +437,6 @@ class RecipeHandler {
 
     private static Set<OrePrefixes> getOrePrefixes(Set<Component> componentSet) {
         return componentSet.stream().map(GregTechOreDictUtil::getItemData).filter(Optional::isPresent)
-                .map(itemData -> itemData.get().mPrefix)
-                .collect(Collectors.toCollection(() -> EnumSet.noneOf(OrePrefixes.class)));
+                .map(itemData -> itemData.get().mPrefix).collect(Collectors.toCollection(HashSet::new));
     }
 }
