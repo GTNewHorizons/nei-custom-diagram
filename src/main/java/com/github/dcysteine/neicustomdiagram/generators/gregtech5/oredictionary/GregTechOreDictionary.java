@@ -53,6 +53,7 @@ public final class GregTechOreDictionary implements DiagramGenerator {
                         "This diagram displays GregTech ore dictionary synonyms."
                                 + "\nMostly useful for modpack development.")
                 .build();
+
     }
 
     @Override

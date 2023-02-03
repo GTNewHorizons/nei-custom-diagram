@@ -47,6 +47,25 @@ class RecipeHandler {
             .add(GregTechOreDictUtil.getComponent(ItemList.Schematic_3by3))
             .add(GregTechOreDictUtil.getComponent(ItemList.Schematic_Dust)).build();
 
+    static final ImmutableSet<OrePrefixes> SMALL_VARIANT_ORE_PREFIXES = ImmutableSet
+            .of(OrePrefixes.dustTiny, OrePrefixes.dustSmall, OrePrefixes.nugget);
+    static final ImmutableSet<OrePrefixes> CABLE_ORE_PREFIXES = ImmutableSet.of(
+            OrePrefixes.cableGt01,
+            OrePrefixes.cableGt02,
+            OrePrefixes.cableGt04,
+            OrePrefixes.cableGt08,
+            OrePrefixes.cableGt12,
+            OrePrefixes.cableGt16);
+    static final ImmutableSet<RecipeMap> RECIPE_MAPS_TO_IGNORE_FOR_SMALL_VARIANT = ImmutableSet.of(
+            // These recipemaps are meant to have tiny / small dusts or nuggets.
+            RecipeMap.PACKAGER,
+            RecipeMap.UNPACKAGER,
+            RecipeMap.MACERATOR,
+            RecipeMap.LATHE,
+            RecipeMap.FLUID_EXTRACTOR,
+            RecipeMap.IMPLOSION_COMPRESSOR,
+            RecipeMap.ALLOY_SMELTER);
+
     enum RecipeMap {
 
         ORE_WASHING_PLANT(GT_Recipe.GT_Recipe_Map.sOreWasherRecipes, ItemList.Machine_HV_OreWasher,
@@ -400,25 +419,6 @@ class RecipeHandler {
         return countCells(recipe.inputs()) != countCells(recipe.outputs());
     }
 
-    private static final ImmutableSet<OrePrefixes> SMALL_VARIANT_ORE_PREFIXES = ImmutableSet
-            .of(OrePrefixes.dustTiny, OrePrefixes.dustSmall, OrePrefixes.nugget);
-    private static final ImmutableSet<OrePrefixes> CABLE_ORE_PREFIXES = ImmutableSet.of(
-            OrePrefixes.cableGt01,
-            OrePrefixes.cableGt02,
-            OrePrefixes.cableGt04,
-            OrePrefixes.cableGt08,
-            OrePrefixes.cableGt12,
-            OrePrefixes.cableGt16);
-    private static final ImmutableSet<RecipeMap> RECIPE_MAPS_TO_IGNORE_FOR_SMALL_VARIANT = ImmutableSet.of(
-            // These recipemaps are meant to have tiny / small dusts or nuggets.
-            RecipeMap.PACKAGER,
-            RecipeMap.UNPACKAGER,
-            RecipeMap.MACERATOR,
-            RecipeMap.LATHE,
-            RecipeMap.FLUID_EXTRACTOR,
-            RecipeMap.IMPLOSION_COMPRESSOR,
-            RecipeMap.ALLOY_SMELTER);
-
     private static boolean smallVariantRecipe(Recipe recipe) {
         if (RECIPE_MAPS_TO_IGNORE_FOR_SMALL_VARIANT.contains(recipe.recipeMap())) {
             return false;
@@ -436,8 +436,7 @@ class RecipeHandler {
     }
 
     private static Set<OrePrefixes> getOrePrefixes(Set<Component> componentSet) {
-        return componentSet.stream().map(GregTechOreDictUtil::getItemData) // Checks for ComponentType.ITEM for us
-                .filter(Optional::isPresent).map(itemData -> itemData.get().mPrefix)
-                .collect(Collectors.toCollection(HashSet::new));
+        return componentSet.stream().map(GregTechOreDictUtil::getItemData).filter(Optional::isPresent)
+                .map(itemData -> itemData.get().mPrefix).collect(Collectors.toCollection(HashSet::new));
     }
 }

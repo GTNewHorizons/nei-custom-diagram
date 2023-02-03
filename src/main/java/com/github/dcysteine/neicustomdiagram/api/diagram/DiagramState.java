@@ -2,7 +2,7 @@ package com.github.dcysteine.neicustomdiagram.api.diagram;
 
 import codechicken.nei.NEIClientUtils;
 
-import com.github.dcysteine.neicustomdiagram.api.draw.GuiManager;
+import com.github.dcysteine.neicustomdiagram.api.draw.scroll.ScrollDirection;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 
 /**
@@ -43,8 +43,8 @@ public class DiagramState {
     }
 
     /** "Scrolls" the tick counter by one cycle at a time. */
-    public void scroll(GuiManager.ScrollDirection direction) {
-        ticks += direction.factor * TICKS_PER_CYCLE;
+    public void scroll(ScrollDirection direction) {
+        ticks += direction.yFactor * TICKS_PER_CYCLE;
     }
 
     /** Due to backwards scrolling, {@code ticks()} may be negative! */

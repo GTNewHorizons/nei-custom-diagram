@@ -47,8 +47,10 @@ class DiagramFactory {
         for (int i = 0; i < circuitLines.size(); i++) {
             CircuitLine circuitLine = circuitLines.get(i);
 
-            circuitLinesSlotSubBuilder
-                    .insertIntoSlot(i, 0, ComponentTransformer.transformToDisplay(circuitLine.boards()));
+            if (!circuitLine.boards().isEmpty()) {
+                circuitLinesSlotSubBuilder
+                        .insertIntoSlot(i, 0, ComponentTransformer.transformToDisplay(circuitLine.boards()));
+            }
 
             for (int j = 0; j < circuitLine.circuits().size(); j++) {
                 circuitLinesSlotSubBuilder.insertIntoSlot(
@@ -66,8 +68,11 @@ class DiagramFactory {
             Preconditions
                     .checkState(circuitLine.circuits().size() == 1, "Expected individual circuit: %s", circuitLine);
 
-            individualCircuitsSlotSubBuilder
-                    .insertIntoSlot(i, 0, ComponentTransformer.transformToDisplay(circuitLine.boards()));
+            if (!circuitLine.boards().isEmpty()) {
+                individualCircuitsSlotSubBuilder
+                        .insertIntoSlot(i, 0, ComponentTransformer.transformToDisplay(circuitLine.boards()));
+            }
+
             individualCircuitsSlotSubBuilder.insertIntoSlot(i, 1, buildCircuitDisplayComponent(circuitLine, 0));
         }
 

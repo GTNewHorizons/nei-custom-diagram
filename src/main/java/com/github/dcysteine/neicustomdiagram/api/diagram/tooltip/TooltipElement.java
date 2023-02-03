@@ -124,11 +124,12 @@ public abstract class TooltipElement {
      * drawing code.
      */
     public void draw(int x, int y, TextFormatting formatting) {
+        Point topLeft = Point.create(x, y);
         Point center = Point.create(x + width(formatting) / 2, y + height(formatting) / 2);
 
         switch (type()) {
             case TEXT:
-                Draw.drawText(formatting.format(text()), center, Draw.Colour.WHITE, formatting.small(), true);
+                Draw.drawText(formatting.format(text()), topLeft, Draw.Colour.WHITE, formatting.small(), true);
                 break;
 
             case DISPLAY_COMPONENT_ICON:
@@ -139,7 +140,7 @@ public abstract class TooltipElement {
             case COMPONENT_DESCRIPTION:
                 Draw.drawText(
                         formatting.format(componentDescription().description()),
-                        center,
+                        topLeft,
                         Draw.Colour.WHITE,
                         formatting.small(),
                         true);

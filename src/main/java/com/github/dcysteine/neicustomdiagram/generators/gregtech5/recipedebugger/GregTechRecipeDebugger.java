@@ -50,7 +50,7 @@ public final class GregTechRecipeDebugger implements DiagramGenerator {
 
         SMALL_VARIANT_RECIPES("-small-variant-recipes",
                 GregTechOreDictUtil.getComponent(OrePrefixes.dustTiny, Materials.Salt).get(),
-                "smallvariantrecipesbutton");
+                "smallvariantrecipesbutton"),;
 
         /** The suffix to append to the group ID, to get the custom behavior ID for this view. */
         public final String suffix;
