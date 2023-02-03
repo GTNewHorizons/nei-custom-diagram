@@ -34,7 +34,8 @@ public final class NeiCustomDiagram {
             + "after:bartworks;"
             + "after:miscutils;"
             + "after:detravscannermod;"
-            + "after:MineTweaker3;";
+            + "after:MineTweaker3;"
+            + "after:EnderStorage;";
 
     @Instance(MOD_ID)
     public static NeiCustomDiagram instance;
