@@ -28,7 +28,7 @@ dependencies {
     runtimeOnly('com.github.GTNewHorizons:Chisel:2.10.19-GTNH:dev')
     runtimeOnly('com.github.GTNewHorizons:ForgeMultipart:1.3.2:dev')
     runtimeOnly('com.github.GTNewHorizons:ForgeRelocation:0.0.3:dev')
-    runtimeOnly('com.github.GTNewHorizons:GTNHLib:0.0.13ev')
+    runtimeOnly('com.github.GTNewHorizons:GTNHLib:0.0.13:dev')
     runtimeOnly('com.github.GTNewHorizons:GoodGenerator:0.5.18:dev')
     runtimeOnly('com.github.GTNewHorizons:ModularUI:1.1.3:dev')
     runtimeOnly('com.github.GTNewHorizons:MrTJPCore:1.1.4:dev')
