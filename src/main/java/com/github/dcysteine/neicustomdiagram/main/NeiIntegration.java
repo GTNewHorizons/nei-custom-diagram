@@ -6,16 +6,16 @@ import java.util.Optional;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 
+import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
+import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroupInfo;
+import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
+import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
+
 import codechicken.nei.event.NEIRegisterHandlerInfosEvent;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerObjectHandler;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.IRecipeHandler;
-
-import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
-import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroupInfo;
-import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
-import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /** Singleton class that handles any NEI integration that needs to be done. */

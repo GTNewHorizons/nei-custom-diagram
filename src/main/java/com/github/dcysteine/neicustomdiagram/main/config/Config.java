@@ -7,6 +7,7 @@ import net.minecraftforge.common.config.Configuration;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroupInfo;
 import com.github.dcysteine.neicustomdiagram.main.Logger;
+
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
 public final class Config {

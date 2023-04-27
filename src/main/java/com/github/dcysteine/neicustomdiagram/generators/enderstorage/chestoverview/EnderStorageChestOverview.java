@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import codechicken.enderstorage.storage.item.EnderItemStorage;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.CustomDiagramGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
@@ -34,6 +32,8 @@ import com.github.dcysteine.neicustomdiagram.util.enderstorage.EnderStorageUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+
+import codechicken.enderstorage.storage.item.EnderItemStorage;
 
 public final class EnderStorageChestOverview implements DiagramGenerator {
 

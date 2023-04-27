@@ -15,16 +15,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.input.Keyboard;
 
-import codechicken.nei.NEIClientConfig;
-import codechicken.nei.NEIClientUtils;
-import codechicken.nei.PositionedStack;
-import codechicken.nei.api.IOverlayHandler;
-import codechicken.nei.api.IRecipeOverlayRenderer;
-import codechicken.nei.recipe.GuiRecipe;
-import codechicken.nei.recipe.ICraftingHandler;
-import codechicken.nei.recipe.IUsageHandler;
-import codechicken.nei.recipe.RecipeItemInputHandler;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.FluidComponent;
@@ -39,6 +29,16 @@ import com.github.dcysteine.neicustomdiagram.api.draw.scroll.ScrollDirection;
 import com.github.dcysteine.neicustomdiagram.api.draw.scroll.ScrollManager;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.google.common.collect.ImmutableList;
+
+import codechicken.nei.NEIClientConfig;
+import codechicken.nei.NEIClientUtils;
+import codechicken.nei.PositionedStack;
+import codechicken.nei.api.IOverlayHandler;
+import codechicken.nei.api.IRecipeOverlayRenderer;
+import codechicken.nei.recipe.GuiRecipe;
+import codechicken.nei.recipe.ICraftingHandler;
+import codechicken.nei.recipe.IUsageHandler;
+import codechicken.nei.recipe.RecipeItemInputHandler;
 
 public class DiagramGroup implements ICraftingHandler, IUsageHandler {
 

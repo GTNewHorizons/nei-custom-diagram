@@ -5,8 +5,6 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-import codechicken.nei.NEIClientUtils;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramState;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
@@ -19,6 +17,8 @@ import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+
+import codechicken.nei.NEIClientUtils;
 
 /**
  * An interactive component group.

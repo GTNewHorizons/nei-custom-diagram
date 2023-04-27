@@ -3,8 +3,6 @@ package com.github.dcysteine.neicustomdiagram.api.diagram.layout;
 import java.util.ArrayList;
 import java.util.List;
 
-import codechicken.lib.gui.GuiDraw;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramState;
 import com.github.dcysteine.neicustomdiagram.api.draw.BoundedDrawable;
 import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
@@ -14,6 +12,8 @@ import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
+
+import codechicken.lib.gui.GuiDraw;
 
 /**
  * Immutable class representing a text label.

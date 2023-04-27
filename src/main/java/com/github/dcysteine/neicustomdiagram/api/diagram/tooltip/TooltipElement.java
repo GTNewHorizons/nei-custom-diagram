@@ -1,13 +1,13 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram.tooltip;
 
-import codechicken.lib.gui.GuiDraw;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.layout.Grid;
 import com.github.dcysteine.neicustomdiagram.api.draw.Draw;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.google.auto.value.AutoOneOf;
+
+import codechicken.lib.gui.GuiDraw;
 
 /**
  * An element in a tooltip line.

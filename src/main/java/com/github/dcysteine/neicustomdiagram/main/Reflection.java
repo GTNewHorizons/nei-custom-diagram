@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
 import com.google.auto.value.AutoValue;
+
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 /** Class containing reflection accessors for private fields. */

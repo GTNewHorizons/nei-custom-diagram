@@ -8,11 +8,11 @@ import java.util.stream.Collectors;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import codechicken.nei.ItemList;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.google.common.collect.Lists;
+
+import codechicken.nei.ItemList;
 
 public final class OreDictUtil {
 

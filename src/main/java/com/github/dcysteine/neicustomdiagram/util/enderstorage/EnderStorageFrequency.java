@@ -2,11 +2,11 @@ package com.github.dcysteine.neicustomdiagram.util.enderstorage;
 
 import net.minecraft.init.Blocks;
 
-import codechicken.enderstorage.api.EnderStorageManager;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.google.auto.value.AutoValue;
+
+import codechicken.enderstorage.api.EnderStorageManager;
 
 /** Utility class for convenient handling of Ender Storage frequencies. */
 @AutoValue

@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
+
 import gregtech.api.util.GT_Recipe;
 
 class RecipeHandler {

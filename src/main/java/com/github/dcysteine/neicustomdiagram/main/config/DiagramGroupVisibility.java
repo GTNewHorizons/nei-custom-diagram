@@ -1,8 +1,8 @@
 package com.github.dcysteine.neicustomdiagram.main.config;
 
-import codechicken.nei.NEIClientUtils;
-
 import com.github.dcysteine.neicustomdiagram.main.Logger;
+
+import codechicken.nei.NEIClientUtils;
 
 /** Contains options for controlling when a diagram group is shown. */
 public enum DiagramGroupVisibility {

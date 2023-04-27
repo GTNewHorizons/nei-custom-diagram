@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 
 import net.minecraft.init.Items;
 
-import codechicken.lib.gui.GuiDraw;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
@@ -27,6 +25,8 @@ import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import com.github.dcysteine.neicustomdiagram.util.ComponentTransformer;
 import com.github.dcysteine.neicustomdiagram.util.OreDictUtil;
+
+import codechicken.lib.gui.GuiDraw;
 
 /**
  * Generates diagrams showing Forge ore dictionary data for any item.

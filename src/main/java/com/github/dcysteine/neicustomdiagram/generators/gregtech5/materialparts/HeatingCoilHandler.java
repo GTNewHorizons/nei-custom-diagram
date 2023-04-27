@@ -51,7 +51,7 @@ class HeatingCoilHandler {
         ImmutableSortedMap.Builder<Long, Component> builder = ImmutableSortedMap.naturalOrder();
         for (ItemList item : HEATING_COILS) {
             ItemStack itemStack = item.get(1);
-            long heat = GT_Block_Casings5.getCoilHeatFromDamage(itemStack.getItemDamage()).getHeat();
+            long heat = GT_Block_Casings5.getCoilHeatFromDamage(ItemComponent.getItemDamage(itemStack)).getHeat();
 
             builder.put(heat, ItemComponent.create(itemStack));
         }

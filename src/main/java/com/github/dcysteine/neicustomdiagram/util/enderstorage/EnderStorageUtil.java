@@ -9,14 +9,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
+import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
+
 import codechicken.enderstorage.EnderStorage;
 import codechicken.enderstorage.api.EnderStorageManager;
 import codechicken.enderstorage.storage.EnderItemStoragePlugin;
 import codechicken.enderstorage.storage.item.EnderItemStorage;
 import codechicken.enderstorage.storage.liquid.EnderLiquidStorage;
-
-import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
-import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 
 public final class EnderStorageUtil {
 
