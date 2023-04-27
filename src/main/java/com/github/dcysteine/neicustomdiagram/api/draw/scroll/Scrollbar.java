@@ -1,9 +1,9 @@
 package com.github.dcysteine.neicustomdiagram.api.draw.scroll;
 
-import codechicken.lib.gui.GuiDraw;
-
 import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
+
+import codechicken.lib.gui.GuiDraw;
 
 /** Handles drawing and controlling of a scrollbar. */
 class Scrollbar {

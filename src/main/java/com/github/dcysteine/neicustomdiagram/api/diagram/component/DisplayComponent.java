@@ -9,8 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 
-import codechicken.nei.NEIClientUtils;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.TextFormatting;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
@@ -21,6 +19,8 @@ import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.base.Splitter;
+
+import codechicken.nei.NEIClientUtils;
 
 /**
  * A display component is a component that may have additional display information attached, such as stack size or

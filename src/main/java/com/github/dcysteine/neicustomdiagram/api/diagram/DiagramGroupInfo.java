@@ -2,12 +2,12 @@ package com.github.dcysteine.neicustomdiagram.api.diagram;
 
 import java.util.function.Predicate;
 
-import codechicken.nei.recipe.HandlerInfo;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.layout.Grid;
 import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import com.google.auto.value.AutoValue;
+
+import codechicken.nei.recipe.HandlerInfo;
 
 @AutoValue
 public abstract class DiagramGroupInfo {

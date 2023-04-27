@@ -7,14 +7,14 @@ import net.minecraft.client.gui.ScaledResolution;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.lib.gui.GuiDraw;
-import codechicken.nei.guihook.GuiContainerManager;
-import codechicken.nei.recipe.GuiRecipe;
-
 import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.github.dcysteine.neicustomdiagram.main.Reflection;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
+
+import codechicken.lib.gui.GuiDraw;
+import codechicken.nei.guihook.GuiContainerManager;
+import codechicken.nei.recipe.GuiRecipe;
 
 /** Handles scrolling support, as well as finding the mouse position. */
 public final class ScrollManager {

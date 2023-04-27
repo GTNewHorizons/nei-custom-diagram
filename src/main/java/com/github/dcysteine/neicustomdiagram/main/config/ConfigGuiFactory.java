@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
 import com.github.dcysteine.neicustomdiagram.main.NeiCustomDiagram;
+
 import cpw.mods.fml.client.IModGuiFactory;
 
 public final class ConfigGuiFactory implements IModGuiFactory {

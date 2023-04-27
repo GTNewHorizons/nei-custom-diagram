@@ -10,8 +10,6 @@ import java.util.stream.IntStream;
 
 import net.minecraft.init.Items;
 
-import codechicken.enderstorage.storage.liquid.EnderLiquidStorage;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.CustomDiagramGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
@@ -36,6 +34,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+
+import codechicken.enderstorage.storage.liquid.EnderLiquidStorage;
 
 public final class EnderStorageTankOverview implements DiagramGenerator {
 

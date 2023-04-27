@@ -8,14 +8,14 @@ import net.minecraftforge.fluids.Fluid;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import codechicken.lib.gui.GuiDraw;
-import codechicken.nei.guihook.GuiContainerManager;
-
 import com.github.dcysteine.neicustomdiagram.api.Formatter;
 import com.github.dcysteine.neicustomdiagram.api.diagram.layout.Grid;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.TooltipLine;
 import com.google.auto.value.AutoValue;
+
+import codechicken.lib.gui.GuiDraw;
+import codechicken.nei.guihook.GuiContainerManager;
 
 /** GUI drawing library. */
 public final class Draw {
