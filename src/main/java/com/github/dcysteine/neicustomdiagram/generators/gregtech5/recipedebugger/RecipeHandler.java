@@ -1,24 +1,36 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.recipedebugger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.FluidComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
+import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
+import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.main.Logger;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechRecipeUtil;
@@ -28,6 +40,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
+import codechicken.nei.NEIServerUtils;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GT_ModHandler;
@@ -67,6 +80,16 @@ class RecipeHandler {
             RecipeMap.ALLOY_SMELTER);
 
     enum RecipeMap {
+
+        /**
+         * Crafting table recipes.
+         *
+         * <p>
+         * This is the only enum entry which will have null {@code recipeMap}, since it doesn't correspond to a GT5
+         * recipe map. Currently, we only use this value to be able to check for crafting table recipes containing a bad
+         * {@link ItemStack} which has a null {@link Item}.
+         */
+        CRAFTING_TABLE(null, ItemList.Schematic_Crafting, "craftingtablelabel"),
 
         ORE_WASHING_PLANT(GT_Recipe.GT_Recipe_Map.sOreWasherRecipes, ItemList.Machine_HV_OreWasher,
                 "orewashingplantlabel"),
@@ -109,11 +132,21 @@ class RecipeHandler {
         PACKAGER(GT_Recipe.GT_Recipe_Map.sBoxinatorRecipes, ItemList.Machine_HV_Boxinator, "packagerlabel"),
         UNPACKAGER(GT_Recipe.GT_Recipe_Map.sUnboxinatorRecipes, ItemList.Machine_HV_Unboxinator, "unpackagerlabel"),
         FUSION_REACTOR(GT_Recipe.GT_Recipe_Map.sFusionRecipes, ItemList.FusionComputer_LuV, "fusionreactorlabel"),
+        COMPLEX_FUSION_REACTOR(GT_Recipe.GT_Recipe_Map.sComplexFusionRecipes, ItemList.FusionComputer_UV,
+                "complexfusionreactorlabel"),
         CENTRIFUGE(GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes, ItemList.Machine_HV_Centrifuge, "centrifugelabel"),
         ELECTROLYZER(GT_Recipe.GT_Recipe_Map.sElectrolyzerRecipes, ItemList.Machine_HV_Electrolyzer,
                 "electrolyzerlabel"),
         ELECTRIC_BLAST_FURNACE(GT_Recipe.GT_Recipe_Map.sBlastRecipes, ItemList.Machine_Multi_BlastFurnace,
                 "electricblastfurnacelabel"),
+        PLASMA_FORGE(GT_Recipe.GT_Recipe_Map.sPlasmaForgeRecipes, ItemList.Machine_Multi_PlasmaForge,
+                "plasmaforgelabel"),
+        // Commenting this one out for now, for backward compatibility. Uncomment later.
+        /*
+         * TRANSCENDENT_PLASMA_MIXER( GT_Recipe.GT_Recipe_Map.sTranscendentPlasmaMixerRecipes,
+         * ItemList.Machine_Multi_TranscendentPlasmaMixer, "transcendentplasmamixerlabel"),
+         */
+        // Fake Space Project
         BRICKED_BLAST_FURNACE(GT_Recipe.GT_Recipe_Map.sPrimitiveBlastRecipes, ItemList.Machine_Bricked_BlastFurnace,
                 "brickedblastfurnacelabel"),
         IMPLOSION_COMPRESSOR(GT_Recipe.GT_Recipe_Map.sImplosionRecipes, ItemList.Machine_Multi_ImplosionCompressor,
@@ -142,14 +175,19 @@ class RecipeHandler {
         CUTTING_MACHINE(GT_Recipe.GT_Recipe_Map.sCutterRecipes, ItemList.Machine_HV_Cutter, "cuttingmachinelabel"),
         SLICING_MACHINE(GT_Recipe.GT_Recipe_Map.sSlicerRecipes, ItemList.Machine_HV_Slicer, "slicingmachinelabel"),
         EXTRUDER(GT_Recipe.GT_Recipe_Map.sExtruderRecipes, ItemList.Machine_HV_Extruder, "extruderlabel"),
-        FORGE_HAMMER(GT_Recipe.GT_Recipe_Map.sHammerRecipes, ItemList.Machine_HV_Hammer, "forgehammerlabel");
+        FORGE_HAMMER(GT_Recipe.GT_Recipe_Map.sHammerRecipes, ItemList.Machine_HV_Hammer, "forgehammerlabel"),
         // Amplifabricator, Mass Fabrication, fuels
+        // Multiblock Electrolyzer, Multiblock Centrifuge, Multiblock Mixer
+        NANO_FORGE(GT_Recipe.GT_Recipe_Map.sNanoForge, ItemList.NanoForge, "nanoforgelabel"),
+        PCB_FACTORY(GT_Recipe.GT_Recipe_Map.sPCBFactory, ItemList.PCBFactory, "pcbfactory"),;
 
+        /** This field will be null for the {@link RecipeMap#CRAFTING_TABLE} enum only. */
+        @Nullable
         final GT_Recipe.GT_Recipe_Map recipeMap;
         final ItemList item;
         final String tooltipKey;
 
-        RecipeMap(GT_Recipe.GT_Recipe_Map recipeMap, ItemList item, String tooltipKey) {
+        RecipeMap(@Nullable GT_Recipe.GT_Recipe_Map recipeMap, ItemList item, String tooltipKey) {
             this.recipeMap = recipeMap;
             this.item = item;
             this.tooltipKey = tooltipKey;
@@ -198,6 +236,94 @@ class RecipeHandler {
                     ImmutableList.copyOf(GregTechRecipeUtil.buildComponentsFromOutputs(recipe)));
         }
 
+        /**
+         * Checks if {@code recipe} contains any bad {@link ItemStack} instances. If so, returns an optional of a
+         * {@link Recipe}; otherwise, returns an empty optional.
+         */
+        @SuppressWarnings("unchecked")
+        static Optional<Recipe> createIfBadItemStack(IRecipe recipe) {
+            boolean badRecipe = false;
+
+            List<DisplayComponent> inputList = new ArrayList<>();
+            List<DisplayComponent> outputList = new ArrayList<>();
+
+            Map<Component, Integer> inputs = new HashMap<>();
+            Map<Component, Integer> outputs = new HashMap<>();
+
+            ItemStack output = recipe.getRecipeOutput();
+            if (output == null) {
+                Logger.GREGTECH_5_RECIPE_DEBUGGER.warn("Found a crafting table recipe with null output:\n{}", recipe);
+            } else if (output.getItem() == null) {
+                badRecipe = true;
+                Logger.GREGTECH_5_RECIPE_DEBUGGER.warn("Found a crafting table recipe with bad output:\n{}", recipe);
+            } else {
+                outputList.add(DisplayComponent.builderWithNbt(output).build());
+                outputs.put(ItemComponent.createWithNbt(output), output.stackSize);
+            }
+
+            // We'll try to get the inputs,
+            // but can only do so for recipe types that we know how to handle.
+            List<ItemStack> inputItemStacks = new ArrayList<>();
+            if (recipe instanceof ShapedRecipes) {
+                inputItemStacks = Arrays.asList(((ShapedRecipes) recipe).recipeItems);
+            } else if (recipe instanceof ShapedOreRecipe) {
+                inputItemStacks = Arrays.stream(((ShapedOreRecipe) recipe).getInput()).filter(Objects::nonNull)
+                        .map(NEIServerUtils::extractRecipeItems).flatMap(Arrays::stream)
+                        .collect(Collectors.toCollection(ArrayList::new));
+            } else if (recipe instanceof ShapelessRecipes) {
+                inputItemStacks = (List<ItemStack>) ((ShapelessRecipes) recipe).recipeItems;
+            } else if (recipe instanceof ShapelessOreRecipe) {
+                inputItemStacks = ((ShapelessOreRecipe) recipe).getInput().stream().filter(Objects::nonNull)
+                        .map(NEIServerUtils::extractRecipeItems).flatMap(Arrays::stream)
+                        .collect(Collectors.toCollection(ArrayList::new));
+            }
+
+            for (ItemStack input : inputItemStacks) {
+                if (input == null) {
+                    continue;
+                } else if (input.getItem() == null) {
+                    badRecipe = true;
+                    Logger.GREGTECH_5_RECIPE_DEBUGGER.warn("Found a crafting table recipe with bad input:\n{}", recipe);
+                    continue;
+                }
+
+                // The diagram layout code currently doesn't support permutations,
+                // so for now, we'll handle wildcard damage by just reverting to damage 0.
+                boolean isWildcard = false;
+
+                ItemComponent itemComponent = ItemComponent.createWithNbt(input);
+                if (itemComponent.hasWildcardDamage()) {
+                    isWildcard = true;
+
+                    ItemStack nonWildcardInput = input.copy();
+                    nonWildcardInput.setItemDamage(0);
+                    itemComponent = ItemComponent.createWithNbt(nonWildcardInput);
+                }
+                inputs.put(itemComponent, input.stackSize);
+
+                DisplayComponent.Builder displayComponentBuilder = DisplayComponent.builder(itemComponent);
+                if (isWildcard) {
+                    displayComponentBuilder.setAdditionalInfo("*").setAdditionalTooltip(
+                            Tooltip.create(
+                                    Lang.GREGTECH_5_RECIPE_DEBUGGER.trans("wildcardlabel"),
+                                    Tooltip.INFO_FORMATTING));
+                }
+                inputList.add(displayComponentBuilder.build());
+            }
+
+            if (badRecipe) {
+                return Optional.of(
+                        new AutoValue_RecipeHandler_Recipe(
+                                RecipeMap.CRAFTING_TABLE,
+                                ImmutableMap.copyOf(inputs),
+                                ImmutableMap.copyOf(outputs),
+                                ImmutableList.copyOf(inputList),
+                                ImmutableList.copyOf(outputList)));
+            } else {
+                return Optional.empty();
+            }
+        }
+
         abstract RecipeMap recipeMap();
 
         /** Map of component to stack size. */
@@ -218,6 +344,7 @@ class RecipeHandler {
     final List<Recipe> voidingRecipes;
     final List<Recipe> unequalCellRecipes;
     final List<Recipe> smallVariantRecipes;
+    final List<Recipe> badCraftingTableRecipes;
 
     RecipeHandler() {
         this.allRecipes = new HashMap<>();
@@ -227,12 +354,18 @@ class RecipeHandler {
         this.voidingRecipes = new ArrayList<>();
         this.unequalCellRecipes = new ArrayList<>();
         this.smallVariantRecipes = new ArrayList<>();
+        this.badCraftingTableRecipes = new ArrayList<>();
     }
 
     /** This method must be called before any other methods are called. */
+    @SuppressWarnings("unchecked")
     void initialize() {
         // First pass: build recipe data.
         for (RecipeMap recipeMap : RecipeMap.values()) {
+            if (recipeMap == RecipeMap.CRAFTING_TABLE) {
+                continue;
+            }
+
             Logger.GREGTECH_5_RECIPE_DEBUGGER.info("Checking recipes, pass 1: {}", recipeMap.name());
 
             ImmutableList.Builder<Recipe> recipeListBuilder = ImmutableList.builder();
@@ -246,6 +379,10 @@ class RecipeHandler {
 
         // Second pass: check recipes for overlap, etc.
         for (RecipeMap recipeMap : RecipeMap.values()) {
+            if (recipeMap == RecipeMap.CRAFTING_TABLE) {
+                continue;
+            }
+
             Logger.GREGTECH_5_RECIPE_DEBUGGER
                     .info("Checking recipes, pass 2: {} [{}]", recipeMap.name(), allRecipes.get(recipeMap).size());
 
@@ -276,6 +413,11 @@ class RecipeHandler {
                 }
             }
         }
+
+        // Third pass: check for crafting table recipes with bad item stacks.
+        Logger.GREGTECH_5_RECIPE_DEBUGGER.info("Checking crafting table recipes");
+        ((List<IRecipe>) CraftingManager.getInstance().getRecipeList()).stream().map(Recipe::createIfBadItemStack)
+                .filter(Optional::isPresent).map(Optional::get).forEach(badCraftingTableRecipes::add);
     }
 
     static Set<Component> filterCircuits(Set<Component> components) {
