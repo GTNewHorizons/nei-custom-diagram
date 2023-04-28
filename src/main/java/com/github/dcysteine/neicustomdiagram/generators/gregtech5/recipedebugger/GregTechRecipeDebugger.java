@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.CustomDiagramGroup;
@@ -30,6 +31,9 @@ public final class GregTechRecipeDebugger implements DiagramGenerator {
 
     public static final ItemComponent ICON = ItemComponent.create(GT_Utility.getIntegratedCircuit(0));
 
+    // TODO if we need to add more views in the future, it'd probably be worth going through and
+    // refactoring the code to clean it up a bit. I want to move each view into a custom class, with
+    // each view class containing its own recipe checking code, as well as recipe map exclusions.
     public enum View {
 
         PROGRAMMED_CIRCUITS("-programmed-circuits", ItemComponent.create(GT_Utility.getIntegratedCircuit(24)),
@@ -50,7 +54,10 @@ public final class GregTechRecipeDebugger implements DiagramGenerator {
 
         SMALL_VARIANT_RECIPES("-small-variant-recipes",
                 GregTechOreDictUtil.getComponent(OrePrefixes.dustTiny, Materials.Salt).get(),
-                "smallvariantrecipesbutton"),;
+                "smallvariantrecipesbutton"),
+
+        BAD_CRAFTING_TABLE_RECIPES("-bad-crafting-table-recipes", ItemComponent.create(Blocks.crafting_table, 0).get(),
+                "badcraftingtablerecipesbutton"),;
 
         /** The suffix to append to the group ID, to get the custom behavior ID for this view. */
         public final String suffix;
