@@ -283,16 +283,17 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
     public boolean mouseScrolled(GuiRecipe<?> gui, int scroll, int recipe) {
         ScrollDirection direction = scroll > 0 ? ScrollDirection.UP : ScrollDirection.DOWN;
 
-        if (mouseInBounds() && NEIClientUtils.shiftKey()) {
-            diagramState.scroll(direction);
-            return true;
+        if (mouseInBounds()) {
+            if (NEIClientUtils.shiftKey()) {
+                diagramState.scroll(direction);
+                return true;
+            }
+            if (!ConfigOptions.DISABLE_PAGE_SCROLL.get()) {
+                return scrollManager.mouseScroll(direction);
+            }
         }
 
-        if (scrollManager.mouseScroll(direction)) {
-            return true;
-        } else {
-            return ConfigOptions.DISABLE_PAGE_SCROLL.get();
-        }
+        return false;
     }
 
     public Optional<ItemStack> getStackUnderMouse(int recipe) {
