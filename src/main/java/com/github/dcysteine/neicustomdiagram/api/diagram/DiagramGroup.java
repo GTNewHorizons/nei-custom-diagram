@@ -213,7 +213,7 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
     }
 
     public boolean mouseInBounds() {
-        return scrollManager.mouseInBounds();
+        return scrollManager.mouseInDiagramBounds();
     }
 
     public boolean interact(int recipe, Interactable.RecipeType recipeType) {
@@ -288,9 +288,10 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
                 diagramState.scroll(direction);
                 return true;
             }
-            if (!ConfigOptions.DISABLE_PAGE_SCROLL.get()) {
-                return scrollManager.mouseScroll(direction);
-            }
+        }
+
+        if (!ConfigOptions.DISABLE_PAGE_SCROLL.get()) {
+            return scrollManager.mouseScroll(direction);
         }
 
         return false;
