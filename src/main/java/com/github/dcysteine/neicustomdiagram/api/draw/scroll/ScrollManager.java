@@ -42,7 +42,8 @@ public final class ScrollManager {
 
     public boolean mouseScroll(ScrollDirection direction) {
         // Horizontal scrolling is more rarely done, so we will scroll horizontally only if the
-        // mouse is directly over the horizontal scrollbar. Otherwise, we will default to vertical.
+        // mouse is directly over the horizontal scrollbar. Vertical scrolling is done either when
+        // the cursor is over the scrollbar or over the diagram itself.
         if (horizontalScrollbar.mouseInScrollBounds()) {
             ScrollDirection horizontalDirection;
             switch (direction) {
@@ -61,8 +62,10 @@ public final class ScrollManager {
                     break;
             }
             return horizontalScrollbar.scroll(horizontalDirection, ConfigOptions.MOUSE_SCROLL_SPEED.get());
-        } else {
+        } else if (verticalScrollbar.mouseInScrollBounds() || mouseInDiagramBounds()) {
             return verticalScrollbar.scroll(direction, ConfigOptions.MOUSE_SCROLL_SPEED.get());
+        } else {
+            return false;
         }
     }
 
@@ -75,7 +78,7 @@ public final class ScrollManager {
         return handled;
     }
 
-    public boolean mouseInBounds() {
+    public boolean mouseInDiagramBounds() {
         Point mousePos = getAbsoluteMousePosition();
         Point viewportPos = getViewportPosition();
         int xDiff = mousePos.x() - viewportPos.x();
