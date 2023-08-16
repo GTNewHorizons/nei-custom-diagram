@@ -1,10 +1,13 @@
 package com.github.dcysteine.neicustomdiagram.api.draw.scroll;
 
+import java.nio.FloatBuffer;
 import java.util.Optional;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
@@ -13,7 +16,6 @@ import com.github.dcysteine.neicustomdiagram.main.Reflection;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 
 import codechicken.lib.gui.GuiDraw;
-import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.recipe.GuiRecipe;
 
 /** Handles scrolling support, as well as finding the mouse position. */
@@ -100,6 +102,10 @@ public final class ScrollManager {
             return Point.create(0, 0);
         }
         GuiRecipe<?> gui = guiOptional.get();
+        if (gui.isLimitedToOneRecipe()) {
+            // Assume no mouse interaction when drawn as a widget.
+            return Point.create(0, 0);
+        }
 
         java.awt.Point mouse = GuiDraw.getMousePosition();
         java.awt.Point offset = gui.getRecipePosition(recipe);
@@ -147,10 +153,15 @@ public final class ScrollManager {
         }
         GuiRecipe<?> gui = guiOptional.get();
 
-        int left = Reflection.GUI_LEFT.get(gui) + SIDE_MARGIN;
-        int bottom = gui.height - (Reflection.GUI_TOP.get(gui) + Reflection.Y_SIZE.get(gui)) + BOTTOM_MARGIN;
+        // Get the current translation component to support the Gui being drawn at any position on the screen
+        FloatBuffer matBuf = BufferUtils.createFloatBuffer(16);
+        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, matBuf);
+        final int guiLeft = (int) matBuf.get(12);
+        final int guiTop = (int) matBuf.get(13);
+        final int left = guiLeft + SIDE_MARGIN - 2;
+        final int bottom = gui.height - (guiTop + Reflection.Y_SIZE.get(gui)) + BOTTOM_MARGIN + 32;
 
-        Minecraft minecraft = Minecraft.getMinecraft();
+        final Minecraft minecraft = Minecraft.getMinecraft();
         ScaledResolution res = new ScaledResolution(minecraft, minecraft.displayWidth, minecraft.displayHeight);
         int scaleFactor = res.getScaleFactor();
 
@@ -167,12 +178,11 @@ public final class ScrollManager {
 
     /** Returns empty {@link Optional} in cases such as the GUI being instantly closed. */
     private Optional<GuiRecipe<?>> getGui() {
-        GuiContainerManager manager = GuiContainerManager.getManager();
-        if (manager == null || !(manager.window instanceof GuiRecipe)) {
+        final GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+        if (!(screen instanceof GuiRecipe)) {
             return Optional.empty();
         }
-
-        return Optional.of((GuiRecipe<?>) manager.window);
+        return Optional.of((GuiRecipe<?>) screen);
     }
 
     public void tick() {
@@ -188,8 +198,8 @@ public final class ScrollManager {
 
     public void beforeDraw() {
         GL11.glPushMatrix();
-        GL11.glTranslatef(-horizontalScrollbar.getScroll(), -verticalScrollbar.getScroll(), 0);
         setScissor();
+        GL11.glTranslatef(-horizontalScrollbar.getScroll(), -verticalScrollbar.getScroll(), 0);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         GL11.glColor4f(1, 1, 1, 1);
     }
