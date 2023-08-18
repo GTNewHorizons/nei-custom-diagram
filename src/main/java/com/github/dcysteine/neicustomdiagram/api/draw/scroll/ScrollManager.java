@@ -25,6 +25,9 @@ public final class ScrollManager {
     static final int TOP_MARGIN = 31;
     static final int BOTTOM_MARGIN = 5;
     static final int SIDE_MARGIN = 4;
+    // Offsets for glScissor margins relative to the current GL_MODELVIEW translation.
+    static final int SCISSOR_MODELVIEW_OFFSET_X = -2;
+    static final int SCISSOR_MODELVIEW_OFFSET_Y = 32;
 
     private final Scrollbar verticalScrollbar;
     private final Scrollbar horizontalScrollbar;
@@ -158,8 +161,10 @@ public final class ScrollManager {
         GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, matBuf);
         final int guiLeft = (int) matBuf.get(12);
         final int guiTop = (int) matBuf.get(13);
-        final int left = guiLeft + SIDE_MARGIN - 2;
-        final int bottom = gui.height - (guiTop + Reflection.Y_SIZE.get(gui)) + BOTTOM_MARGIN + 32;
+        final int left = guiLeft + SIDE_MARGIN + SCISSOR_MODELVIEW_OFFSET_X;
+        final int bottom = gui.height - (guiTop + Reflection.Y_SIZE.get(gui))
+                + BOTTOM_MARGIN
+                + SCISSOR_MODELVIEW_OFFSET_Y;
 
         final Minecraft minecraft = Minecraft.getMinecraft();
         ScaledResolution res = new ScaledResolution(minecraft, minecraft.displayWidth, minecraft.displayHeight);
