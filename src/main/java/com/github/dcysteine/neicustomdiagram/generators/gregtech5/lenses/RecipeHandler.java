@@ -23,6 +23,7 @@ import com.google.common.collect.SortedSetMultimap;
 
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.objects.ItemData;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GT_Recipe;
 
 class RecipeHandler {
@@ -85,7 +86,7 @@ class RecipeHandler {
 
     /** This method must be called before any other methods are called. */
     void initialize() {
-        GT_Recipe.GT_Recipe_Map.sLaserEngraverRecipes.mRecipeList.forEach(this::handleRecipe);
+        RecipeMaps.laserEngraverRecipes.getAllRecipes().forEach(this::handleRecipe);
 
         // Check that lenses of the same colour all have the same recipes.
         for (LensColour colour : lensColours.keySet()) {

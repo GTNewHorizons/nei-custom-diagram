@@ -17,6 +17,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GT_Recipe;
 
 class RecipeHandler {
@@ -40,17 +41,17 @@ class RecipeHandler {
                 .filter(recipe -> recipe.getRecipeOutput() != null && recipe.getRecipeOutput().getItem() != null)
                 .forEach(recipe -> craftingTableOutputs.add(ItemComponent.create(recipe.getRecipeOutput())));
 
-        assemblingMachineOutputs = GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.mRecipeList.stream()
+        assemblingMachineOutputs = RecipeMaps.assemblerRecipes.getAllRecipes().stream()
                 .flatMap(recipe -> GregTechRecipeUtil.buildComponentsFromItemOutputs(recipe).stream())
                 .map(DisplayComponent::component).map(ItemComponent.class::cast).collect(Collectors.toSet());
 
-        assemblingLineOutputs = GT_Recipe.GT_Recipe_Map.sAssemblylineVisualRecipes.mRecipeList.stream()
+        assemblingLineOutputs = RecipeMaps.assemblylineVisualRecipes.getAllRecipes().stream()
                 .flatMap(recipe -> GregTechRecipeUtil.buildComponentsFromItemOutputs(recipe).stream())
                 .map(DisplayComponent::component).map(ItemComponent.class::cast).collect(Collectors.toSet());
 
         Set<ItemComponent> allCircuits = circuitLineHandler.allCircuits();
         ListMultimap<ItemComponent, GT_Recipe> circuitRecipes = MultimapBuilder.hashKeys().arrayListValues().build();
-        for (GT_Recipe recipe : GT_Recipe.GT_Recipe_Map.sCircuitAssemblerRecipes.mRecipeList) {
+        for (GT_Recipe recipe : RecipeMaps.circuitAssemblerRecipes.getAllRecipes()) {
             ItemComponent output = (ItemComponent) Iterables
                     .getOnlyElement(GregTechRecipeUtil.buildComponentsFromItemOutputs(recipe)).component();
 
