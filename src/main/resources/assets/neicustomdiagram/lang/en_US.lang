@@ -238,7 +238,6 @@ neicustomdiagram.generators.gregtech5.recipedebugger.fluidextractorlabel=Fluid E
 neicustomdiagram.generators.gregtech5.recipedebugger.packagerlabel=Packager recipe
 neicustomdiagram.generators.gregtech5.recipedebugger.unpackagerlabel=Unpackager recipe
 neicustomdiagram.generators.gregtech5.recipedebugger.fusionreactorlabel=Fusion Reactor recipe
-neicustomdiagram.generators.gregtech5.recipedebugger.complexfusionreactorlabel=Complex Fusion Reactor recipe
 neicustomdiagram.generators.gregtech5.recipedebugger.centrifugelabel=Centrifuge recipe
 neicustomdiagram.generators.gregtech5.recipedebugger.electrolyzerlabel=Electrolyzer recipe
 neicustomdiagram.generators.gregtech5.recipedebugger.electricblastfurnacelabel=Electric Blast Furnace recipe
