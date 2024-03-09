@@ -46,7 +46,8 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             OrePrefixes.oreSmall,
             OrePrefixes.orePoor,
             OrePrefixes.oreEndstone,
-            OrePrefixes.oreEnd);
+            OrePrefixes.oreEnd,
+            OrePrefixes.rawOre);
 
     private final DiagramGroupInfo info;
 
