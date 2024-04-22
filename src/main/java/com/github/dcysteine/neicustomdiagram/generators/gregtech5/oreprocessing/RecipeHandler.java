@@ -48,6 +48,7 @@ class RecipeHandler {
         CHEMICAL_BATH(RecipeMaps.chemicalBathRecipes),
         CHEMICAL_REACTOR(RecipeMaps.chemicalReactorRecipes),
         ELECTROMAGNETIC_SEPARATOR(RecipeMaps.electroMagneticSeparatorRecipes),
+        MIXER(RecipeMaps.mixerRecipes),
         AUTOCLAVE(RecipeMaps.autoclaveRecipes);
 
         final gregtech.api.recipe.RecipeMap<?> recipeMap;
