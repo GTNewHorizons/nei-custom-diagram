@@ -102,7 +102,7 @@ class RecipeHandler {
 
         /*
          * Assembly line recipes don't conflict usually since they are position-dependent. So it's disabled.
-         * ASSEMBLY_LINE( RecipeMaps.assemblylineVisualRecipes, ItemList.Machine_Multi_Assemblyline,
+         * ASSEMBLY_LINE(RecipeMaps.assemblylineVisualRecipes, ItemList.Machine_Multi_Assemblyline,
          * "assemblylinelabel"),
          */
 
@@ -124,9 +124,13 @@ class RecipeHandler {
         FLUID_HEATER(RecipeMaps.fluidHeaterRecipes, ItemList.Machine_HV_FluidHeater, "fluidheaterlabel"),
         DISTILLERY(RecipeMaps.distilleryRecipes, ItemList.Machine_HV_Distillery, "distillerylabel"),
         FERMENTER(RecipeMaps.fermentingRecipes, ItemList.Machine_HV_Fermenter, "fermenterlabel"),
-        // Fluid Solidifier
-        // Be warned: this thing has way too many recipes (~46k), and they all have similar
-        // components! Expect extreme slow-down if you want to add it.
+
+        /*
+         * Fluid Solidifier Be warned: this thing has way too many recipes (~46k), and they all have similar components!
+         * Expect extreme slow-down if you want to add it. FLUID_SOLIDIFIER(RecipeMaps.fluidSolidifierRecipes,
+         * ItemList.Machine_HV_FluidSolidifier, "fluidsolidifierlabel"),
+         */
+
         FLUID_EXTRACTOR(RecipeMaps.fluidExtractionRecipes, ItemList.Machine_HV_FluidExtractor, "fluidextractorlabel"),
         PACKAGER(RecipeMaps.packagerRecipes, ItemList.Machine_HV_Boxinator, "packagerlabel"),
         UNPACKAGER(RecipeMaps.unpackagerRecipes, ItemList.Machine_HV_Unboxinator, "unpackagerlabel"),
@@ -136,11 +140,8 @@ class RecipeHandler {
         ELECTRIC_BLAST_FURNACE(RecipeMaps.blastFurnaceRecipes, ItemList.Machine_Multi_BlastFurnace,
                 "electricblastfurnacelabel"),
         PLASMA_FORGE(RecipeMaps.plasmaForgeRecipes, ItemList.Machine_Multi_PlasmaForge, "plasmaforgelabel"),
-        // Commenting this one out for now, for backward compatibility. Uncomment later.
-        /*
-         * TRANSCENDENT_PLASMA_MIXER( RecipeMaps.transcendentPlasmaMixerRecipes,
-         * ItemList.Machine_Multi_TranscendentPlasmaMixer, "transcendentplasmamixerlabel"),
-         */
+        TRANSCENDENT_PLASMA_MIXER(RecipeMaps.transcendentPlasmaMixerRecipes,
+                ItemList.Machine_Multi_TranscendentPlasmaMixer, "transcendentplasmamixerlabel"),
         // Fake Space Project
         BRICKED_BLAST_FURNACE(RecipeMaps.primitiveBlastRecipes, ItemList.Machine_Bricked_BlastFurnace,
                 "brickedblastfurnacelabel"),
