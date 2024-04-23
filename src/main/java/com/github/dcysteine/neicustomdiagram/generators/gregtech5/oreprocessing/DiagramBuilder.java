@@ -10,8 +10,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
-
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
@@ -52,7 +50,7 @@ class DiagramBuilder {
     private final Diagram.Builder diagramBuilder;
 
     DiagramBuilder(LayoutHandler layoutHandler, LabelHandler labelHandler, RecipeHandler recipeHandler,
-            List<ItemComponent> rawOres, @Nullable ItemComponent trueRawOres) {
+            List<ItemComponent> rawOres, Optional<ItemComponent> trueRawOres) {
         this.layoutHandler = layoutHandler;
         this.labelHandler = labelHandler;
         this.recipeHandler = recipeHandler;
@@ -74,7 +72,7 @@ class DiagramBuilder {
             this.rawOre = rawOres.get(0);
         }
 
-        this.trueRawOre = Optional.ofNullable(trueRawOres);
+        this.trueRawOre = trueRawOres;
 
         this.craftingComponents = new HashSet<>(filteredRawOres);
         this.usageComponents = new HashSet<>(filteredRawOres);

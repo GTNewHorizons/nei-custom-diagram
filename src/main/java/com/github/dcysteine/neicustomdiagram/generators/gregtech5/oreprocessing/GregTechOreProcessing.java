@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
@@ -100,12 +98,13 @@ public final class GregTechOreProcessing implements DiagramGenerator {
 
             ItemComponent trueRawOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.rawOre, material).get(0);
 
-            buildDiagram(matcherBuilder, rawOres, trueRawOres);
+            buildDiagram(matcherBuilder, rawOres, Optional.ofNullable(trueRawOres));
         }
 
         if (Registry.ModDependency.BARTWORKS.isLoaded()) {
             for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
                 Optional<ItemComponent> rawOre = BartWorksOreDictUtil.getComponent(OrePrefixes.ore, werkstoff);
+                Optional<ItemComponent> trueRawOre = BartWorksOreDictUtil.getComponent(OrePrefixes.rawOre, werkstoff);
                 if (!rawOre.isPresent()) {
                     continue;
                 }
@@ -116,7 +115,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
                 OTHER_ORE_PREFIXES.forEach(
                         prefix -> BartWorksOreDictUtil.getComponent(prefix, werkstoff).ifPresent(rawOres::add));
 
-                buildDiagram(matcherBuilder, rawOres, null);
+                buildDiagram(matcherBuilder, rawOres, trueRawOre);
             }
         }
 
@@ -128,7 +127,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
                     continue;
                 }
 
-                buildDiagram(matcherBuilder, ImmutableList.of(ItemComponent.create(ore)), null);
+                buildDiagram(matcherBuilder, ImmutableList.of(ItemComponent.create(ore)), Optional.ofNullable(null));
             }
         }
 
@@ -136,7 +135,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
     }
 
     private void buildDiagram(ComponentDiagramMatcher.Builder matcherBuilder, List<ItemComponent> rawOres,
-            @Nullable ItemComponent trueRawOre) {
+            Optional<ItemComponent> trueRawOre) {
         DiagramBuilder diagramBuilder = new DiagramBuilder(
                 layoutHandler,
                 labelHandler,
