@@ -65,13 +65,9 @@ class DiagramBuilder {
         List<ItemComponent> gregTechOres = filteredRawOres.stream().filter(GregTechOreProcessing::isGregTechOreBlock)
                 .collect(Collectors.toList());
 
-        // Try to show a GregTech raw ore, if there are any.
-        List<ItemComponent> gregTechRawOres = filteredRawOres.stream().filter(GregTechOreProcessing::isGregTechOreBlock)
-                .collect(Collectors.toList());
-
         if (!gregTechOres.isEmpty()) {
             this.rawOre = gregTechOres.get(0);
-            this.rawOre2 = gregTechRawOres.get(0);
+            this.rawOre2 = gregTechOres.get(0);
         } else if (!filteredRawOres.isEmpty()) {
             this.rawOre = filteredRawOres.get(0);
             this.rawOre2 = filteredRawOres.get(0);
@@ -88,8 +84,6 @@ class DiagramBuilder {
     void buildDiagram(ComponentDiagramMatcher.Builder matcherBuilder) {
         diagramBuilder.addAllOptionalLayouts(layoutHandler.layouts())
                 .insertIntoSlot(LayoutHandler.SlotKeys.RAW_ORE, DisplayComponent.builder(rawOre).build());
-
-        //diagramBuilder.autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.RAW_ORE2).insertIntoNextSlot(DisplayComponent.builder(rawOre2).build());
 
         Optional<ItemComponent> crushedOreOptional = handleRecipes(
                 RecipeHandler.RecipeMap.MACERATOR,
