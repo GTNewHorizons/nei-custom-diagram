@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
@@ -30,6 +29,8 @@ import gregtech.common.items.GT_MetaGenerated_Item_03;
 import gtPlusPlus.core.block.base.BlockBaseOre;
 import gtPlusPlus.core.material.Material;
 
+import javax.annotation.Nullable;
+
 /** Generates ore processing diagrams for GregTech ores. */
 public final class GregTechOreProcessing implements DiagramGenerator {
 
@@ -51,6 +52,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             OrePrefixes.oreEndstone,
             OrePrefixes.oreEnd,
             OrePrefixes.rawOre);
+
 
     private final DiagramGroupInfo info;
 
@@ -135,14 +137,8 @@ public final class GregTechOreProcessing implements DiagramGenerator {
         return new DiagramGroup(info, matcherBuilder.build());
     }
 
-    private void buildDiagram(ComponentDiagramMatcher.Builder matcherBuilder, List<ItemComponent> rawOres,
-            @Nullable ItemComponent trueRawOre) {
-        DiagramBuilder diagramBuilder = new DiagramBuilder(
-                layoutHandler,
-                labelHandler,
-                recipeHandler,
-                rawOres,
-                trueRawOre);
+    private void buildDiagram(ComponentDiagramMatcher.Builder matcherBuilder, List<ItemComponent> rawOres, @Nullable ItemComponent trueRawOre) {
+        DiagramBuilder diagramBuilder = new DiagramBuilder(layoutHandler, labelHandler, recipeHandler, rawOres, trueRawOre);
         diagramBuilder.buildDiagram(matcherBuilder);
 
         Logger.GREGTECH_5_ORE_PROCESSING.debug("Generated diagram [{}]", rawOres.get(0));
@@ -154,9 +150,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
     }
 
     static boolean isGregTechRawOreItem(ItemComponent itemComponent) {
-        if (itemComponent == null) {
-            return false;
-        }
+        if (itemComponent == null) {return false;}
         return itemComponent.item() instanceof GT_MetaGenerated_Item_03;
     }
 }
