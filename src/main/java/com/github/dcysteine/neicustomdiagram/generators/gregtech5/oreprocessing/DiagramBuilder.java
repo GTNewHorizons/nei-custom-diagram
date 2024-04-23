@@ -34,6 +34,8 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GT_OreDictUnificator;
 
+import javax.annotation.Nullable;
+
 class DiagramBuilder {
 
     private static final ItemComponent STONE_DUST = ItemComponent
@@ -44,12 +46,13 @@ class DiagramBuilder {
     private final RecipeHandler recipeHandler;
 
     private final ItemComponent rawOre;
+    private final Optional<ItemComponent> trueRawOre;
     private final Set<Component> craftingComponents;
     private final Set<Component> usageComponents;
     private final Diagram.Builder diagramBuilder;
 
     DiagramBuilder(LayoutHandler layoutHandler, LabelHandler labelHandler, RecipeHandler recipeHandler,
-            List<ItemComponent> rawOres) {
+                   List<ItemComponent> rawOres, @Nullable ItemComponent trueRawOres) {
         this.layoutHandler = layoutHandler;
         this.labelHandler = labelHandler;
         this.recipeHandler = recipeHandler;
@@ -71,6 +74,8 @@ class DiagramBuilder {
             this.rawOre = rawOres.get(0);
         }
 
+        this.trueRawOre = Optional.ofNullable(trueRawOres);
+
         this.craftingComponents = new HashSet<>(filteredRawOres);
         this.usageComponents = new HashSet<>(filteredRawOres);
         this.diagramBuilder = Diagram.builder();
@@ -79,6 +84,10 @@ class DiagramBuilder {
     void buildDiagram(ComponentDiagramMatcher.Builder matcherBuilder) {
         diagramBuilder.addAllOptionalLayouts(layoutHandler.layouts())
                 .insertIntoSlot(LayoutHandler.SlotKeys.RAW_ORE, DisplayComponent.builder(rawOre).build());
+            trueRawOre.ifPresent(v -> {
+            diagramBuilder.autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.TRUE_RAW_ORE)
+                    .insertIntoNextSlot(DisplayComponent.builder(v).build());
+            });
 
         Optional<ItemComponent> crushedOreOptional = handleRecipes(
                 RecipeHandler.RecipeMap.MACERATOR,

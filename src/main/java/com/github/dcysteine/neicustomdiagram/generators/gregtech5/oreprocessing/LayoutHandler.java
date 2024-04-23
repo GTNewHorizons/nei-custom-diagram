@@ -23,7 +23,9 @@ class LayoutHandler {
 
     static final class SlotGroupKeys {
 
+        static final Layout.SlotGroupKey TRUE_RAW_ORE = Layout.SlotGroupKey.create("true-raw-ore");
         static final Layout.SlotGroupKey RAW_ORE_MACERATE = Layout.SlotGroupKey.create("raw-ore-macerate");
+        static final Layout.SlotGroupKey TRUE_RAW_ORE_MACERATE = Layout.SlotGroupKey.create("true-raw-ore-macerate");
         static final Layout.SlotGroupKey CRUSHED_ORE_MACERATE = Layout.SlotGroupKey.create("crushed-ore-macerate");
         static final Layout.SlotGroupKey CRUSHED_ORE_WASH = Layout.SlotGroupKey.create("crushed-ore-wash");
         static final Layout.SlotGroupKey CRUSHED_ORE_BATH_MERCURY = Layout.SlotGroupKey
@@ -67,6 +69,7 @@ class LayoutHandler {
     void initialize() {
         ImmutableList.Builder<Layout> layoutsBuilder = new ImmutableList.Builder<>();
         layoutsBuilder.add(buildRawOreLayout());
+        layoutsBuilder.add(buildTrueRawOreLayout());
         layoutsBuilder.add(buildRawOreMacerateLayout());
         layoutsBuilder.add(buildCrushedOreWashLayout());
         layoutsBuilder.add(buildCrushedOreBathMercuryLayout());
@@ -97,6 +100,17 @@ class LayoutHandler {
         AllDiagramsButton allDiagramsButton = new AllDiagramsButton(info, Grid.GRID.grid(0, 0));
 
         return Layout.builder().putSlot(SlotKeys.RAW_ORE, inputSlot).addInteractable(allDiagramsButton).build();
+    }
+
+    // Raw Ores Item
+    private Layout buildTrueRawOreLayout() {
+        SlotGroup inputSlot = SlotGroup.builder(1, 1, Grid.GRID.grid(6, 6), Grid.Direction.W)
+                .setDefaultDrawFunction(Draw::drawBigSlot)
+                .setDefaultTooltip(
+                        Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("raworeslot"), Tooltip.SLOT_FORMATTING))
+                .build();
+
+        return Layout.builder().putSlotGroup(SlotGroupKeys.TRUE_RAW_ORE, inputSlot).build();
     }
 
     private Layout buildRawOreMacerateLayout() {

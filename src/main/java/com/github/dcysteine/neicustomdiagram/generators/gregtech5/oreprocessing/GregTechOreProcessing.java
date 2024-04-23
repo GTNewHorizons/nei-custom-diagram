@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
@@ -24,8 +25,11 @@ import com.google.common.collect.ImmutableList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.common.blocks.GT_Block_Ores_Abstract;
+import gregtech.common.items.GT_MetaGenerated_Item_03;
 import gtPlusPlus.core.block.base.BlockBaseOre;
 import gtPlusPlus.core.material.Material;
+
+import javax.annotation.Nullable;
 
 /** Generates ore processing diagrams for GregTech ores. */
 public final class GregTechOreProcessing implements DiagramGenerator {
@@ -46,9 +50,9 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             OrePrefixes.oreSmall,
             OrePrefixes.orePoor,
             OrePrefixes.oreEndstone,
-            OrePrefixes.oreEnd);
+            OrePrefixes.oreEnd,
+            OrePrefixes.rawOre);
 
-    private static final ImmutableList<OrePrefixes> OTHER_RAW_ORE_PREFIXES = ImmutableList.of(OrePrefixes.rawOre);
 
     private final DiagramGroupInfo info;
 
@@ -96,17 +100,9 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             OTHER_ORE_PREFIXES
                     .forEach(prefix -> rawOres.addAll(GregTechOreDictUtil.getAllComponents(prefix, material)));
 
-            buildDiagram(matcherBuilder, rawOres);
+            ItemComponent trueRawOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.rawOre, material).get(0);
 
-            List<ItemComponent> trueRawOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.rawOre, material);
-            if (trueRawOres.isEmpty()) {
-                continue;
-            }
-
-            OTHER_RAW_ORE_PREFIXES
-                    .forEach(prefix -> trueRawOres.addAll(GregTechOreDictUtil.getAllComponents(prefix, material)));
-
-            buildDiagram(matcherBuilder, trueRawOres);
+            buildDiagram(matcherBuilder, rawOres, trueRawOres);
         }
 
         if (Registry.ModDependency.BARTWORKS.isLoaded()) {
@@ -122,21 +118,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
                 OTHER_ORE_PREFIXES.forEach(
                         prefix -> BartWorksOreDictUtil.getComponent(prefix, werkstoff).ifPresent(rawOres::add));
 
-                buildDiagram(matcherBuilder, rawOres);
-
-                Optional<ItemComponent> trueRawOre = BartWorksOreDictUtil.getComponent(OrePrefixes.rawOre, werkstoff);
-                if (!trueRawOre.isPresent()) {
-                    continue;
-                }
-
-                List<ItemComponent> trueRawOres = new ArrayList<>();
-                rawOres.add(rawOre.get());
-
-                OTHER_RAW_ORE_PREFIXES.forEach(
-                        prefix -> BartWorksOreDictUtil.getComponent(prefix, werkstoff).ifPresent(rawOres::add));
-
-                buildDiagram(matcherBuilder, trueRawOres);
-
+                buildDiagram(matcherBuilder, rawOres, null);
             }
         }
 
@@ -148,15 +130,15 @@ public final class GregTechOreProcessing implements DiagramGenerator {
                     continue;
                 }
 
-                buildDiagram(matcherBuilder, ImmutableList.of(ItemComponent.create(ore)));
+                buildDiagram(matcherBuilder, ImmutableList.of(ItemComponent.create(ore)), null);
             }
         }
 
         return new DiagramGroup(info, matcherBuilder.build());
     }
 
-    private void buildDiagram(ComponentDiagramMatcher.Builder matcherBuilder, List<ItemComponent> rawOres) {
-        DiagramBuilder diagramBuilder = new DiagramBuilder(layoutHandler, labelHandler, recipeHandler, rawOres);
+    private void buildDiagram(ComponentDiagramMatcher.Builder matcherBuilder, List<ItemComponent> rawOres, @Nullable ItemComponent trueRawOre) {
+        DiagramBuilder diagramBuilder = new DiagramBuilder(layoutHandler, labelHandler, recipeHandler, rawOres, trueRawOre);
         diagramBuilder.buildDiagram(matcherBuilder);
 
         Logger.GREGTECH_5_ORE_PROCESSING.debug("Generated diagram [{}]", rawOres.get(0));
@@ -165,5 +147,10 @@ public final class GregTechOreProcessing implements DiagramGenerator {
     static boolean isGregTechOreBlock(ItemComponent itemComponent) {
         Block block = Block.getBlockFromItem(itemComponent.item());
         return block instanceof GT_Block_Ores_Abstract;
+    }
+
+    static boolean isGregTechRawOreItem(ItemComponent itemComponent) {
+        if (itemComponent == null) {return false;}
+        return itemComponent.item() instanceof GT_MetaGenerated_Item_03;
     }
 }
