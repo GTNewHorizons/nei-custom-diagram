@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
@@ -34,8 +36,6 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GT_OreDictUnificator;
 
-import javax.annotation.Nullable;
-
 class DiagramBuilder {
 
     private static final ItemComponent STONE_DUST = ItemComponent
@@ -52,7 +52,7 @@ class DiagramBuilder {
     private final Diagram.Builder diagramBuilder;
 
     DiagramBuilder(LayoutHandler layoutHandler, LabelHandler labelHandler, RecipeHandler recipeHandler,
-                   List<ItemComponent> rawOres, @Nullable ItemComponent trueRawOres) {
+            List<ItemComponent> rawOres, @Nullable ItemComponent trueRawOres) {
         this.layoutHandler = layoutHandler;
         this.labelHandler = labelHandler;
         this.recipeHandler = recipeHandler;
@@ -84,10 +84,14 @@ class DiagramBuilder {
     void buildDiagram(ComponentDiagramMatcher.Builder matcherBuilder) {
         diagramBuilder.addAllOptionalLayouts(layoutHandler.layouts())
                 .insertIntoSlot(LayoutHandler.SlotKeys.RAW_ORE, DisplayComponent.builder(rawOre).build());
-            trueRawOre.ifPresent(v -> {
+        trueRawOre.ifPresent(v -> {
             diagramBuilder.autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.TRUE_RAW_ORE)
                     .insertIntoNextSlot(DisplayComponent.builder(v).build());
-            });
+            Optional<ItemComponent> crushedOreOptional = handleRecipes(
+                    RecipeHandler.RecipeMap.MACERATOR,
+                    v,
+                    LayoutHandler.SlotGroupKeys.TRUE_RAW_ORE_MACERATE);
+        });
 
         Optional<ItemComponent> crushedOreOptional = handleRecipes(
                 RecipeHandler.RecipeMap.MACERATOR,
