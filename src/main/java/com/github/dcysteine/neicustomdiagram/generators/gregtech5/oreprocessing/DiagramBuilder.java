@@ -1,6 +1,5 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.oreprocessing;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,7 +44,6 @@ class DiagramBuilder {
     private final RecipeHandler recipeHandler;
 
     private final ItemComponent rawOre;
-    private final ItemComponent rawOre2;
     private final Set<Component> craftingComponents;
     private final Set<Component> usageComponents;
     private final Diagram.Builder diagramBuilder;
@@ -67,13 +65,10 @@ class DiagramBuilder {
 
         if (!gregTechOres.isEmpty()) {
             this.rawOre = gregTechOres.get(0);
-            this.rawOre2 = gregTechOres.get(0);
         } else if (!filteredRawOres.isEmpty()) {
             this.rawOre = filteredRawOres.get(0);
-            this.rawOre2 = filteredRawOres.get(0);
         } else {
             this.rawOre = rawOres.get(0);
-            this.rawOre2 = rawOres.get(0);
         }
 
         this.craftingComponents = new HashSet<>(filteredRawOres);

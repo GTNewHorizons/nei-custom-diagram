@@ -88,7 +88,7 @@ class LayoutHandler {
         return layouts;
     }
 
-    //Ores Block
+    // Ores Block
     private Layout buildRawOreLayout() {
         Slot inputSlot = Slot.builder(Grid.GRID.grid(6, 4)).setDrawFunction(Draw::drawBigSlot)
                 .setTooltip(Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("oreslot"), Tooltip.SLOT_FORMATTING))

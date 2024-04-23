@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import gregtech.common.blocks.GT_Item_Ores;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
@@ -100,15 +98,15 @@ public final class GregTechOreProcessing implements DiagramGenerator {
 
             buildDiagram(matcherBuilder, rawOres);
 
-            List<ItemComponent> rawOres2 = GregTechOreDictUtil.getAllComponents(OrePrefixes.rawOre, material);
-            if (rawOres2.isEmpty()) {
+            List<ItemComponent> trueRawOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.rawOre, material);
+            if (trueRawOres.isEmpty()) {
                 continue;
             }
 
             OTHER_RAW_ORE_PREFIXES
-                    .forEach(prefix -> rawOres2.addAll(GregTechOreDictUtil.getAllComponents(prefix, material)));
+                    .forEach(prefix -> trueRawOres.addAll(GregTechOreDictUtil.getAllComponents(prefix, material)));
 
-            buildDiagram(matcherBuilder, rawOres2);
+            buildDiagram(matcherBuilder, trueRawOres);
         }
 
         if (Registry.ModDependency.BARTWORKS.isLoaded()) {
@@ -125,6 +123,20 @@ public final class GregTechOreProcessing implements DiagramGenerator {
                         prefix -> BartWorksOreDictUtil.getComponent(prefix, werkstoff).ifPresent(rawOres::add));
 
                 buildDiagram(matcherBuilder, rawOres);
+
+                Optional<ItemComponent> trueRawOre = BartWorksOreDictUtil.getComponent(OrePrefixes.rawOre, werkstoff);
+                if (!trueRawOre.isPresent()) {
+                    continue;
+                }
+
+                List<ItemComponent> trueRawOres = new ArrayList<>();
+                rawOres.add(rawOre.get());
+
+                OTHER_RAW_ORE_PREFIXES.forEach(
+                        prefix -> BartWorksOreDictUtil.getComponent(prefix, werkstoff).ifPresent(rawOres::add));
+
+                buildDiagram(matcherBuilder, trueRawOres);
+
             }
         }
 
