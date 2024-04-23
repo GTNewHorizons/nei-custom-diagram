@@ -23,6 +23,7 @@ class LayoutHandler {
 
     static final class SlotGroupKeys {
 
+        static final Layout.SlotGroupKey RAW_ORE2 = Layout.SlotGroupKey.create("raw-ore2");
         static final Layout.SlotGroupKey RAW_ORE_MACERATE = Layout.SlotGroupKey.create("raw-ore-macerate");
         static final Layout.SlotGroupKey CRUSHED_ORE_MACERATE = Layout.SlotGroupKey.create("crushed-ore-macerate");
         static final Layout.SlotGroupKey CRUSHED_ORE_WASH = Layout.SlotGroupKey.create("crushed-ore-wash");
@@ -88,8 +89,9 @@ class LayoutHandler {
         return layouts;
     }
 
+    //Ores Block
     private Layout buildRawOreLayout() {
-        Slot inputSlot = Slot.builder(Grid.GRID.grid(6, 4)).setDrawFunction(Draw::drawBigSlot)
+        Slot inputSlot = Slot.builder(Grid.GRID.grid(6, 2)).setDrawFunction(Draw::drawSlot)
                 .setTooltip(Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("oreslot"), Tooltip.SLOT_FORMATTING))
                 .build();
 
@@ -98,8 +100,18 @@ class LayoutHandler {
         return Layout.builder().putSlot(SlotKeys.RAW_ORE, inputSlot).addInteractable(allDiagramsButton).build();
     }
 
+    //Raw Ores Item
+    private Layout buildRawOre2Layout() {
+        SlotGroup inputSlot = SlotGroup.builder(1, 1, Grid.GRID.grid(6, 4), Grid.Direction.W)
+                .setDefaultTooltip(Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("raworeslot"), Tooltip.SLOT_FORMATTING))
+                .build();
+
+        return Layout.builder().putSlotGroup(SlotGroupKeys.RAW_ORE2, inputSlot).build();
+    }
+
     private Layout buildRawOreMacerateLayout() {
-        Lines lines = Lines.builder(Grid.GRID.grid(6, 4)).addSegment(Grid.GRID.grid(4, 4))
+        Lines lines = Lines.builder(Grid.GRID.grid(6, 2))
+                .addSegment(Grid.GRID.grid(4, 2))
                 .addArrow(Grid.GRID.edge(4, 10, Grid.Direction.N)).build();
 
         CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(4, 8));

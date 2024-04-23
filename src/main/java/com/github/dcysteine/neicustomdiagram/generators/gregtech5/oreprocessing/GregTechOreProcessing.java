@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import gregtech.common.blocks.GT_Item_Ores;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
@@ -46,8 +48,9 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             OrePrefixes.oreSmall,
             OrePrefixes.orePoor,
             OrePrefixes.oreEndstone,
-            OrePrefixes.oreEnd,
-            OrePrefixes.rawOre);
+            OrePrefixes.oreEnd);
+
+    private static final ImmutableList<OrePrefixes> OTHER_RAW_ORE_PREFIXES = ImmutableList.of(OrePrefixes.rawOre);
 
     private final DiagramGroupInfo info;
 
@@ -96,6 +99,16 @@ public final class GregTechOreProcessing implements DiagramGenerator {
                     .forEach(prefix -> rawOres.addAll(GregTechOreDictUtil.getAllComponents(prefix, material)));
 
             buildDiagram(matcherBuilder, rawOres);
+
+            List<ItemComponent> rawOres2 = GregTechOreDictUtil.getAllComponents(OrePrefixes.rawOre, material);
+            if (rawOres2.isEmpty()) {
+                continue;
+            }
+
+            OTHER_RAW_ORE_PREFIXES
+                    .forEach(prefix -> rawOres2.addAll(GregTechOreDictUtil.getAllComponents(prefix, material)));
+
+            buildDiagram(matcherBuilder, rawOres2);
         }
 
         if (Registry.ModDependency.BARTWORKS.isLoaded()) {

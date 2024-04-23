@@ -1,5 +1,6 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.oreprocessing;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,6 +45,7 @@ class DiagramBuilder {
     private final RecipeHandler recipeHandler;
 
     private final ItemComponent rawOre;
+    private final ItemComponent rawOre2;
     private final Set<Component> craftingComponents;
     private final Set<Component> usageComponents;
     private final Diagram.Builder diagramBuilder;
@@ -63,12 +65,19 @@ class DiagramBuilder {
         List<ItemComponent> gregTechOres = filteredRawOres.stream().filter(GregTechOreProcessing::isGregTechOreBlock)
                 .collect(Collectors.toList());
 
+        // Try to show a GregTech raw ore, if there are any.
+        List<ItemComponent> gregTechRawOres = filteredRawOres.stream().filter(GregTechOreProcessing::isGregTechOreBlock)
+                .collect(Collectors.toList());
+
         if (!gregTechOres.isEmpty()) {
             this.rawOre = gregTechOres.get(0);
+            this.rawOre2 = gregTechRawOres.get(0);
         } else if (!filteredRawOres.isEmpty()) {
             this.rawOre = filteredRawOres.get(0);
+            this.rawOre2 = filteredRawOres.get(0);
         } else {
             this.rawOre = rawOres.get(0);
+            this.rawOre2 = rawOres.get(0);
         }
 
         this.craftingComponents = new HashSet<>(filteredRawOres);
@@ -79,6 +88,8 @@ class DiagramBuilder {
     void buildDiagram(ComponentDiagramMatcher.Builder matcherBuilder) {
         diagramBuilder.addAllOptionalLayouts(layoutHandler.layouts())
                 .insertIntoSlot(LayoutHandler.SlotKeys.RAW_ORE, DisplayComponent.builder(rawOre).build());
+
+        //diagramBuilder.autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.RAW_ORE2).insertIntoNextSlot(DisplayComponent.builder(rawOre2).build());
 
         Optional<ItemComponent> crushedOreOptional = handleRecipes(
                 RecipeHandler.RecipeMap.MACERATOR,
