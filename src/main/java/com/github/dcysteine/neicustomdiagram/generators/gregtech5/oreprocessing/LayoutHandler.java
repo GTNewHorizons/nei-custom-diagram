@@ -114,7 +114,6 @@ class LayoutHandler {
 
     private Layout buildRawOreMacerateLayout() {
         Lines lines = Lines.builder(Grid.GRID.grid(4, 2)).addArrow(Grid.GRID.edge(4, 7, Grid.Direction.N)).build();
-
         CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(4, 5));
 
         SlotGroup outputSlots = SlotGroup.builder(1, 2, Grid.GRID.grid(4, 7), Grid.Direction.S)
@@ -128,7 +127,7 @@ class LayoutHandler {
 
     private Layout buildTrueRawOreMacerateLayout() {
         Lines lines = Lines.builder(Grid.GRID.grid(6, 2)).addArrow(Grid.GRID.edge(6, 7, Grid.Direction.N)).build();
-
+        Lines lines2 = Lines.builder(Grid.GRID.grid(4, 7)).addSegment(Grid.GRID.grid(6, 7)).build();
         CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(6, 5));
 
         SlotGroup outputSlots = SlotGroup.builder(1, 2, Grid.GRID.grid(6, 7), Grid.Direction.S)
@@ -136,7 +135,7 @@ class LayoutHandler {
                         Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("maceratorslot"), Tooltip.SLOT_FORMATTING))
                 .build();
 
-        return Layout.builder().addLines(lines).addInteractable(label)
+        return Layout.builder().addLines(lines).addLines(lines2).addInteractable(label)
                 .putSlotGroup(SlotGroupKeys.TRUE_RAW_ORE_MACERATE, outputSlots).build();
     }
 
