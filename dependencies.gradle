@@ -8,8 +8,8 @@ dependencies {
 
     api('com.github.GTNewHorizons:DetravScannerMod:1.8.0:dev') {transitive=false}
     api('com.github.GTNewHorizons:EnderStorage:1.5.0:dev') {transitive=false}
-    api('com.github.GTNewHorizons:GT5-Unofficial:5.09.45.161:dev')
-    api('com.github.GTNewHorizons:GTplusplus:1.11.57:dev')
+    api('com.github.GTNewHorizons:GT5-Unofficial:5.09.45.162-pre:dev')
+    api('com.github.GTNewHorizons:GTplusplus:1.11.59-pre:dev')
     api('com.github.GTNewHorizons:NewHorizonsCoreMod:2.3.48:dev')
-    api('com.github.GTNewHorizons:bartworks:0.9.21:dev')
+    api('com.github.GTNewHorizons:bartworks:0.9.23-pre:dev')
 }
