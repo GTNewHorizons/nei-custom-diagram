@@ -19,11 +19,11 @@ class LayoutHandler {
     static final class SlotKeys {
 
         static final Layout.SlotKey RAW_ORE = Layout.SlotKey.create("raw-ore");
+        static final Layout.SlotKey TRUE_RAW_ORE = Layout.SlotKey.create("true-raw-ore");
     }
 
     static final class SlotGroupKeys {
 
-        static final Layout.SlotGroupKey TRUE_RAW_ORE = Layout.SlotGroupKey.create("true-raw-ore");
         static final Layout.SlotGroupKey RAW_ORE_MACERATE = Layout.SlotGroupKey.create("raw-ore-macerate");
         static final Layout.SlotGroupKey TRUE_RAW_ORE_MACERATE = Layout.SlotGroupKey.create("true-raw-ore-macerate");
         static final Layout.SlotGroupKey CRUSHED_ORE_MACERATE = Layout.SlotGroupKey.create("crushed-ore-macerate");
@@ -105,17 +105,15 @@ class LayoutHandler {
 
     // Raw Ores Item
     private Layout buildTrueRawOreLayout() {
-        SlotGroup inputSlot = SlotGroup.builder(1, 1, Grid.GRID.grid(6, 2), Grid.Direction.S)
-                .setDefaultDrawFunction(Draw::drawBigSlot)
-                .setDefaultTooltip(
-                        Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("oreslot"), Tooltip.SLOT_FORMATTING))
+        Slot inputSlot = Slot.builder(Grid.GRID.grid(6, 2)).setDrawFunction(Draw::drawBigSlot)
+                .setTooltip(Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("raworeslot"), Tooltip.SLOT_FORMATTING))
                 .build();
 
-        return Layout.builder().putSlotGroup(SlotGroupKeys.TRUE_RAW_ORE, inputSlot).build();
+        return Layout.builder().putSlot(SlotKeys.TRUE_RAW_ORE, inputSlot).build();
     }
 
     private Layout buildRawOreMacerateLayout() {
-        Lines lines = Lines.builder(Grid.GRID.grid(4, 2)).addArrow(Grid.GRID.edge(4, 8, Grid.Direction.N)).build();
+        Lines lines = Lines.builder(Grid.GRID.grid(4, 2)).addArrow(Grid.GRID.edge(4, 7, Grid.Direction.N)).build();
 
         CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(4, 5));
 
@@ -129,7 +127,7 @@ class LayoutHandler {
     }
 
     private Layout buildTrueRawOreMacerateLayout() {
-        Lines lines = Lines.builder(Grid.GRID.grid(6, 2)).addArrow(Grid.GRID.edge(6, 8, Grid.Direction.N)).build();
+        Lines lines = Lines.builder(Grid.GRID.grid(6, 2)).addArrow(Grid.GRID.edge(6, 7, Grid.Direction.N)).build();
 
         CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(6, 5));
 

@@ -50,7 +50,7 @@ class DiagramBuilder {
     private final Diagram.Builder diagramBuilder;
 
     DiagramBuilder(LayoutHandler layoutHandler, LabelHandler labelHandler, RecipeHandler recipeHandler,
-            List<ItemComponent> rawOres, Optional<ItemComponent> trueRawOres) {
+            List<ItemComponent> rawOres, Optional<ItemComponent> trueRawOre) {
         this.layoutHandler = layoutHandler;
         this.labelHandler = labelHandler;
         this.recipeHandler = recipeHandler;
@@ -72,10 +72,12 @@ class DiagramBuilder {
             this.rawOre = rawOres.get(0);
         }
 
-        this.trueRawOre = trueRawOres;
+        this.trueRawOre = trueRawOre;
 
         this.craftingComponents = new HashSet<>(filteredRawOres);
+        this.trueRawOre.ifPresent(this.craftingComponents::add);
         this.usageComponents = new HashSet<>(filteredRawOres);
+        this.trueRawOre.ifPresent(this.usageComponents::add);
         this.diagramBuilder = Diagram.builder();
     }
 
@@ -83,8 +85,7 @@ class DiagramBuilder {
         diagramBuilder.addAllOptionalLayouts(layoutHandler.layouts())
                 .insertIntoSlot(LayoutHandler.SlotKeys.RAW_ORE, DisplayComponent.builder(rawOre).build());
         trueRawOre.ifPresent(v -> {
-            diagramBuilder.autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.TRUE_RAW_ORE)
-                    .insertIntoNextSlot(DisplayComponent.builder(v).build());
+            diagramBuilder.insertIntoSlot(LayoutHandler.SlotKeys.TRUE_RAW_ORE, DisplayComponent.builder(v).build());
             Optional<ItemComponent> crushedOreOptional = handleRecipes(
                     RecipeHandler.RecipeMap.MACERATOR,
                     v,

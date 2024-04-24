@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.common.blocks.GT_Block_Ores_Abstract;
-import gregtech.common.items.GT_MetaGenerated_Item_03;
 import gtPlusPlus.core.block.base.BlockBaseOre;
 import gtPlusPlus.core.material.Material;
 
@@ -47,8 +46,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             OrePrefixes.oreSmall,
             OrePrefixes.orePoor,
             OrePrefixes.oreEndstone,
-            OrePrefixes.oreEnd,
-            OrePrefixes.rawOre);
+            OrePrefixes.oreEnd);
 
     private final DiagramGroupInfo info;
 
@@ -96,9 +94,9 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             OTHER_ORE_PREFIXES
                     .forEach(prefix -> rawOres.addAll(GregTechOreDictUtil.getAllComponents(prefix, material)));
 
-            ItemComponent trueRawOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.rawOre, material).get(0);
+            Optional<ItemComponent> trueRawOre = GregTechOreDictUtil.getComponent(OrePrefixes.rawOre, material);
 
-            buildDiagram(matcherBuilder, rawOres, Optional.ofNullable(trueRawOres));
+            buildDiagram(matcherBuilder, rawOres, trueRawOre);
         }
 
         if (Registry.ModDependency.BARTWORKS.isLoaded()) {
@@ -150,12 +148,5 @@ public final class GregTechOreProcessing implements DiagramGenerator {
     static boolean isGregTechOreBlock(ItemComponent itemComponent) {
         Block block = Block.getBlockFromItem(itemComponent.item());
         return block instanceof GT_Block_Ores_Abstract;
-    }
-
-    static boolean isGregTechRawOreItem(ItemComponent itemComponent) {
-        if (itemComponent == null) {
-            return false;
-        }
-        return itemComponent.item() instanceof GT_MetaGenerated_Item_03;
     }
 }
