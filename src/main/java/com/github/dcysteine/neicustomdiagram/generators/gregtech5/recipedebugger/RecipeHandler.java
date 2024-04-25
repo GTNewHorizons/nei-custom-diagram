@@ -113,6 +113,10 @@ class RecipeHandler {
         PRECISION_LASER_ENGRAVER(RecipeMaps.laserEngraverRecipes, ItemList.Machine_HV_LaserEngraver,
                 "precisionlaserengraverlabel"),
         MIXER(RecipeMaps.mixerRecipes, ItemList.Machine_HV_Mixer, "mixerlabel"),
+        /*
+         * TODO I think this is the multiblock mixer, from GT++? MIXER_NON_CELL(RecipeMaps.mixerNonCellRecipes,
+         * ItemList.Machine_HV_Mixer, "mixerlabel"),
+         */
         AUTOCLAVE(RecipeMaps.autoclaveRecipes, ItemList.Machine_HV_Autoclave, "autoclavelabel"),
         ELECTROMAGNETIC_SEPARATOR(RecipeMaps.electroMagneticSeparatorRecipes,
                 ItemList.Machine_HV_ElectromagneticSeparator, "electromagneticseparatorlabel"),
@@ -136,7 +140,15 @@ class RecipeHandler {
         UNPACKAGER(RecipeMaps.unpackagerRecipes, ItemList.Machine_HV_Unboxinator, "unpackagerlabel"),
         FUSION_REACTOR(RecipeMaps.fusionRecipes, ItemList.FusionComputer_LuV, "fusionreactorlabel"),
         CENTRIFUGE(RecipeMaps.centrifugeRecipes, ItemList.Machine_HV_Centrifuge, "centrifugelabel"),
+        /*
+         * TODO I think this is the multiblock centrifuge, from GT++? CENTRIFUGE_NON_CELL(
+         * RecipeMaps.centrifugeNonCellRecipes, ItemList.Machine_HV_Centrifuge, "centrifugelabel"),
+         */
         ELECTROLYZER(RecipeMaps.electrolyzerRecipes, ItemList.Machine_HV_Electrolyzer, "electrolyzerlabel"),
+        /*
+         * TODO I think this is the multiblock electrolyzer, from GT++? ELECTROLYZER_NON_CELL(
+         * RecipeMaps.electrolyzerNonCellRecipes, ItemList.Machine_HV_Electrolyzer, "electrolyzerlabel"),
+         */
         ELECTRIC_BLAST_FURNACE(RecipeMaps.blastFurnaceRecipes, ItemList.Machine_Multi_BlastFurnace,
                 "electricblastfurnacelabel"),
         PLASMA_FORGE(RecipeMaps.plasmaForgeRecipes, ItemList.Machine_Multi_PlasmaForge, "plasmaforgelabel"),
