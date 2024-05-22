@@ -39,9 +39,9 @@ public final class OreDictUtil {
     }
 
     /**
-     * If {@component} is an {@link ItemComponent} with {@link ItemComponent#hasWildcardDamage()} equal to {@code true},
-     * then returns a list of all valid item damage permutations of that item; otherwise, returns a list containing just
-     * {@code component}.
+     * If {@code component} is an {@link ItemComponent} with {@link ItemComponent#hasWildcardDamage()} equal to
+     * {@code true}, then returns a list of all valid item damage permutations of that item; otherwise, returns a list
+     * containing just {@code component}.
      */
     public static List<Component> getPermutations(Component component) {
         if (component.type() != Component.ComponentType.ITEM) {
