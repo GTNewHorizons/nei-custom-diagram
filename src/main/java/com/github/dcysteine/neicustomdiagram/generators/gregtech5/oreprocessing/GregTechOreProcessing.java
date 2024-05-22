@@ -94,12 +94,15 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             OTHER_ORE_PREFIXES
                     .forEach(prefix -> rawOres.addAll(GregTechOreDictUtil.getAllComponents(prefix, material)));
 
-            buildDiagram(matcherBuilder, rawOres);
+            Optional<ItemComponent> trueRawOre = GregTechOreDictUtil.getComponent(OrePrefixes.rawOre, material);
+
+            buildDiagram(matcherBuilder, rawOres, trueRawOre);
         }
 
         if (Registry.ModDependency.BARTWORKS.isLoaded()) {
             for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
                 Optional<ItemComponent> rawOre = BartWorksOreDictUtil.getComponent(OrePrefixes.ore, werkstoff);
+                Optional<ItemComponent> trueRawOre = BartWorksOreDictUtil.getComponent(OrePrefixes.rawOre, werkstoff);
                 if (!rawOre.isPresent()) {
                     continue;
                 }
@@ -110,7 +113,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
                 OTHER_ORE_PREFIXES.forEach(
                         prefix -> BartWorksOreDictUtil.getComponent(prefix, werkstoff).ifPresent(rawOres::add));
 
-                buildDiagram(matcherBuilder, rawOres);
+                buildDiagram(matcherBuilder, rawOres, trueRawOre);
             }
         }
 
@@ -122,15 +125,21 @@ public final class GregTechOreProcessing implements DiagramGenerator {
                     continue;
                 }
 
-                buildDiagram(matcherBuilder, ImmutableList.of(ItemComponent.create(ore)));
+                buildDiagram(matcherBuilder, ImmutableList.of(ItemComponent.create(ore)), Optional.ofNullable(null));
             }
         }
 
         return new DiagramGroup(info, matcherBuilder.build());
     }
 
-    private void buildDiagram(ComponentDiagramMatcher.Builder matcherBuilder, List<ItemComponent> rawOres) {
-        DiagramBuilder diagramBuilder = new DiagramBuilder(layoutHandler, labelHandler, recipeHandler, rawOres);
+    private void buildDiagram(ComponentDiagramMatcher.Builder matcherBuilder, List<ItemComponent> rawOres,
+            Optional<ItemComponent> trueRawOre) {
+        DiagramBuilder diagramBuilder = new DiagramBuilder(
+                layoutHandler,
+                labelHandler,
+                recipeHandler,
+                rawOres,
+                trueRawOre);
         diagramBuilder.buildDiagram(matcherBuilder);
 
         Logger.GREGTECH_5_ORE_PROCESSING.debug("Generated diagram [{}]", rawOres.get(0));
