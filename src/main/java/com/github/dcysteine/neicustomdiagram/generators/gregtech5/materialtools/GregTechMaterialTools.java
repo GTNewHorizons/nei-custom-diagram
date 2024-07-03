@@ -26,16 +26,13 @@ import gregtech.api.enums.Materials;
 import gregtech.api.items.GT_MetaGenerated_Tool;
 import gregtech.api.objects.ItemData;
 import gregtech.common.items.GT_MetaGenerated_Tool_01;
+import gregtech.common.items.ID_MetaTool_01;
 
 public final class GregTechMaterialTools implements DiagramGenerator {
 
     public static final ItemComponent ICON = ItemComponent.createWithNbt(
-            GT_MetaGenerated_Tool_01.INSTANCE.getToolWithStats(
-                    GT_MetaGenerated_Tool_01.HARDHAMMER,
-                    1,
-                    Materials.Aluminium,
-                    Materials.Wood,
-                    null));
+            GT_MetaGenerated_Tool_01.INSTANCE
+                    .getToolWithStats(ID_MetaTool_01.HARDHAMMER.ID, 1, Materials.Aluminium, Materials.Wood, null));
 
     private final DiagramGroupInfo info;
 
