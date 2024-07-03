@@ -30,6 +30,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.items.GT_MetaGenerated_Tool;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.common.items.GT_MetaGenerated_Tool_01;
+import gregtech.common.items.ID_MetaTool_01;
 import gtPlusPlus.xmod.gregtech.common.items.MetaGeneratedGregtechTools;
 
 /**
@@ -71,10 +72,10 @@ class RecipeHandler {
             .thenComparing(Comparator.naturalOrder());
 
     private static final ImmutableList<Integer> TURBINE_TOOL_IDS = ImmutableList.of(
-            (int) GT_MetaGenerated_Tool_01.TURBINE_SMALL,
-            (int) GT_MetaGenerated_Tool_01.TURBINE,
-            (int) GT_MetaGenerated_Tool_01.TURBINE_LARGE,
-            (int) GT_MetaGenerated_Tool_01.TURBINE_HUGE);
+            ID_MetaTool_01.TURBINE_SMALL.ID,
+            ID_MetaTool_01.TURBINE.ID,
+            ID_MetaTool_01.TURBINE_LARGE.ID,
+            ID_MetaTool_01.TURBINE_HUGE.ID);
 
     private static final int ELECTRIC_SCANNER_ID_START = 100;
 

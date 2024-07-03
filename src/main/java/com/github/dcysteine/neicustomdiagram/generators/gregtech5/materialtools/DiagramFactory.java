@@ -28,10 +28,7 @@ class DiagramFactory {
                 OrePrefixes.toolHeadSense, OrePrefixes.toolHeadPlow, OrePrefixes.toolHeadDrill,
                 OrePrefixes.toolHeadChainsaw, OrePrefixes.toolHeadWrench, OrePrefixes.toolHeadBuzzSaw),
 
-        TURBINE_BLADE(LayoutHandler.SlotKeys.TURBINE_BLADE, OrePrefixes.turbineBlade),
-
-        ARROWHEAD(LayoutHandler.SlotKeys.ARROWHEAD, OrePrefixes.toolHeadArrow),
-        ARROWS(LayoutHandler.SlotGroupKeys.ARROWS, OrePrefixes.arrowGtWood, OrePrefixes.arrowGtPlastic);
+        TURBINE_BLADE(LayoutHandler.SlotKeys.TURBINE_BLADE, OrePrefixes.turbineBlade);
 
         private final Layout.Key slotKey;
         private final ImmutableList<OrePrefixes> prefixes;

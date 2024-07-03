@@ -19,7 +19,6 @@ class LayoutHandler {
     static final class SlotKeys {
 
         static final Layout.SlotKey TURBINE_BLADE = Layout.SlotKey.create("turbine-blade");
-        static final Layout.SlotKey ARROWHEAD = Layout.SlotKey.create("arrowhead");
     }
 
     static final class SlotGroupKeys {
@@ -28,8 +27,6 @@ class LayoutHandler {
         static final Layout.SlotGroupKey TOOL_PARTS = Layout.SlotGroupKey.create("tool-parts");
 
         static final Layout.SlotGroupKey TURBINES = Layout.SlotGroupKey.create("turbines");
-        static final Layout.SlotGroupKey ARROWS = Layout.SlotGroupKey.create("arrows");
-
         static final Layout.SlotGroupKey SCANNERS = Layout.SlotGroupKey.create("scanners");
         static final Layout.SlotGroupKey ELECTRIC_SCANNERS = Layout.SlotGroupKey.create("electric-scanners");
     }
@@ -54,8 +51,6 @@ class LayoutHandler {
         optionalLayoutsBuilder.add(buildToolsLayout());
         optionalLayoutsBuilder.add(buildTurbineBladeLayout());
         optionalLayoutsBuilder.add(buildTurbinesLayout());
-        optionalLayoutsBuilder.add(buildArrowheadLayout());
-        optionalLayoutsBuilder.add(buildArrowsLayout());
         optionalLayoutsBuilder.add(buildScannersLayout());
         optionalLayouts = optionalLayoutsBuilder.build();
     }
@@ -117,29 +112,6 @@ class LayoutHandler {
                                 .setDefaultTooltip(
                                         Tooltip.create(
                                                 Lang.GREGTECH_5_MATERIAL_TOOLS.trans("turbinesslot"),
-                                                Tooltip.SLOT_FORMATTING))
-                                .build())
-                .build();
-    }
-
-    private Layout buildArrowheadLayout() {
-        return Layout.builder().putSlot(
-                SlotKeys.ARROWHEAD,
-                Slot.builder(Grid.GRID.grid(0, 6)).setTooltip(
-                        Tooltip.create(Lang.GREGTECH_5_MATERIAL_TOOLS.trans("arrowheadslot"), Tooltip.SLOT_FORMATTING))
-                        .build())
-                .build();
-    }
-
-    private Layout buildArrowsLayout() {
-        return Layout.builder()
-                .addLines(Lines.builder(Grid.GRID.grid(0, 6)).addArrow(Grid.GRID.edge(2, 6, Grid.Direction.W)).build())
-                .putSlotGroup(
-                        SlotGroupKeys.ARROWS,
-                        SlotGroup.builder(2, 1, Grid.GRID.grid(2, 6), Grid.Direction.E)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_TOOLS.trans("arrowsslot"),
                                                 Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
