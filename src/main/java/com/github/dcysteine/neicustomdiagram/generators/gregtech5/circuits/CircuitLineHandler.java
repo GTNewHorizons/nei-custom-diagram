@@ -6,12 +6,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.annotation.Nullable;
 
 import com.dreammaster.gthandler.CustomItemList;
-import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.BW_Meta_Items;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.github.dcysteine.neicustomdiagram.main.Registry;
@@ -272,15 +270,7 @@ class CircuitLineHandler {
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_TranscendentComputer),
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_TranscendentMainframe))
                         .build());
-        if (Registry.ModDependency.BARTWORKS.isLoaded()) {
-            CircuitLine.Builder circuitLineBuilder = CircuitLine.builder()
-                    .addBoard(ItemComponent.create(BW_Meta_Items.getNEWCIRCUITS().getStack(3))).setStartTier(0);
 
-            IntStream.rangeClosed(4, 14).mapToObj(i -> ItemComponent.create(BW_Meta_Items.getNEWCIRCUITS().getStack(i)))
-                    .forEach(circuitLineBuilder::addCircuit);
-
-            circuitLinesBuilder.add(circuitLineBuilder.build());
-        }
         // If we need to add any more circuit lines, we'll probably just want to add an entire
         // second page of circuit lines.
         circuitLines = circuitLinesBuilder.build();
