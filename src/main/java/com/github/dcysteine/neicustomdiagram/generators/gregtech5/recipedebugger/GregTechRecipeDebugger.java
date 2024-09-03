@@ -25,18 +25,18 @@ import com.google.common.collect.Lists;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.util.GT_Utility;
+import gregtech.api.util.GTUtility;
 
 public final class GregTechRecipeDebugger implements DiagramGenerator {
 
-    public static final ItemComponent ICON = ItemComponent.create(GT_Utility.getIntegratedCircuit(0));
+    public static final ItemComponent ICON = ItemComponent.create(GTUtility.getIntegratedCircuit(0));
 
     // TODO if we need to add more views in the future, it'd probably be worth going through and
     // refactoring the code to clean it up a bit. I want to move each view into a custom class, with
     // each view class containing its own recipe checking code, as well as recipe map exclusions.
     public enum View {
 
-        PROGRAMMED_CIRCUITS("-programmed-circuits", ItemComponent.create(GT_Utility.getIntegratedCircuit(24)),
+        PROGRAMMED_CIRCUITS("-programmed-circuits", ItemComponent.create(GTUtility.getIntegratedCircuit(24)),
                 "programmedcircuitsbutton"),
 
         CONSUME_CIRCUIT_RECIPES("-consume-circuit-recipes", ItemComponent.create(Items.blaze_powder, 0),

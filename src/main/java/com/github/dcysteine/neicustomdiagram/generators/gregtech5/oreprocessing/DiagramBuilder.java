@@ -32,12 +32,12 @@ import com.google.common.collect.SetMultimap;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.util.GT_OreDictUnificator;
+import gregtech.api.util.GTOreDictUnificator;
 
 class DiagramBuilder {
 
     private static final ItemComponent STONE_DUST = ItemComponent
-            .create(GT_OreDictUnificator.get(OrePrefixes.dust, Materials.Stone, 1));
+            .create(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Stone, 1));
 
     private final LayoutHandler layoutHandler;
     private final LabelHandler labelHandler;

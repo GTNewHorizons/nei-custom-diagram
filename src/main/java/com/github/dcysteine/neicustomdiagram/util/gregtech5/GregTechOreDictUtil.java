@@ -14,7 +14,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.objects.ItemData;
-import gregtech.api.util.GT_OreDictUnificator;
+import gregtech.api.util.GTOreDictUnificator;
 
 public final class GregTechOreDictUtil {
 
@@ -26,12 +26,12 @@ public final class GregTechOreDictUtil {
     }
 
     public static Optional<ItemComponent> getComponent(OrePrefixes prefix, Materials material) {
-        Optional<ItemStack> itemStackOptional = Optional.ofNullable(GT_OreDictUnificator.get(prefix, material, 1));
+        Optional<ItemStack> itemStackOptional = Optional.ofNullable(GTOreDictUnificator.get(prefix, material, 1));
         return itemStackOptional.map(ItemComponent::create);
     }
 
     public static List<ItemComponent> getAllComponents(OrePrefixes prefix, Materials material) {
-        List<ItemStack> itemStacks = GT_OreDictUnificator.getOres(prefix, material);
+        List<ItemStack> itemStacks = GTOreDictUnificator.getOres(prefix, material);
         return itemStacks.stream().map(ItemComponent::create).collect(Collectors.toList());
     }
 
@@ -44,7 +44,7 @@ public final class GregTechOreDictUtil {
             return component;
         }
 
-        return ItemComponent.create(GT_OreDictUnificator.get_nocopy((ItemStack) component.stack()));
+        return ItemComponent.create(GTOreDictUnificator.get_nocopy((ItemStack) component.stack()));
     }
 
     /** Returns a list of everything that unifies into {@code component}. */
@@ -53,7 +53,7 @@ public final class GregTechOreDictUtil {
         List<Component> results = new ArrayList<>();
 
         if (unified.type() == Component.ComponentType.ITEM) {
-            GT_OreDictUnificator.getNonUnifiedStacks(unified.stack())
+            GTOreDictUnificator.getNonUnifiedStacks(unified.stack())
                     .forEach(itemStack -> results.add(ItemComponent.create(itemStack)));
         } else {
             results.add(unified);
@@ -74,7 +74,7 @@ public final class GregTechOreDictUtil {
         if (component.type() != Component.ComponentType.ITEM) {
             return Optional.empty();
         }
-        return Optional.ofNullable(GT_OreDictUnificator.getAssociation((ItemStack) component.stack()));
+        return Optional.ofNullable(GTOreDictUnificator.getAssociation((ItemStack) component.stack()));
     }
 
     /**

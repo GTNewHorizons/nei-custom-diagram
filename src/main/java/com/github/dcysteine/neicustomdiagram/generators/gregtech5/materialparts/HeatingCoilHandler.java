@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedMap;
 
 import gregtech.api.enums.ItemList;
-import gregtech.common.blocks.GT_Block_Casings5;
+import gregtech.common.blocks.BlockCasings5;
 
 class HeatingCoilHandler {
 
@@ -51,7 +51,7 @@ class HeatingCoilHandler {
         ImmutableSortedMap.Builder<Long, Component> builder = ImmutableSortedMap.naturalOrder();
         for (ItemList item : HEATING_COILS) {
             ItemStack itemStack = item.get(1);
-            long heat = GT_Block_Casings5.getCoilHeatFromDamage(ItemComponent.getItemDamage(itemStack)).getHeat();
+            long heat = BlockCasings5.getCoilHeatFromDamage(ItemComponent.getItemDamage(itemStack)).getHeat();
 
             builder.put(heat, ItemComponent.create(itemStack));
         }

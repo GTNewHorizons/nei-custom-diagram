@@ -18,7 +18,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GT_Recipe;
+import gregtech.api.util.GTRecipe;
 
 class RecipeHandler {
 
@@ -50,8 +50,8 @@ class RecipeHandler {
                 .map(DisplayComponent::component).map(ItemComponent.class::cast).collect(Collectors.toSet());
 
         Set<ItemComponent> allCircuits = circuitLineHandler.allCircuits();
-        ListMultimap<ItemComponent, GT_Recipe> circuitRecipes = MultimapBuilder.hashKeys().arrayListValues().build();
-        for (GT_Recipe recipe : RecipeMaps.circuitAssemblerRecipes.getAllRecipes()) {
+        ListMultimap<ItemComponent, GTRecipe> circuitRecipes = MultimapBuilder.hashKeys().arrayListValues().build();
+        for (GTRecipe recipe : RecipeMaps.circuitAssemblerRecipes.getAllRecipes()) {
             ItemComponent output = (ItemComponent) Iterables
                     .getOnlyElement(GregTechRecipeUtil.buildComponentsFromItemOutputs(recipe)).component();
 

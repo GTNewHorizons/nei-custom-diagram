@@ -24,7 +24,7 @@ import com.google.common.collect.SortedSetMultimap;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.objects.ItemData;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GT_Recipe;
+import gregtech.api.util.GTRecipe;
 
 class RecipeHandler {
 
@@ -106,7 +106,7 @@ class RecipeHandler {
         }
     }
 
-    void handleRecipe(GT_Recipe recipe) {
+    void handleRecipe(GTRecipe recipe) {
         // We need to be able to mark lens-specific recipes with '*', so we can't show any recipe
         // input formatting. So use plain ItemComponent here.
         // TODO if we ever do need the recipe input formatting, we'll need to change something here.

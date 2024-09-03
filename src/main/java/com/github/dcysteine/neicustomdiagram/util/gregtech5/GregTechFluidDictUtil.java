@@ -15,7 +15,7 @@ import com.github.dcysteine.neicustomdiagram.util.FluidDictUtil;
 import com.google.common.collect.Lists;
 
 import gregtech.api.enums.ItemList;
-import gregtech.api.util.GT_Utility;
+import gregtech.api.util.GTUtility;
 
 public final class GregTechFluidDictUtil {
 
@@ -23,7 +23,7 @@ public final class GregTechFluidDictUtil {
     private GregTechFluidDictUtil() {}
 
     public static Optional<ItemComponent> fluidToDisplayItem(FluidComponent component) {
-        ItemStack itemStack = GT_Utility.getFluidDisplayStack(component.fluid());
+        ItemStack itemStack = GTUtility.getFluidDisplayStack(component.fluid());
         return Optional.ofNullable(itemStack).map(ItemComponent::create);
     }
 
@@ -64,7 +64,7 @@ public final class GregTechFluidDictUtil {
     public static Optional<ItemComponent> fillCell(Component component) {
         return getFluidContents(component)
                 .map(
-                        fluidComponent -> GT_Utility
+                        fluidComponent -> GTUtility
                                 .fillFluidContainer(fluidComponent.stack(), ItemList.Cell_Empty.get(1), false, false))
                 .map(ItemComponent::create);
     }

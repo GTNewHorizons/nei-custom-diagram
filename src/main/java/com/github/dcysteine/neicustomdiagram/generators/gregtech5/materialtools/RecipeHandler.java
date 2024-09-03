@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 
-import com.detrav.items.DetravMetaGeneratedTool01;
 import com.github.dcysteine.neicustomdiagram.api.Formatter;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
@@ -26,11 +25,12 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SortedSetMultimap;
 
+import detrav.items.DetravMetaGeneratedTool01;
 import gregtech.api.enums.Materials;
-import gregtech.api.items.GT_MetaGenerated_Tool;
+import gregtech.api.items.MetaGeneratedTool;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.common.items.GT_MetaGenerated_Tool_01;
-import gregtech.common.items.ID_MetaTool_01;
+import gregtech.common.items.IDMetaTool01;
+import gregtech.common.items.MetaGeneratedTool01;
 import gtPlusPlus.xmod.gregtech.common.items.MetaGeneratedGregtechTools;
 
 /**
@@ -53,7 +53,7 @@ class RecipeHandler {
         private static BaseTool create(ItemStack itemStack) {
             return new AutoValue_RecipeHandler_BaseTool(
                     ItemComponent.create(itemStack),
-                    GT_MetaGenerated_Tool.getPrimaryMaterial(itemStack));
+                    MetaGeneratedTool.getPrimaryMaterial(itemStack));
         }
 
         abstract ItemComponent itemComponent();
@@ -72,10 +72,10 @@ class RecipeHandler {
             .thenComparing(Comparator.naturalOrder());
 
     private static final ImmutableList<Integer> TURBINE_TOOL_IDS = ImmutableList.of(
-            ID_MetaTool_01.TURBINE_SMALL.ID,
-            ID_MetaTool_01.TURBINE.ID,
-            ID_MetaTool_01.TURBINE_LARGE.ID,
-            ID_MetaTool_01.TURBINE_HUGE.ID);
+            IDMetaTool01.TURBINE_SMALL.ID,
+            IDMetaTool01.TURBINE.ID,
+            IDMetaTool01.TURBINE_LARGE.ID,
+            IDMetaTool01.TURBINE_HUGE.ID);
 
     private static final int ELECTRIC_SCANNER_ID_START = 100;
 
@@ -253,7 +253,7 @@ class RecipeHandler {
             return;
         }
 
-        if (itemStack.getItem() == GT_MetaGenerated_Tool_01.INSTANCE) {
+        if (itemStack.getItem() == MetaGeneratedTool01.INSTANCE) {
             toolsMultimap.put(BaseTool.create(itemStack), ItemComponent.createWithNbt(itemStack));
         }
 
@@ -272,7 +272,7 @@ class RecipeHandler {
 
     /** Returns the EU capacity of the given item, if available. */
     private static Optional<Long> getEuCapacity(ItemComponent itemComponent) {
-        Long[] electricStats = ((GT_MetaGenerated_Tool) itemComponent.item()).getElectricStats(itemComponent.stack());
+        Long[] electricStats = ((MetaGeneratedTool) itemComponent.item()).getElectricStats(itemComponent.stack());
         if (electricStats == null) {
             return Optional.empty();
         } else {
@@ -285,8 +285,8 @@ class RecipeHandler {
         DisplayComponent.Builder builder = DisplayComponent.builder(itemComponent);
 
         ItemStack itemStack = itemComponent.stack();
-        Materials primaryMaterial = GT_MetaGenerated_Tool.getPrimaryMaterial(itemStack);
-        Materials secondaryMaterial = GT_MetaGenerated_Tool.getSecondaryMaterial(itemStack);
+        Materials primaryMaterial = MetaGeneratedTool.getPrimaryMaterial(itemStack);
+        Materials secondaryMaterial = MetaGeneratedTool.getSecondaryMaterial(itemStack);
         builder.setAdditionalTooltip(
                 Tooltip.builder().setFormatting(Tooltip.INFO_FORMATTING)
                         .addTextLine(

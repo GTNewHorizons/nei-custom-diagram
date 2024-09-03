@@ -14,7 +14,7 @@ import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import gregtech.api.enums.GT_Values;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 
 public final class GregTechCircuits implements DiagramGenerator {
@@ -71,7 +71,7 @@ public final class GregTechCircuits implements DiagramGenerator {
         return DisplayComponent.builder(circuit)
                 .setAdditionalTooltip(
                         Tooltip.create(
-                                Lang.GREGTECH_5_CIRCUITS.transf("tierlabel", GT_Values.VN[tier]),
+                                Lang.GREGTECH_5_CIRCUITS.transf("tierlabel", GTValues.VN[tier]),
                                 Tooltip.INFO_FORMATTING))
                 .build();
     }

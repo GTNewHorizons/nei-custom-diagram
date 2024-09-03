@@ -25,7 +25,7 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Sets;
 
 import gregtech.api.enums.ItemList;
-import gregtech.api.util.GT_ModHandler;
+import gregtech.api.util.GTModHandler;
 
 class CircuitLineHandler {
 
@@ -159,7 +159,7 @@ class CircuitLineHandler {
                                 .setStartTier(0)
                                 .addCircuits(
                                         GregTechOreDictUtil.getComponent(ItemList.Circuit_Primitive),
-                                        ItemComponent.create(GT_ModHandler.getIC2Item("electronicCircuit", 1L)),
+                                        ItemComponent.create(GTModHandler.getIC2Item("electronicCircuit", 1L)),
                                         GregTechOreDictUtil.getComponent(ItemList.Circuit_Good))
                                 .build());
         circuitLinesBuilder
@@ -172,7 +172,7 @@ class CircuitLineHandler {
                                 .addCircuits(
                                         GregTechOreDictUtil.getComponent(ItemList.Circuit_Basic),
                                         GregTechOreDictUtil.getComponent(ItemList.Circuit_Integrated_Good),
-                                        ItemComponent.create(GT_ModHandler.getIC2Item("advancedCircuit", 1L)))
+                                        ItemComponent.create(GTModHandler.getIC2Item("advancedCircuit", 1L)))
                                 .build());
         circuitLinesBuilder.add(
                 CircuitLine.builder()

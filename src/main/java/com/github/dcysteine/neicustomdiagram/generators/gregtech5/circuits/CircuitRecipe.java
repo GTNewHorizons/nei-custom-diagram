@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Table;
 
-import gregtech.api.util.GT_Recipe;
+import gregtech.api.util.GTRecipe;
 
 /**
  * This class holds all of the valid input permutations for a given circuit's recipes in the circuit assembling machine.
@@ -34,11 +34,11 @@ abstract class CircuitRecipe {
 
     static final int MAX_ITEM_INPUTS = 6;
 
-    /** Helper class that holds display components describing a {@link GT_Recipe}. */
+    /** Helper class that holds display components describing a {@link GTRecipe}. */
     @AutoValue
     abstract static class Recipe {
 
-        private static Recipe create(GT_Recipe recipe) {
+        private static Recipe create(GTRecipe recipe) {
             ImmutableList.Builder<ImmutableList<DisplayComponent>> itemInputsBuilder = ImmutableList.builder();
             for (ItemStack itemStack : recipe.mInputs) {
                 if (itemStack == null) {
@@ -168,7 +168,7 @@ abstract class CircuitRecipe {
                 output);
     }
 
-    static List<CircuitRecipe> buildCircuitRecipes(Iterable<GT_Recipe> rawRecipes) {
+    static List<CircuitRecipe> buildCircuitRecipes(Iterable<GTRecipe> rawRecipes) {
         // TODO for now, we assume that all recipes with the same number of ingredients and the same
         // output stack size are permutations of the same recipe.
         // If this stops being true, then we'll need to add handling for that.
@@ -176,7 +176,7 @@ abstract class CircuitRecipe {
         // Table of recipe input size, recipe output stack size to set of recipes.
         Table<Integer, Integer, Set<Recipe>> recipeTable = HashBasedTable.create();
 
-        for (GT_Recipe rawRecipe : rawRecipes) {
+        for (GTRecipe rawRecipe : rawRecipes) {
             Recipe recipe = Recipe.create(rawRecipe);
             int row = recipe.itemInputsSize();
             int column = recipe.outputStackSize();

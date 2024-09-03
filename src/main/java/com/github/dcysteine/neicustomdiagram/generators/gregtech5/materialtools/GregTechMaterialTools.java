@@ -23,16 +23,16 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Lists;
 
 import gregtech.api.enums.Materials;
-import gregtech.api.items.GT_MetaGenerated_Tool;
+import gregtech.api.items.MetaGeneratedTool;
 import gregtech.api.objects.ItemData;
-import gregtech.common.items.GT_MetaGenerated_Tool_01;
-import gregtech.common.items.ID_MetaTool_01;
+import gregtech.common.items.IDMetaTool01;
+import gregtech.common.items.MetaGeneratedTool01;
 
 public final class GregTechMaterialTools implements DiagramGenerator {
 
     public static final ItemComponent ICON = ItemComponent.createWithNbt(
-            GT_MetaGenerated_Tool_01.INSTANCE
-                    .getToolWithStats(ID_MetaTool_01.HARDHAMMER.ID, 1, Materials.Aluminium, Materials.Wood, null));
+            MetaGeneratedTool01.INSTANCE
+                    .getToolWithStats(IDMetaTool01.HARDHAMMER.ID, 1, Materials.Aluminium, Materials.Wood, null));
 
     private final DiagramGroupInfo info;
 
@@ -85,8 +85,8 @@ public final class GregTechMaterialTools implements DiagramGenerator {
         Materials material = null;
 
         if (component.type() == Component.ComponentType.ITEM
-                && ((ItemComponent) component).item() instanceof GT_MetaGenerated_Tool) {
-            material = GT_MetaGenerated_Tool.getPrimaryMaterial((ItemStack) component.stack());
+                && ((ItemComponent) component).item() instanceof MetaGeneratedTool) {
+            material = MetaGeneratedTool.getPrimaryMaterial((ItemStack) component.stack());
         } else {
             Optional<ItemData> itemDataOptional = GregTechOreDictUtil.getItemData(component);
             if (itemDataOptional.isPresent() && itemDataOptional.get().mMaterial != null) {

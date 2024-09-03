@@ -7,7 +7,6 @@ import java.util.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
-import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroupInfo;
@@ -21,9 +20,10 @@ import com.github.dcysteine.neicustomdiagram.util.bartworks.BartWorksOreDictUtil
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.common.collect.ImmutableList;
 
+import bartworks.system.material.Werkstoff;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.common.blocks.GT_Block_Ores_Abstract;
+import gregtech.common.blocks.BlockOresAbstract;
 import gtPlusPlus.core.block.base.BlockBaseOre;
 import gtPlusPlus.core.material.Material;
 
@@ -147,6 +147,6 @@ public final class GregTechOreProcessing implements DiagramGenerator {
 
     static boolean isGregTechOreBlock(ItemComponent itemComponent) {
         Block block = Block.getBlockFromItem(itemComponent.item());
-        return block instanceof GT_Block_Ores_Abstract;
+        return block instanceof BlockOresAbstract;
     }
 }
