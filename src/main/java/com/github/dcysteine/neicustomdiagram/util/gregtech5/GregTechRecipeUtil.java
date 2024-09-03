@@ -20,8 +20,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GT_OreDictUnificator;
-import gregtech.api.util.GT_Recipe;
+import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTRecipe;
 
 public final class GregTechRecipeUtil {
 
@@ -32,27 +32,27 @@ public final class GregTechRecipeUtil {
 
     // TODO these findRecipe* methods are slow and inefficient, and also unused. Maybe delete them?
     /** Compares ignoring stack size. */
-    public static List<GT_Recipe> findRecipeByInput(RecipeMap<?> recipes, Component... inputs) {
+    public static List<GTRecipe> findRecipeByInput(RecipeMap<?> recipes, Component... inputs) {
         return findRecipe(recipes, Arrays.asList(inputs), ImmutableList.of());
     }
 
     /** Compares ignoring stack size. */
-    public static List<GT_Recipe> findRecipeByOutput(RecipeMap<?> recipes, Component... outputs) {
+    public static List<GTRecipe> findRecipeByOutput(RecipeMap<?> recipes, Component... outputs) {
         return findRecipe(recipes, ImmutableList.of(), Arrays.asList(outputs));
     }
 
-    public static List<GT_Recipe> findRecipe(RecipeMap<?> recipes, Component input, Component output) {
+    public static List<GTRecipe> findRecipe(RecipeMap<?> recipes, Component input, Component output) {
         return findRecipe(recipes, ImmutableList.of(input), ImmutableList.of(output));
     }
 
-    public static List<GT_Recipe> findRecipe(RecipeMap<?> recipes, Collection<? extends Component> inputs,
+    public static List<GTRecipe> findRecipe(RecipeMap<?> recipes, Collection<? extends Component> inputs,
             Collection<? extends Component> outputs) {
         List<FluidStack> inputFluids = new ArrayList<>();
         List<ItemStack> inputItems = new ArrayList<>();
         for (Component component : inputs) {
             switch (component.type()) {
                 case ITEM:
-                    inputItems.add(GT_OreDictUnificator.get_nocopy((ItemStack) component.stack()));
+                    inputItems.add(GTOreDictUnificator.get_nocopy((ItemStack) component.stack()));
                     break;
 
                 case FLUID:
@@ -66,7 +66,7 @@ public final class GregTechRecipeUtil {
         for (Component component : outputs) {
             switch (component.type()) {
                 case ITEM:
-                    outputItems.add(GT_OreDictUnificator.get_nocopy((ItemStack) component.stack()));
+                    outputItems.add(GTOreDictUnificator.get_nocopy((ItemStack) component.stack()));
                     break;
 
                 case FLUID:
@@ -75,8 +75,8 @@ public final class GregTechRecipeUtil {
             }
         }
 
-        List<GT_Recipe> foundRecipes = new ArrayList<>();
-        for (GT_Recipe recipe : recipes.getAllRecipes()) {
+        List<GTRecipe> foundRecipes = new ArrayList<>();
+        for (GTRecipe recipe : recipes.getAllRecipes()) {
             if (recipeContainsItems(recipe.mInputs, inputItems)
                     && recipeContainsFluids(recipe.mFluidInputs, inputFluids)
                     && recipeContainsItems(recipe.mOutputs, outputItems)
@@ -99,25 +99,25 @@ public final class GregTechRecipeUtil {
 
     private static boolean recipeContainsItems(ItemStack[] recipeItemStacks, Collection<ItemStack> itemStacks) {
         for (ItemStack itemStack : itemStacks) {
-            if (Arrays.stream(recipeItemStacks).noneMatch(s -> GT_OreDictUnificator.isInputStackEqual(s, itemStack))) {
+            if (Arrays.stream(recipeItemStacks).noneMatch(s -> GTOreDictUnificator.isInputStackEqual(s, itemStack))) {
                 return false;
             }
         }
         return true;
     }
 
-    public static List<DisplayComponent> buildComponentsFromInputs(GT_Recipe recipe) {
+    public static List<DisplayComponent> buildComponentsFromInputs(GTRecipe recipe) {
         List<DisplayComponent> components = new ArrayList<>();
         components.addAll(buildComponentsFromItemInputs(recipe));
         components.addAll(buildComponentsFromFluidInputs(recipe));
         return components;
     }
 
-    public static List<DisplayComponent> buildComponentsFromItemInputs(GT_Recipe recipe) {
+    public static List<DisplayComponent> buildComponentsFromItemInputs(GTRecipe recipe) {
         return buildComponents(recipe.mInputs);
     }
 
-    public static List<DisplayComponent> buildComponentsFromFluidInputs(GT_Recipe recipe) {
+    public static List<DisplayComponent> buildComponentsFromFluidInputs(GTRecipe recipe) {
         return buildComponents(recipe.mFluidInputs);
     }
 
@@ -164,7 +164,7 @@ public final class GregTechRecipeUtil {
         return list;
     }
 
-    public static List<DisplayComponent> buildComponentsFromOutputs(GT_Recipe recipe) {
+    public static List<DisplayComponent> buildComponentsFromOutputs(GTRecipe recipe) {
         List<DisplayComponent> components = new ArrayList<>();
         components.addAll(buildComponentsFromItemOutputs(recipe));
         components.addAll(buildComponentsFromFluidOutputs(recipe));
@@ -173,7 +173,7 @@ public final class GregTechRecipeUtil {
 
     // TODO maybe show recipe voltage tier in tooltip? (Also for fluids, below)
     // Unfortunately, we'll need the recipe map to do this, as amperage is not stored in recipe.
-    public static List<DisplayComponent> buildComponentsFromItemOutputs(GT_Recipe recipe) {
+    public static List<DisplayComponent> buildComponentsFromItemOutputs(GTRecipe recipe) {
         List<DisplayComponent> results = new ArrayList<>();
 
         for (int i = 0; i < recipe.mOutputs.length; i++) {
@@ -219,7 +219,7 @@ public final class GregTechRecipeUtil {
         return results;
     }
 
-    public static List<DisplayComponent> buildComponentsFromFluidOutputs(GT_Recipe recipe) {
+    public static List<DisplayComponent> buildComponentsFromFluidOutputs(GTRecipe recipe) {
         List<DisplayComponent> results = new ArrayList<>();
 
         for (int i = 0; i < recipe.mFluidOutputs.length; i++) {
@@ -248,15 +248,15 @@ public final class GregTechRecipeUtil {
 
     // TODO these special values only apply for certain recipe types.
     // Do we ever run into cases where they don't apply?
-    public static boolean requiresCleanroom(GT_Recipe recipe) {
+    public static boolean requiresCleanroom(GTRecipe recipe) {
         return recipe.mSpecialValue == -200 || recipe.mSpecialValue == -300;
     }
 
-    public static boolean requiresLowGravity(GT_Recipe recipe) {
+    public static boolean requiresLowGravity(GTRecipe recipe) {
         return recipe.mSpecialValue == -100 || recipe.mSpecialValue == -300;
     }
 
-    private static Optional<Tooltip> buildSpecialConditionsTooltip(GT_Recipe recipe) {
+    private static Optional<Tooltip> buildSpecialConditionsTooltip(GTRecipe recipe) {
         boolean requiresCleanroom = requiresCleanroom(recipe);
         boolean requiresLowGravity = requiresLowGravity(recipe);
         if (requiresCleanroom || requiresLowGravity) {

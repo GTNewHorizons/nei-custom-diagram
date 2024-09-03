@@ -29,9 +29,9 @@ import com.google.common.collect.SetMultimap;
 import gregtech.api.enums.Materials;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GT_OreDictUnificator;
-import gregtech.api.util.GT_Recipe;
-import gregtech.api.util.GT_Utility;
+import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTUtility;
 
 /** Class that caches GregTech recipe data and stores it in a map, for fast lookup later. */
 class RecipeHandler {
@@ -66,9 +66,9 @@ class RecipeHandler {
      */
     enum ChemicalBathFluid {
 
-        MERCURY(ItemComponent.create(GT_Utility.getFluidDisplayStack(Materials.Mercury.mFluid))),
+        MERCURY(ItemComponent.create(GTUtility.getFluidDisplayStack(Materials.Mercury.mFluid))),
 
-        SODIUM_PERSULFATE(ItemComponent.create(GT_Utility.getFluidDisplayStack(Materials.SodiumPersulfate.mFluid)));
+        SODIUM_PERSULFATE(ItemComponent.create(GTUtility.getFluidDisplayStack(Materials.SodiumPersulfate.mFluid)));
 
         final ItemComponent fluid;
 
@@ -142,7 +142,7 @@ class RecipeHandler {
                     .hashSetValues().build();
             recipeData.put(recipeMap, multimap);
 
-            for (GT_Recipe recipe : recipeMap.recipeMap.getAllRecipes()) {
+            for (GTRecipe recipe : recipeMap.recipeMap.getAllRecipes()) {
                 ImmutableList<DisplayComponent> outputs = ImmutableList
                         .copyOf(GregTechRecipeUtil.buildComponentsFromOutputs(recipe));
 
@@ -178,7 +178,7 @@ class RecipeHandler {
                         continue;
                     }
 
-                    ItemComponent itemComponent = ItemComponent.create(GT_OreDictUnificator.get_nocopy(itemStack));
+                    ItemComponent itemComponent = ItemComponent.create(GTOreDictUnificator.get_nocopy(itemStack));
                     multimap.put(itemComponent, outputs);
 
                     // Need an effectively final variable here so that we can reference it within

@@ -34,8 +34,8 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.objects.ItemData;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GT_OreDictUnificator;
-import gregtech.api.util.GT_Recipe;
+import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTRecipe;
 
 class DiagramFactory {
 
@@ -118,9 +118,9 @@ class DiagramFactory {
     }
 
     void initialize() {
-        for (GT_Recipe ebfRecipe : RecipeMaps.blastFurnaceRecipes.getAllRecipes()) {
+        for (GTRecipe ebfRecipe : RecipeMaps.blastFurnaceRecipes.getAllRecipes()) {
             for (ItemStack output : ebfRecipe.mOutputs) {
-                ItemData outData = GT_OreDictUnificator.getAssociation(output);
+                ItemData outData = GTOreDictUnificator.getAssociation(output);
                 if ((outData != null) && outData.hasValidMaterialData()
                         && outData.hasValidPrefixData()
                         && (outData.mPrefix == OrePrefixes.ingot || outData.mPrefix == OrePrefixes.ingotHot)) {

@@ -45,16 +45,16 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GT_ModHandler;
-import gregtech.api.util.GT_OreDictUnificator;
-import gregtech.api.util.GT_Recipe;
-import gregtech.api.util.GT_Utility;
+import gregtech.api.util.GTModHandler;
+import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTUtility;
 
 class RecipeHandler {
 
     static final Item PROGRAMMED_CIRCUIT = ItemList.Circuit_Integrated.getItem();
     static final ImmutableSet<ItemComponent> PROGRAMMED_CIRCUITS = ImmutableSet.copyOf(
-            IntStream.range(0, 25).mapToObj(i -> ItemComponent.create(GT_Utility.getIntegratedCircuit(i)))
+            IntStream.range(0, 25).mapToObj(i -> ItemComponent.create(GTUtility.getIntegratedCircuit(i)))
                     .collect(Collectors.toList()));
     static final ImmutableSet<ItemComponent> SCHEMATICS = ImmutableSet.<ItemComponent>builder()
             .add(GregTechOreDictUtil.getComponent(ItemList.Schematic_1by1))
@@ -200,13 +200,13 @@ class RecipeHandler {
     @AutoValue
     abstract static class Recipe {
 
-        static Recipe create(RecipeMap recipeMap, GT_Recipe recipe) {
+        static Recipe create(RecipeMap recipeMap, GTRecipe recipe) {
             Map<Component, Integer> inputs = new HashMap<>();
             for (ItemStack itemStack : recipe.mInputs) {
                 if (itemStack == null) {
                     continue;
                 }
-                ItemStack unified = GT_OreDictUnificator.get_nocopy(itemStack);
+                ItemStack unified = GTOreDictUnificator.get_nocopy(itemStack);
                 inputs.merge(ItemComponent.createWithNbt(unified), itemStack.stackSize, Integer::sum);
             }
             for (FluidStack fluidStack : recipe.mFluidInputs) {
@@ -221,7 +221,7 @@ class RecipeHandler {
                 if (itemStack == null) {
                     continue;
                 }
-                ItemStack unified = GT_OreDictUnificator.get_nocopy(itemStack);
+                ItemStack unified = GTOreDictUnificator.get_nocopy(itemStack);
                 outputs.merge(ItemComponent.createWithNbt(unified), itemStack.stackSize, Integer::sum);
             }
             for (FluidStack fluidStack : recipe.mFluidOutputs) {
@@ -534,7 +534,7 @@ class RecipeHandler {
 
             ItemStack itemStack = ((ItemComponent) component).stack();
             try {
-                if (GT_ModHandler.getCapsuleCellContainerCount(itemStack) > 0) {
+                if (GTModHandler.getCapsuleCellContainerCount(itemStack) > 0) {
                     cells += entry.getValue();
                 }
             } catch (NullPointerException suppressed) {

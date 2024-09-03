@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
 
-import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
-import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 
+import bartworks.system.material.Werkstoff;
+import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.OrePrefixes;
 
 public final class BartWorksOreDictUtil {
