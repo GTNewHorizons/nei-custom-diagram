@@ -278,10 +278,14 @@ class LayoutHandler {
     }
 
     private Layout buildSuperdensePlateLayout() {
-        return Layout.builder().putSlot(
+        return Layout.builder()
+                .putSlot(
                         SlotKeys.SUPERDENSE_PLATES,
-                        Slot.builder(Grid.GRID.grid(10, 11)).setTooltip(
-                                        Tooltip.create(Lang.GREGTECH_5_MATERIAL_PARTS.trans("superdenseplateslot"), Tooltip.SLOT_FORMATTING))
+                        Slot.builder(Grid.GRID.grid(10, 11))
+                                .setTooltip(
+                                        Tooltip.create(
+                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("superdenseplateslot"),
+                                                Tooltip.SLOT_FORMATTING))
                                 .build())
                 .build();
     }
