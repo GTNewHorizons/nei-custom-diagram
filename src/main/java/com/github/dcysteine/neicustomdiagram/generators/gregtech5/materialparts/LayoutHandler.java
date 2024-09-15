@@ -25,6 +25,7 @@ class LayoutHandler {
         static final Layout.SlotKey NANITES = Layout.SlotKey.create("nanites");
         static final Layout.SlotKey HOT_INGOT = Layout.SlotKey.create("hot-ingot");
         static final Layout.SlotKey ALLOY_PLATE = Layout.SlotKey.create("alloy-plate");
+        static final Layout.SlotKey SUPERDENSE_PLATES = Layout.SlotKey.create("superdense-plates");
 
         static final Layout.SlotKey RING = Layout.SlotKey.create("ring");
         static final Layout.SlotKey ROUND = Layout.SlotKey.create("round");
@@ -95,6 +96,7 @@ class LayoutHandler {
         optionalLayoutsBuilder.add(buildAlloyPlateLayout());
         optionalLayoutsBuilder.add(buildPlatesLayout());
         optionalLayoutsBuilder.add(buildMultiPlatesLayout());
+        optionalLayoutsBuilder.add(buildSuperdensePlateLayout());
         optionalLayoutsBuilder.add(buildRodsLayout());
         optionalLayoutsBuilder.add(buildBoltsLayout());
         optionalLayoutsBuilder.add(buildRingLayout());
@@ -272,6 +274,15 @@ class LayoutHandler {
                 SlotGroup.builder(1, 3, Grid.GRID.grid(8, 8), Grid.Direction.S).setDefaultTooltip(
                         Tooltip.create(Lang.GREGTECH_5_MATERIAL_PARTS.trans("platesslot"), Tooltip.SLOT_FORMATTING))
                         .build())
+                .build();
+    }
+
+    private Layout buildSuperdensePlateLayout() {
+        return Layout.builder().putSlot(
+                        SlotKeys.SUPERDENSE_PLATES,
+                        Slot.builder(Grid.GRID.grid(10, 11)).setTooltip(
+                                        Tooltip.create(Lang.GREGTECH_5_MATERIAL_PARTS.trans("superdenseplateslot"), Tooltip.SLOT_FORMATTING))
+                                .build())
                 .build();
     }
 
