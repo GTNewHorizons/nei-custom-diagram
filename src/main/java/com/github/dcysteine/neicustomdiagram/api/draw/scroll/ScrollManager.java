@@ -12,8 +12,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
-import com.github.dcysteine.neicustomdiagram.main.Reflection;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
+import com.github.dcysteine.neicustomdiagram.mixin.mixins.early.GuiContainerAccessor;
 
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.recipe.GuiRecipe;
@@ -113,8 +113,8 @@ public final class ScrollManager {
         java.awt.Point mouse = GuiDraw.getMousePosition();
         java.awt.Point offset = gui.getRecipePosition(recipe);
 
-        int x = mouse.x + horizontalScrollbar.getScroll() - (Reflection.GUI_LEFT.get(gui) + offset.x);
-        int y = mouse.y + verticalScrollbar.getScroll() - (Reflection.GUI_TOP.get(gui) + offset.y);
+        int x = mouse.x + horizontalScrollbar.getScroll() - (((GuiContainerAccessor) gui).getGuiLeft() + offset.x);
+        int y = mouse.y + verticalScrollbar.getScroll() - (((GuiContainerAccessor) gui).getGuiTop() + offset.y);
         return Point.create(x, y);
     }
 
@@ -132,7 +132,9 @@ public final class ScrollManager {
         }
         GuiRecipe<?> gui = guiOptional.get();
 
-        return Point.create(Reflection.GUI_LEFT.get(gui) + SIDE_MARGIN, Reflection.GUI_TOP.get(gui) + TOP_MARGIN);
+        return Point.create(
+                ((GuiContainerAccessor) gui).getGuiLeft() + SIDE_MARGIN,
+                ((GuiContainerAccessor) gui).getGuiTop() + TOP_MARGIN);
     }
 
     Dimension getViewportDimension() {
@@ -144,8 +146,8 @@ public final class ScrollManager {
         GuiRecipe<?> gui = guiOptional.get();
 
         return Dimension.create(
-                Reflection.X_SIZE.get(gui) - 2 * SIDE_MARGIN,
-                Reflection.Y_SIZE.get(gui) - (TOP_MARGIN + BOTTOM_MARGIN));
+                ((GuiContainerAccessor) gui).getXSize() - 2 * SIDE_MARGIN,
+                ((GuiContainerAccessor) gui).getYSize() - (TOP_MARGIN + BOTTOM_MARGIN));
     }
 
     private void setScissor() {
@@ -162,7 +164,7 @@ public final class ScrollManager {
         final int guiLeft = (int) matBuf.get(12);
         final int guiTop = (int) matBuf.get(13);
         final int left = guiLeft + SIDE_MARGIN + SCISSOR_MODELVIEW_OFFSET_X;
-        final int bottom = gui.height - (guiTop + Reflection.Y_SIZE.get(gui))
+        final int bottom = gui.height - (guiTop + ((GuiContainerAccessor) gui).getYSize())
                 + BOTTOM_MARGIN
                 + SCISSOR_MODELVIEW_OFFSET_Y;
 
