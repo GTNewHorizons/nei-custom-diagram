@@ -22,6 +22,7 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.matcher.ComponentDiagra
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
 import com.github.dcysteine.neicustomdiagram.main.Logger;
+import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.github.dcysteine.neicustomdiagram.util.ComponentTransformer;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechFluidDictUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
@@ -146,19 +147,24 @@ class DiagramBuilder {
                     centrifugedOreOptional = Optional.empty();
                 }
             } else {
-                Logger.GREGTECH_5_ORE_PROCESSING.warn(
-                        "Crushed ore and purified ore have different thermal centrifuge outputs:"
-                                + "\n[{}]\n ->\n[{}]\n\n[{}]\n ->\n[{}]",
-                        crushedOre,
-                        crushedOreOutputs,
-                        purifiedOre,
-                        purifiedOreOutputs);
+                if (ConfigOptions.OREPROC_DEBUG_LOGGING.get()) {
+                    Logger.GREGTECH_5_ORE_PROCESSING.warn(
+                            "Crushed ore and purified ore have different thermal centrifuge outputs:"
+                                    + "\n[{}]\n ->\n[{}]\n\n[{}]\n ->\n[{}]",
+                            crushedOre,
+                            crushedOreOutputs,
+                            purifiedOre,
+                            purifiedOreOutputs);
+                } else {
+                    Logger.GREGTECH_5_ORE_PROCESSING
+                            .warn("Crushed and purified [{}] have different thermal centrifuge outputs.", crushedOre);
+                }
                 centrifugedOreOptional = Optional.empty();
             }
         } else {
             centrifugedOreOptional = crushedOreOptional.flatMap(crushedOre -> {
                 Logger.GREGTECH_5_ORE_PROCESSING.warn(
-                        "Crushed ore had thermal centrifuge recipe," + " but no ore washing plant recipe: [{}]",
+                        "Crushed ore had thermal centrifuge recipe, but no ore washing plant recipe: [{}]",
                         crushedOre);
                 return handleRecipes(
                         RecipeHandler.RecipeMap.THERMAL_CENTRIFUGE,
@@ -306,9 +312,8 @@ class DiagramBuilder {
 
         List<DisplayComponent> outputs = new ArrayList<>(outputsOptional.get());
         ComponentTransformer.removeComponent(outputs, STONE_DUST);
-        if (outputs.size() == 0) {
+        if (outputs.isEmpty()) {
             Logger.GREGTECH_5_ORE_PROCESSING.warn("Found no recipe outputs: [{}] [{}]", key, input);
-
             return Optional.empty();
         }
         diagramBuilder.autoInsertIntoSlotGroup(key).insertEachSafe(outputs);
@@ -339,9 +344,8 @@ class DiagramBuilder {
 
         List<DisplayComponent> outputs = new ArrayList<>(recipeOptional.get().outputs());
         ComponentTransformer.removeComponent(outputs, STONE_DUST);
-        if (outputs.size() == 0) {
+        if (outputs.isEmpty()) {
             Logger.GREGTECH_5_ORE_PROCESSING.warn("Found no recipe outputs: [{}] [{}]", key, input);
-
             return;
         }
         diagramBuilder.autoInsertIntoSlotGroup(key).insertIntoNextSlot(fluidDisplayItem.orElse(fluid))

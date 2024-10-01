@@ -100,7 +100,7 @@ public final class ConfigOptions {
             Category.OPTIONS,
             "tooltip_max_cycle_count",
             8,
-            "Sets the maximum # of cycle components that will be shown in a tooltip" + " when <Shift> is held."
+            "Sets the maximum # of cycle components that will be shown in a tooltip when <Shift> is held."
                     + "\nSet to 0 to disable this feature.").register();
 
     public static final Option<Boolean> NBT_VIEWER_SMALL_TEXT = new BooleanOption(
@@ -114,6 +114,12 @@ public final class ConfigOptions {
             "nbt_viewer_newline_values",
             false,
             "Enables drawing values on a separate line in the NBT Viewer diagram.").register();
+
+    public static final Option<Boolean> OREPROC_DEBUG_LOGGING = new BooleanOption(
+            Category.OPTIONS,
+            "oreproc_debug_logging",
+            false,
+            "Enables more debug logging when failing to generate diagram for certain ore processing steps").register();
 
     public enum Category {
 
