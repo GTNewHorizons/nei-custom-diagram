@@ -215,7 +215,6 @@ class RecipeHandler {
 
         if (outputs.size() > 1) {
             Logger.GREGTECH_5_ORE_PROCESSING.warn("Found {} recipes: [{}] [{}]", outputs.size(), recipeMap, input);
-
             return Optional.empty();
         } else if (outputs.isEmpty()) {
             return Optional.empty();
