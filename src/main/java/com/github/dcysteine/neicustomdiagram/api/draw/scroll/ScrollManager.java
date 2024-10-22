@@ -112,8 +112,8 @@ public final class ScrollManager {
         java.awt.Point mouse = GuiDraw.getMousePosition();
         java.awt.Point offset = gui.getRecipePosition(recipe);
 
-        int x = mouse.x + horizontalScrollbar.getScroll() - gui.guiLeft + offset.x;
-        int y = mouse.y + verticalScrollbar.getScroll() - gui.guiTop + offset.y;
+        int x = mouse.x + horizontalScrollbar.getScroll() - (gui.guiLeft + offset.x);
+        int y = mouse.y + verticalScrollbar.getScroll() - (gui.guiTop + offset.y);
         return Point.create(x, y);
     }
 
