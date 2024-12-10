@@ -22,10 +22,9 @@ class DiagramFactory {
 
     private enum MaterialPart {
 
-        TOOL_HEADS(LayoutHandler.SlotGroupKeys.TOOL_PARTS,
-                 OrePrefixes.toolHeadSaw,
-                OrePrefixes.toolHeadHammer, OrePrefixes.toolHeadFile,  OrePrefixes.toolHeadDrill,
-                OrePrefixes.toolHeadChainsaw, OrePrefixes.toolHeadWrench, OrePrefixes.toolHeadBuzzSaw),
+        TOOL_HEADS(LayoutHandler.SlotGroupKeys.TOOL_PARTS, OrePrefixes.toolHeadSaw, OrePrefixes.toolHeadHammer,
+                OrePrefixes.toolHeadFile, OrePrefixes.toolHeadDrill, OrePrefixes.toolHeadChainsaw,
+                OrePrefixes.toolHeadWrench, OrePrefixes.toolHeadBuzzSaw),
 
         TURBINE_BLADE(LayoutHandler.SlotKeys.TURBINE_BLADE, OrePrefixes.turbineBlade);
 
