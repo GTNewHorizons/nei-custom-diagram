@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import com.dreammaster.gthandler.CustomItemList;
+import com.dreammaster.item.NHItemList;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.github.dcysteine.neicustomdiagram.main.Registry;
@@ -133,22 +134,21 @@ class CircuitLineHandler {
         if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
             circuitLinesBuilder.add(
                     CircuitLine.builder().setStartTier(0)
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitULV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitLV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitMV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitHV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitEV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitIV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitLuV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitZPM.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitUV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitUHV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitUEV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitUIV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitUMV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitUXV.getIS()))
-                            .addCircuits(ItemComponent.create(com.dreammaster.item.ItemList.CircuitMAX.getIS()))
-                            .build());
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitULV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitLV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitMV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitHV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitEV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitIV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitLuV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitZPM.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUHV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUEV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUIV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUMV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUXV.getIS()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitMAX.getIS())).build());
         }
         circuitLinesBuilder
                 .add(
