@@ -55,8 +55,6 @@ class DiagramFactory {
 
         HOT_INGOT(LayoutHandler.SlotKeys.HOT_INGOT, OrePrefixes.ingotHot),
         INGOTS(LayoutHandler.SlotGroupKeys.INGOTS, OrePrefixes.ingot, OrePrefixes.nugget, OrePrefixes.block),
-        MULTI_INGOTS(LayoutHandler.SlotGroupKeys.MULTI_INGOTS, OrePrefixes.ingotDouble, OrePrefixes.ingotTriple,
-                OrePrefixes.ingotQuadruple, OrePrefixes.ingotQuintuple),
 
         ALLOY_PLATE(LayoutHandler.SlotKeys.ALLOY_PLATE, OrePrefixes.plateAlloy),
         PLATES(LayoutHandler.SlotGroupKeys.PLATES, OrePrefixes.plate, OrePrefixes.foil, OrePrefixes.plateDense),

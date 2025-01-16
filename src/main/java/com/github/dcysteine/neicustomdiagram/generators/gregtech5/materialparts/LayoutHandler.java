@@ -50,7 +50,6 @@ class LayoutHandler {
         static final Layout.SlotGroupKey DUSTS = Layout.SlotGroupKey.create("dusts");
 
         static final Layout.SlotGroupKey INGOTS = Layout.SlotGroupKey.create("ingots");
-        static final Layout.SlotGroupKey MULTI_INGOTS = Layout.SlotGroupKey.create("multi-ingots");
 
         static final Layout.SlotGroupKey PLATES = Layout.SlotGroupKey.create("plates");
         static final Layout.SlotGroupKey MULTI_PLATES = Layout.SlotGroupKey.create("multi-plates");
@@ -92,7 +91,6 @@ class LayoutHandler {
         optionalLayoutsBuilder.add(buildDustsLayout());
         optionalLayoutsBuilder.add(buildHotIngotLayout());
         optionalLayoutsBuilder.add(buildIngotsLayout());
-        optionalLayoutsBuilder.add(buildMultiIngotsLayout());
         optionalLayoutsBuilder.add(buildAlloyPlateLayout());
         optionalLayoutsBuilder.add(buildPlatesLayout());
         optionalLayoutsBuilder.add(buildMultiPlatesLayout());
@@ -242,20 +240,6 @@ class LayoutHandler {
                 SlotGroup.builder(1, 3, Grid.GRID.grid(2, 8), Grid.Direction.S).setDefaultTooltip(
                         Tooltip.create(Lang.GREGTECH_5_MATERIAL_PARTS.trans("ingotsslot"), Tooltip.SLOT_FORMATTING))
                         .build())
-                .build();
-    }
-
-    private Layout buildMultiIngotsLayout() {
-        return Layout.builder()
-                .addLines(Lines.builder(Grid.GRID.grid(2, 8)).addArrow(Grid.GRID.edge(4, 8, Grid.Direction.W)).build())
-                .putSlotGroup(
-                        SlotGroupKeys.MULTI_INGOTS,
-                        SlotGroup.builder(2, 2, Grid.GRID.grid(4, 8), Grid.Direction.SE)
-                                .setDefaultTooltip(
-                                        Tooltip.create(
-                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("multiingotsslot"),
-                                                Tooltip.SLOT_FORMATTING))
-                                .build())
                 .build();
     }
 
