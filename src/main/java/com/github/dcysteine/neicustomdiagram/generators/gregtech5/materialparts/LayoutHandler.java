@@ -172,10 +172,10 @@ class LayoutHandler {
     }
 
     private Layout buildGemsLayout() {
-        return Layout.builder().addLines(Lines.builder(Grid.GRID.grid(10, 4)).addSegment(Grid.GRID.grid(10, 6)).build())
+        return Layout.builder().addLines(Lines.builder(Grid.GRID.grid(4, 4)).addSegment(Grid.GRID.grid(4, 6)).build())
                 .putSlotGroup(
                         SlotGroupKeys.GEMS,
-                        SlotGroup.builder(2, 2, Grid.GRID.grid(10, 2), Grid.Direction.SE)
+                        SlotGroup.builder(2, 2, Grid.GRID.grid(4, 2), Grid.Direction.SE)
                                 .setDefaultTooltip(
                                         Tooltip.create(
                                                 Lang.GREGTECH_5_MATERIAL_PARTS.trans("gemsslot"),
@@ -187,7 +187,7 @@ class LayoutHandler {
     private Layout buildGemLayout() {
         return Layout.builder().putSlot(
                 SlotKeys.GEM,
-                Slot.builder(Grid.GRID.grid(10, 6)).setTooltip(
+                Slot.builder(Grid.GRID.grid(4, 6)).setTooltip(
                         Tooltip.create(Lang.GREGTECH_5_MATERIAL_PARTS.trans("gemslot"), Tooltip.SLOT_FORMATTING))
                         .build())
                 .build();
@@ -196,7 +196,7 @@ class LayoutHandler {
     private Layout buildLensLayout() {
         return Layout.builder().putSlot(
                 SlotKeys.LENS,
-                Slot.builder(Grid.GRID.grid(12, 6)).setTooltip(
+                Slot.builder(Grid.GRID.grid(6, 6)).setTooltip(
                         Tooltip.create(Lang.GREGTECH_5_MATERIAL_PARTS.trans("lensslot"), Tooltip.SLOT_FORMATTING))
                         .build())
                 .build();
@@ -246,7 +246,7 @@ class LayoutHandler {
     private Layout buildAlloyPlateLayout() {
         return Layout.builder().putSlot(
                 SlotKeys.ALLOY_PLATE,
-                Slot.builder(Grid.GRID.grid(8, 6)).setTooltip(
+                Slot.builder(Grid.GRID.grid(6, 6)).setTooltip(
                         Tooltip.create(Lang.GREGTECH_5_MATERIAL_PARTS.trans("alloyplateslot"), Tooltip.SLOT_FORMATTING))
                         .build())
                 .build();
@@ -255,7 +255,7 @@ class LayoutHandler {
     private Layout buildPlatesLayout() {
         return Layout.builder().putSlotGroup(
                 SlotGroupKeys.PLATES,
-                SlotGroup.builder(1, 3, Grid.GRID.grid(8, 8), Grid.Direction.S).setDefaultTooltip(
+                SlotGroup.builder(1, 3, Grid.GRID.grid(4, 8), Grid.Direction.S).setDefaultTooltip(
                         Tooltip.create(Lang.GREGTECH_5_MATERIAL_PARTS.trans("platesslot"), Tooltip.SLOT_FORMATTING))
                         .build())
                 .build();
@@ -265,7 +265,7 @@ class LayoutHandler {
         return Layout.builder()
                 .putSlot(
                         SlotKeys.SUPERDENSE_PLATES,
-                        Slot.builder(Grid.GRID.grid(10, 11))
+                        Slot.builder(Grid.GRID.grid(6, 11))
                                 .setTooltip(
                                         Tooltip.create(
                                                 Lang.GREGTECH_5_MATERIAL_PARTS.trans("superdenseplateslot"),
@@ -276,10 +276,10 @@ class LayoutHandler {
 
     private Layout buildMultiPlatesLayout() {
         return Layout.builder()
-                .addLines(Lines.builder(Grid.GRID.grid(8, 8)).addArrow(Grid.GRID.edge(10, 8, Grid.Direction.W)).build())
+                .addLines(Lines.builder(Grid.GRID.grid(4, 8)).addArrow(Grid.GRID.edge(6, 8, Grid.Direction.W)).build())
                 .putSlotGroup(
                         SlotGroupKeys.MULTI_PLATES,
-                        SlotGroup.builder(2, 2, Grid.GRID.grid(10, 8), Grid.Direction.SE)
+                        SlotGroup.builder(2, 1, Grid.GRID.grid(6, 8), Grid.Direction.SE)
                                 .setDefaultTooltip(
                                         Tooltip.create(
                                                 Lang.GREGTECH_5_MATERIAL_PARTS.trans("multiplatesslot"),

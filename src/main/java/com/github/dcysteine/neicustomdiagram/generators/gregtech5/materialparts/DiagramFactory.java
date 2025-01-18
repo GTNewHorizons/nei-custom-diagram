@@ -58,8 +58,7 @@ class DiagramFactory {
 
         ALLOY_PLATE(LayoutHandler.SlotKeys.ALLOY_PLATE, OrePrefixes.plateAlloy),
         PLATES(LayoutHandler.SlotGroupKeys.PLATES, OrePrefixes.plate, OrePrefixes.foil, OrePrefixes.plateDense),
-        MULTI_PLATES(LayoutHandler.SlotGroupKeys.MULTI_PLATES, OrePrefixes.plateDouble, OrePrefixes.plateTriple,
-                OrePrefixes.plateQuadruple, OrePrefixes.plateQuintuple),
+        MULTI_PLATES(LayoutHandler.SlotGroupKeys.MULTI_PLATES, OrePrefixes.plateDouble, OrePrefixes.plateTriple),
         SUPERDENSE_PLATES(LayoutHandler.SlotKeys.SUPERDENSE_PLATES, OrePrefixes.plateSuperdense),
 
         RODS(LayoutHandler.SlotGroupKeys.RODS, OrePrefixes.stick, OrePrefixes.stickLong),
