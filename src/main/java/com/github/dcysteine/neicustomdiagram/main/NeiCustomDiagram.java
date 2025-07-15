@@ -2,9 +2,11 @@ package com.github.dcysteine.neicustomdiagram.main;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import com.github.dcysteine.neicustomdiagram.lib.net.MessageToClient;
 import com.github.dcysteine.neicustomdiagram.main.config.Config;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigGuiFactory;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
+import com.github.dcysteine.neicustomdiagram.net.NcdNetHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -12,6 +14,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -21,7 +24,7 @@ import cpw.mods.fml.relauncher.Side;
         modid = NeiCustomDiagram.MOD_ID,
         name = NeiCustomDiagram.MOD_NAME,
         version = NeiCustomDiagram.MOD_VERSION,
-        acceptableRemoteVersions = "*", // Client-side-only mod.
+        acceptableRemoteVersions = NeiCustomDiagram.MOD_VERSION,
         dependencies = NeiCustomDiagram.MOD_DEPENDENCIES,
         guiFactory = ConfigGuiFactory.CLASS_NAME)
 public final class NeiCustomDiagram {
@@ -47,13 +50,20 @@ public final class NeiCustomDiagram {
     }
 
     @EventHandler
+    public void onPreInit(FMLPreInitializationEvent event) {
+        NcdNetHandler.init();
+    }
+
+    @EventHandler
     @SuppressWarnings("unused")
     public void onInitialization(FMLInitializationEvent event) {
+        Logger.MOD.info("Mod initialization starting...");
         if (event.getSide() != Side.CLIENT) {
+            Config.initializeServer();
+            Config.saveConfig();
+            Logger.MOD.info("Mod pre-connect complete!");
             return;
         }
-        Logger.MOD.info("Mod initialization starting...");
-
         ConfigGuiFactory.checkClassName();
 
         Config.initialize();
@@ -98,5 +108,9 @@ public final class NeiCustomDiagram {
         hasGenerated = true;
 
         Logger.MOD.info("Mod pre-connect complete!");
+    }
+
+    public void handleClientMessage(MessageToClient message) {
+        message.onMessage();
     }
 }

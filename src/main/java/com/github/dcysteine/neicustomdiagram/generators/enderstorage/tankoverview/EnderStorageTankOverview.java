@@ -1,6 +1,8 @@
 package com.github.dcysteine.neicustomdiagram.generators.enderstorage.tankoverview;
 
+import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -8,7 +10,11 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagString;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.CustomDiagramGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
@@ -28,16 +34,24 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.matcher.CustomDiagramMa
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.draw.Draw;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
+import com.github.dcysteine.neicustomdiagram.net.MessageEnderStorageReq;
 import com.github.dcysteine.neicustomdiagram.util.enderstorage.EnderStorageFrequency;
 import com.github.dcysteine.neicustomdiagram.util.enderstorage.EnderStorageUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
+import codechicken.enderstorage.api.EnderStorageManager;
 import codechicken.enderstorage.storage.liquid.EnderLiquidStorage;
+import codechicken.nei.recipe.GuiUsageRecipe;
 
 public final class EnderStorageTankOverview implements DiagramGenerator {
+
+    public static EnderStorageTankOverview INSTANCE;
 
     public static final ItemComponent ICON = EnderStorageUtil.getItem(EnderStorageUtil.Type.TANK);
     public static final String LOOKUP_GLOBAL_TANKS_SUFFIX = "-global";
@@ -65,12 +79,18 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
     private List<Layout> tankLayouts;
     private Layout noDataLayout;
 
+    private JsonArray globalData = new JsonArray();
+    private JsonArray personalData = new JsonArray();
+    private boolean skipRemote = false;
+
     public EnderStorageTankOverview(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("groupname"), groupId, ICON, 2)
                 .setDescription(
                         "This diagram displays ender tank used frequencies and contents."
                                 + "\nUnfortunately, it doesn't work on servers.")
                 .build();
+
+        INSTANCE = this;
     }
 
     @Override
@@ -103,9 +123,42 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
     }
 
     private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner) {
-        List<Map.Entry<EnderStorageFrequency, EnderLiquidStorage>> tanks = EnderStorageUtil.getEnderTanks(owner)
-                .entrySet().stream().filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue()))
-                .collect(Collectors.toList());
+
+        List<Map.Entry<EnderStorageFrequency, EnderLiquidStorage>> tanks = Lists.newArrayList();
+        if (Minecraft.getMinecraft().isSingleplayer()) {
+            tanks = EnderStorageUtil.getEnderTanks(owner).entrySet().stream()
+                    .filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue())).collect(Collectors.toList());
+        } else {
+            JsonArray data;
+            if (!skipRemote) {
+                new MessageEnderStorageReq(owner, EnderStorageUtil.Type.TANK).sendToServer();
+                return Collections.emptyList();
+            } else {
+                skipRemote = false;
+            }
+            switch (owner) {
+                case GLOBAL:
+                    data = globalData;
+                    break;
+                case PERSONAL:
+                    data = personalData;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unhandled owner: " + owner);
+            }
+            for (JsonElement jsonElement : data) {
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                EnderLiquidStorage value = new EnderLiquidStorage(
+                        EnderStorageManager.instance(false),
+                        owner.stringParam(),
+                        jsonObject.get("frequency").getAsInt());
+                value.loadFromTag(genTagCompound(jsonObject));
+                tanks.add(
+                        new AbstractMap.SimpleEntry<>(
+                                EnderStorageFrequency.create(jsonObject.get("frequency").getAsInt()),
+                                value));
+            }
+        }
 
         // Break up the list into sub-lists of length <= TANKS_PER_DIAGRAM.
         List<Diagram> diagrams = Lists.partition(tanks, TANKS_PER_DIAGRAM).stream()
@@ -116,6 +169,17 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
         } else {
             return diagrams;
         }
+    }
+
+    private NBTTagCompound genTagCompound(JsonObject valueJson) {
+        NBTTagString name = new NBTTagString(valueJson.get("name").getAsString());
+        NBTTagInt amount = new NBTTagInt(valueJson.get("amount").getAsInt());
+        NBTTagCompound tank2 = new NBTTagCompound();
+        tank2.setTag("FluidName", name);
+        tank2.setTag("Amount", amount);
+        NBTTagCompound tank1 = new NBTTagCompound();
+        tank1.setTag("tank", tank2);
+        return tank1;
     }
 
     /** {@code tanks} must have size less than or equal to {@code TANKS_PER_DIAGRAM}. */
@@ -226,5 +290,26 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
                                 .addComponent(EnderStorageUtil.getPersonalItem()).build())
                 .setInteract(info.groupId() + LOOKUP_PERSONAL_TANKS_SUFFIX).setDrawBackground(Draw::drawRaisedSlot)
                 .setDrawOverlay(pos -> Draw.drawOverlay(pos, Draw.Colour.OVERLAY_BLUE)).build();
+    }
+
+    public void updateJsonData(EnderStorageUtil.Owner owner, JsonArray newData) {
+        Preconditions.checkNotNull(owner, "Owner cannot be null");
+        Preconditions.checkNotNull(newData, "New data cannot be null");
+
+        String id = info.groupId();
+        switch (owner) {
+            case GLOBAL:
+                this.globalData = newData;
+                id += LOOKUP_GLOBAL_TANKS_SUFFIX;
+                break;
+            case PERSONAL:
+                this.personalData = newData;
+                id += LOOKUP_PERSONAL_TANKS_SUFFIX;
+                break;
+            default:
+                throw new IllegalArgumentException("Unhandled owner: " + owner);
+        }
+        GuiUsageRecipe.openRecipeGui(id);
+        skipRemote = true;
     }
 }
