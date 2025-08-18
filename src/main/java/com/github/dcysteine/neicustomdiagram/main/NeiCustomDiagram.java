@@ -1,25 +1,21 @@
 package com.github.dcysteine.neicustomdiagram.main;
 
-import net.minecraftforge.common.MinecraftForge;
-
 import com.github.dcysteine.neicustomdiagram.lib.net.MessageToClient;
-import com.github.dcysteine.neicustomdiagram.main.config.Config;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigGuiFactory;
-import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
-import com.github.dcysteine.neicustomdiagram.net.NcdNetHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
-import cpw.mods.fml.relauncher.Side;
 
-/** Main entry point for NEI Custom Diagram. */
+/**
+ * Main entry point for NEI Custom Diagram.
+ */
 @Mod(
         modid = NeiCustomDiagram.MOD_ID,
         name = NeiCustomDiagram.MOD_NAME,
@@ -43,71 +39,33 @@ public final class NeiCustomDiagram {
     @Instance(MOD_ID)
     public static NeiCustomDiagram instance;
 
-    private boolean hasGenerated;
-
-    public NeiCustomDiagram() {
-        this.hasGenerated = false;
-    }
+    @SidedProxy(
+            clientSide = "com.github.dcysteine.neicustomdiagram.main.ClientProxy",
+            serverSide = "com.github.dcysteine.neicustomdiagram.main.CommonProxy")
+    public static CommonProxy proxy;
 
     @EventHandler
+    @SuppressWarnings("unused")
     public void onPreInit(FMLPreInitializationEvent event) {
-        NcdNetHandler.init();
+        proxy.onPreInit(event);
     }
 
     @EventHandler
     @SuppressWarnings("unused")
     public void onInitialization(FMLInitializationEvent event) {
-        Logger.MOD.info("Mod initialization starting...");
-        if (event.getSide() != Side.CLIENT) {
-            Config.initializeServer();
-            Config.saveConfig();
-            Logger.MOD.info("Mod pre-connect complete!");
-            return;
-        }
-        ConfigGuiFactory.checkClassName();
-
-        Config.initialize();
-        Registry.INSTANCE.initialize();
-        Config.initializeDiagramGroupVisibility(Registry.INSTANCE.infoList());
-        Config.saveConfig();
-        NeiIntegration.INSTANCE.initialize(Registry.INSTANCE.infoList());
-
-        MinecraftForge.EVENT_BUS.register(NeiIntegration.INSTANCE);
-        if (ConfigOptions.GENERATE_DIAGRAMS_ON_CLIENT_CONNECT.get()) {
-            FMLCommonHandler.instance().bus().register(this);
-        }
-
-        Logger.MOD.info("Mod initialization complete!");
+        proxy.onInitialization(event);
     }
 
     @EventHandler
     @SuppressWarnings("unused")
     public void onLoadComplete(FMLLoadCompleteEvent event) {
-        if (event.getSide() != Side.CLIENT || ConfigOptions.GENERATE_DIAGRAMS_ON_CLIENT_CONNECT.get()) {
-            return;
-        }
-        Logger.MOD.info("Mod post-load starting...");
-
-        Registry.INSTANCE.generateDiagramGroups();
-        Registry.INSTANCE.cleanUp();
-        hasGenerated = true;
-
-        Logger.MOD.info("Mod post-load complete!");
+        proxy.onLoadComplete(event);
     }
 
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onClientConnected(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        if (!ConfigOptions.GENERATE_DIAGRAMS_ON_CLIENT_CONNECT.get() || hasGenerated) {
-            return;
-        }
-        Logger.MOD.info("Mod pre-connect starting...");
-
-        Registry.INSTANCE.generateDiagramGroups();
-        Registry.INSTANCE.cleanUp();
-        hasGenerated = true;
-
-        Logger.MOD.info("Mod pre-connect complete!");
+        proxy.onClientConnected(event);
     }
 
     public void handleClientMessage(MessageToClient message) {

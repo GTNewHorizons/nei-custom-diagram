@@ -309,7 +309,7 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
             default:
                 throw new IllegalArgumentException("Unhandled owner: " + owner);
         }
-        GuiUsageRecipe.openRecipeGui(id);
         skipRemote = true;
+        GuiUsageRecipe.openRecipeGui(id);
     }
 }
