@@ -2,7 +2,6 @@ package com.github.dcysteine.neicustomdiagram.generators.enderstorage.tankovervi
 
 import java.util.AbstractMap;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -79,9 +78,9 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
     private List<Layout> tankLayouts;
     private Layout noDataLayout;
 
-    private JsonArray globalData = new JsonArray();
-    private JsonArray personalData = new JsonArray();
-    private boolean skipRemote = false;
+    private static JsonArray globalData = new JsonArray();
+    private static JsonArray personalData = new JsonArray();
+    private static boolean skipRemote = false;
 
     public EnderStorageTankOverview(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("groupname"), groupId, ICON, 2)
@@ -119,20 +118,26 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
             return Lists.newArrayList();
         }
 
-        return generateDiagrams(EnderStorageUtil.Owner.GLOBAL);
+        return generateDiagrams(EnderStorageUtil.Owner.GLOBAL, true);
     }
 
     private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner) {
+        return generateDiagrams(owner, false);
+    }
+
+    private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner, boolean recipeInit) {
 
         List<Map.Entry<EnderStorageFrequency, EnderLiquidStorage>> tanks = Lists.newArrayList();
         if (Minecraft.getMinecraft().isSingleplayer()) {
             tanks = EnderStorageUtil.getEnderTanks(owner).entrySet().stream()
                     .filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue())).collect(Collectors.toList());
         } else {
+            if (recipeInit) return Lists.newArrayList(buildNoDataDiagram(owner));
+
             JsonArray data;
             if (!skipRemote) {
                 new MessageEnderStorageReq(owner, EnderStorageUtil.Type.TANK).sendToServer();
-                return Collections.emptyList();
+                return Lists.newArrayList(buildNoDataDiagram(owner));
             } else {
                 skipRemote = false;
             }
@@ -299,11 +304,11 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
         String id = info.groupId();
         switch (owner) {
             case GLOBAL:
-                this.globalData = newData;
+                globalData = newData;
                 id += LOOKUP_GLOBAL_TANKS_SUFFIX;
                 break;
             case PERSONAL:
-                this.personalData = newData;
+                personalData = newData;
                 id += LOOKUP_PERSONAL_TANKS_SUFFIX;
                 break;
             default:
