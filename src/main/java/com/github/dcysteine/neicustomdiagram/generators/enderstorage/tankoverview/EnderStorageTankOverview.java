@@ -1,10 +1,6 @@
 package com.github.dcysteine.neicustomdiagram.generators.enderstorage.tankoverview;
 
-import java.util.AbstractMap;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -126,14 +122,14 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
     }
 
     private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner, boolean recipeInit) {
-
-        List<Map.Entry<EnderStorageFrequency, EnderLiquidStorage>> tanks = Lists.newArrayList();
+        List<Map.Entry<EnderStorageFrequency, EnderLiquidStorage>> tanks;
         if (Minecraft.getMinecraft().isSingleplayer()) {
             tanks = EnderStorageUtil.getEnderTanks(owner).entrySet().stream()
                     .filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue())).collect(Collectors.toList());
         } else {
             if (recipeInit) return Lists.newArrayList(buildNoDataDiagram(owner));
 
+            tanks = new ArrayList<>();
             JsonArray data;
             if (!skipRemote) {
                 new MessageEnderStorageReq(owner, EnderStorageUtil.Type.TANK).sendToServer();

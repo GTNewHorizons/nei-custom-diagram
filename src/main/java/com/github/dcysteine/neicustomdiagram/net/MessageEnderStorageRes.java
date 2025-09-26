@@ -1,5 +1,6 @@
 package com.github.dcysteine.neicustomdiagram.net;
 
+import com.github.dcysteine.neicustomdiagram.generators.enderstorage.chestoverview.EnderStorageChestOverview;
 import com.github.dcysteine.neicustomdiagram.generators.enderstorage.tankoverview.EnderStorageTankOverview;
 import com.github.dcysteine.neicustomdiagram.lib.io.DataIn;
 import com.github.dcysteine.neicustomdiagram.lib.io.DataOut;
@@ -48,6 +49,9 @@ public class MessageEnderStorageRes extends MessageToClient {
     @SideOnly(Side.CLIENT)
     public void onMessage() {
         switch (type) {
+            case CHEST:
+                EnderStorageChestOverview.INSTANCE.updateJsonData(owner, jsonData);
+                break;
             case TANK:
                 EnderStorageTankOverview.INSTANCE.updateJsonData(owner, jsonData);
                 break;

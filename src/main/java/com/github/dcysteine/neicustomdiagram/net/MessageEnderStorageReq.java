@@ -3,9 +3,7 @@ package com.github.dcysteine.neicustomdiagram.net;
 import static com.github.dcysteine.neicustomdiagram.util.enderstorage.EnderStorageUtil.MAX_FREQUENCY;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,7 +20,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import codechicken.enderstorage.api.EnderStorageManager;
+import codechicken.enderstorage.storage.item.EnderItemStorage;
 import codechicken.enderstorage.storage.liquid.EnderLiquidStorage;
+import codechicken.nei.util.NBTJson;
 
 public class MessageEnderStorageReq extends MessageToServer {
 
@@ -69,23 +69,40 @@ public class MessageEnderStorageReq extends MessageToServer {
         }
 
         switch (type) {
+            case CHEST:
+                Map<EnderStorageFrequency, EnderItemStorage> chestMap = new LinkedHashMap<>();
+                IntStream.rangeClosed(0, MAX_FREQUENCY).forEach(
+                        freq -> chestMap.put(
+                                EnderStorageFrequency.create(freq),
+                                (EnderItemStorage) storageManager.getStorage(
+                                        owner.stringParam(player),
+                                        freq,
+                                        EnderStorageUtil.Type.CHEST.stringParam)));
+
+                chestMap.entrySet().stream().filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue()))
+                        .forEach(chest -> {
+                            JsonObject value = new JsonObject();
+                            value.addProperty("frequency", chest.getKey().frequency());
+                            value.add("tag", NBTJson.toJsonObject(chest.getValue().saveToTag()));
+                            data.add(value);
+                        });
+                break;
             case TANK:
-                Map<EnderStorageFrequency, EnderLiquidStorage> map = new LinkedHashMap<>();
+                Map<EnderStorageFrequency, EnderLiquidStorage> liquidMap = new LinkedHashMap<>();
                 IntStream.rangeClosed(0, MAX_FREQUENCY).map(EnderStorageUtil::reverseInt).forEach(
-                        freq -> map.put(
+                        freq -> liquidMap.put(
                                 EnderStorageFrequency.createReverse(freq),
                                 (EnderLiquidStorage) storageManager
                                         .getStorage(owner.stringParam(player), freq, type.stringParam)));
-                List<Map.Entry<EnderStorageFrequency, EnderLiquidStorage>> datas = map.entrySet().stream()
-                        .filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue())).collect(Collectors.toList());
 
-                datas.forEach(tank -> {
-                    JsonObject value = new JsonObject();
-                    value.addProperty("frequency", tank.getKey().frequency());
-                    value.addProperty("name", tank.getValue().getFluid().getFluid().getName());
-                    value.addProperty("amount", tank.getValue().getFluid().amount);
-                    data.add(value);
-                });
+                liquidMap.entrySet().stream().filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue()))
+                        .forEach(tank -> {
+                            JsonObject value = new JsonObject();
+                            value.addProperty("frequency", tank.getKey().frequency());
+                            value.addProperty("name", tank.getValue().getFluid().getFluid().getName());
+                            value.addProperty("amount", tank.getValue().getFluid().amount);
+                            data.add(value);
+                        });
                 break;
         }
 
