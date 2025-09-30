@@ -28,6 +28,13 @@ public final class Config {
     }
 
     /** This method is only intended to be called during mod initialization. */
+    public static void initializeServer() {
+        // Load all options, so that they get saved if they're missing from the config.
+        ConfigOptions.getAllServerOptions().forEach(ConfigOptions.Option::initialize);
+        ConfigOptions.setCategoryComments();
+    }
+
+    /** This method is only intended to be called during mod initialization. */
     public static void initializeDiagramGroupVisibility(List<DiagramGroupInfo> infoList) {
         // Load diagram group visibility options, so that they get saved if they're missing from the
         // config.
