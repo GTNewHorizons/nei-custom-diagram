@@ -36,6 +36,14 @@ public abstract class DiagramGroupInfo {
     public abstract boolean ignoreNbt();
 
     /**
+     * If {@code true}, then this diagram group will not use NEI's scroll bar, which is smaller and more compact.
+     *
+     * <p>
+     * The standard NEI scroll bar is usually better.
+     */
+    public abstract boolean useCustomScroll();
+
+    /**
      * An optional predicate that will be used to filter out empty diagrams, if the config setting is enabled.
      *
      * <p>
@@ -62,13 +70,14 @@ public abstract class DiagramGroupInfo {
 
     public void buildHandlerInfo(HandlerInfo.Builder builder) {
         builder.setDisplayStack(icon().stack()).setHeight(Grid.TOTAL_HEIGHT / diagramsPerPage())
-                .setMaxRecipesPerPage(diagramsPerPage());
+                .setUseCustomScroll(useCustomScroll()).setMaxRecipesPerPage(diagramsPerPage());
     }
 
     public static Builder builder(String groupName, String groupId, ItemComponent icon, int diagramsPerPage) {
         return new AutoValue_DiagramGroupInfo.Builder().setGroupName(groupName).setGroupId(groupId).setIcon(icon)
-                .setDiagramsPerPage(diagramsPerPage).setIgnoreNbt(true).setEmptyDiagramPredicate(diagram -> false)
-                .setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN).setDescription("");
+                .setDiagramsPerPage(diagramsPerPage).setIgnoreNbt(true).setUseCustomScroll(true)
+                .setEmptyDiagramPredicate(diagram -> false).setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN)
+                .setDescription("");
     }
 
     public abstract Builder toBuilder();
@@ -83,6 +92,8 @@ public abstract class DiagramGroupInfo {
         public abstract Builder setIcon(ItemComponent icon);
 
         public abstract Builder setDiagramsPerPage(int diagramsPerPage);
+
+        public abstract Builder setUseCustomScroll(boolean useCustomScroll);
 
         public abstract Builder setIgnoreNbt(boolean ignoreNbt);
 
