@@ -80,11 +80,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
         ComponentDiagramMatcher.Builder matcherBuilder = ComponentDiagramMatcher.builder();
 
         for (Materials material : Materials.getAll()) {
-            if ((material.mTypes & 8) == 0) {
-                // Bit 4 is the flag controlling whether ores get generated.
-                // So if it's off, skip this material.
-                continue;
-            }
+            if (!material.hasOresItems()) continue;
 
             List<ItemComponent> rawOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.ore, material);
             if (rawOres.isEmpty()) {
