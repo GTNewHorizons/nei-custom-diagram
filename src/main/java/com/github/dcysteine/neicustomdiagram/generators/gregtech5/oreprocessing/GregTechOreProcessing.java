@@ -81,7 +81,6 @@ public final class GregTechOreProcessing implements DiagramGenerator {
 
         for (Materials material : Materials.getAll()) {
             if (!material.hasOresItems()) continue;
-            
 
             List<ItemComponent> rawOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.ore, material);
             if (rawOres.isEmpty()) {
