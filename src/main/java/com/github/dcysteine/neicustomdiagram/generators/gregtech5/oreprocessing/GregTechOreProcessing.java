@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableList;
 import bartworks.system.material.Werkstoff;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.common.blocks.BlockOresAbstract;
+import gregtech.common.blocks.GTBlockOre;
 import gtPlusPlus.core.block.base.BlockBaseOre;
 import gtPlusPlus.core.material.Material;
 
@@ -80,11 +80,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
         ComponentDiagramMatcher.Builder matcherBuilder = ComponentDiagramMatcher.builder();
 
         for (Materials material : Materials.getAll()) {
-            if ((material.mTypes & 8) == 0) {
-                // Bit 4 is the flag controlling whether ores get generated.
-                // So if it's off, skip this material.
-                continue;
-            }
+            if (!material.hasOresItems()) continue;
 
             List<ItemComponent> rawOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.ore, material);
             if (rawOres.isEmpty()) {
@@ -147,6 +143,6 @@ public final class GregTechOreProcessing implements DiagramGenerator {
 
     static boolean isGregTechOreBlock(ItemComponent itemComponent) {
         Block block = Block.getBlockFromItem(itemComponent.item());
-        return block instanceof BlockOresAbstract;
+        return block instanceof GTBlockOre;
     }
 }
