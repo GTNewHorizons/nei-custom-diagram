@@ -81,7 +81,7 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
         Diagram.Builder builder = Diagram.builder().addLayout(buildLayout(material));
 
         List<DisplayComponent> components = new ArrayList<>();
-        for (OrePrefixes prefix : OrePrefixes.values()) {
+        for (OrePrefixes prefix : OrePrefixes.VALUES) {
             Optional<ItemComponent> componentOptional = GregTechOreDictUtil.getComponent(prefix, material);
             if (!componentOptional.isPresent()) {
                 continue;
@@ -90,7 +90,7 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
             components.add(
                     DisplayComponent.builder(componentOptional.get()).setAdditionalTooltip(
                             Tooltip.create(
-                                    Lang.GREGTECH_5_ORE_PREFIXES.transf("prefixlabel", prefix.mRegularLocalName),
+                                    Lang.GREGTECH_5_ORE_PREFIXES.transf("prefixlabel", prefix.getDefaultLocalName()),
                                     Tooltip.INFO_FORMATTING))
                             .build());
         }

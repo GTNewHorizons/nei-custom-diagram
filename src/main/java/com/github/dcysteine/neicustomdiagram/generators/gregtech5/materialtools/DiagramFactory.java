@@ -94,7 +94,7 @@ class DiagramFactory {
             list.add(
                     DisplayComponent.builder(componentOptional.get()).setAdditionalTooltip(
                             Tooltip.create(
-                                    Lang.GREGTECH_5_MATERIAL_TOOLS.transf("prefixlabel", prefix.mRegularLocalName),
+                                    Lang.GREGTECH_5_MATERIAL_TOOLS.transf("prefixlabel", prefix.getDefaultLocalName()),
                                     Tooltip.INFO_FORMATTING))
                             .build());
         }
