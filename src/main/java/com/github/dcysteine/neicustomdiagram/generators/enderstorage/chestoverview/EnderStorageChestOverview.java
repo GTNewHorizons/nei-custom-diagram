@@ -1,17 +1,13 @@
 package com.github.dcysteine.neicustomdiagram.generators.enderstorage.chestoverview;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.CustomDiagramGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
@@ -31,25 +27,15 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.matcher.CustomDiagramMa
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.draw.Draw;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
-import com.github.dcysteine.neicustomdiagram.net.MessageEnderStorageReq;
 import com.github.dcysteine.neicustomdiagram.util.enderstorage.EnderStorageFrequency;
 import com.github.dcysteine.neicustomdiagram.util.enderstorage.EnderStorageUtil;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
-import codechicken.enderstorage.api.EnderStorageManager;
 import codechicken.enderstorage.storage.item.EnderItemStorage;
-import codechicken.nei.recipe.GuiUsageRecipe;
-import codechicken.nei.util.NBTJson;
 
 public final class EnderStorageChestOverview implements DiagramGenerator {
-
-    public static EnderStorageChestOverview INSTANCE;
 
     public static final ItemComponent ICON = EnderStorageUtil.getItem(EnderStorageUtil.Type.CHEST);
     public static final String LOOKUP_GLOBAL_CHESTS_SUFFIX = "-global";
@@ -77,17 +63,12 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
     private Layout layout;
     private Layout noDataLayout;
 
-    private static JsonArray globalData = new JsonArray();
-    private static JsonArray personalData = new JsonArray();
-    private static boolean skipRemote = false;
-
     public EnderStorageChestOverview(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.ENDER_STORAGE_CHEST_OVERVIEW.trans("groupname"), groupId, ICON, 4)
                 .setDescription(
                         "This diagram displays ender chest used frequencies and contents."
                                 + "\nUnfortunately, it doesn't work well on servers.")
                 .build();
-        INSTANCE = this;
     }
 
     @Override
@@ -114,50 +95,12 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
             return Lists.newArrayList();
         }
 
-        return generateDiagrams(EnderStorageUtil.Owner.GLOBAL, true);
+        return generateDiagrams(EnderStorageUtil.Owner.GLOBAL);
     }
 
     private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner) {
-        return generateDiagrams(owner, false);
-    }
-
-    private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner, boolean recipeInit) {
-        Map<EnderStorageFrequency, EnderItemStorage> chests;
-        if (Minecraft.getMinecraft().isSingleplayer()) {
-            chests = EnderStorageUtil.getEnderChests(owner);
-        } else {
-            if (recipeInit) return Lists.newArrayList(buildNoDataDiagram(owner));
-
-            chests = new HashMap<>();
-            JsonArray data;
-            if (!skipRemote) {
-                new MessageEnderStorageReq(owner, EnderStorageUtil.Type.CHEST).sendToServer();
-                return Lists.newArrayList(buildNoDataDiagram(owner));
-            } else {
-                skipRemote = false;
-            }
-            switch (owner) {
-                case GLOBAL:
-                    data = globalData;
-                    break;
-                case PERSONAL:
-                    data = personalData;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unhandled owner: " + owner);
-            }
-            for (JsonElement jsonElement : data) {
-                JsonObject jsonObject = jsonElement.getAsJsonObject();
-                EnderItemStorage value = new EnderItemStorage(
-                        EnderStorageManager.instance(false),
-                        owner.stringParam(),
-                        jsonObject.get("frequency").getAsInt());
-                value.loadFromTag((NBTTagCompound) NBTJson.toNbt(jsonObject.get("tag")));
-                chests.put(EnderStorageFrequency.create(jsonObject.get("frequency").getAsInt()), value);
-            }
-        }
-
-        List<Diagram> diagrams = chests.entrySet().stream().filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue()))
+        List<Diagram> diagrams = EnderStorageUtil.getEnderChests(owner).entrySet().stream()
+                .filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue()))
                 .map(entry -> buildDiagram(owner, entry.getKey(), entry.getValue())).collect(Collectors.toList());
 
         if (diagrams.isEmpty()) {
@@ -262,26 +205,5 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
                                 .addComponent(EnderStorageUtil.getPersonalItem()).build())
                 .setInteract(info.groupId() + LOOKUP_PERSONAL_CHESTS_SUFFIX).setDrawBackground(Draw::drawRaisedSlot)
                 .setDrawOverlay(pos -> Draw.drawOverlay(pos, Draw.Colour.OVERLAY_BLUE)).build();
-    }
-
-    public void updateJsonData(EnderStorageUtil.Owner owner, JsonArray newData) {
-        Preconditions.checkNotNull(owner, "Owner cannot be null");
-        Preconditions.checkNotNull(newData, "New data cannot be null");
-
-        String id = info.groupId();
-        switch (owner) {
-            case GLOBAL:
-                globalData = newData;
-                id += LOOKUP_GLOBAL_CHESTS_SUFFIX;
-                break;
-            case PERSONAL:
-                personalData = newData;
-                id += LOOKUP_PERSONAL_CHESTS_SUFFIX;
-                break;
-            default:
-                throw new IllegalArgumentException("Unhandled owner: " + owner);
-        }
-        skipRemote = true;
-        GuiUsageRecipe.openRecipeGui(id);
     }
 }

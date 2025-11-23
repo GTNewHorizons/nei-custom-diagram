@@ -1,26 +1,27 @@
 package com.github.dcysteine.neicustomdiagram.main;
 
-import com.github.dcysteine.neicustomdiagram.lib.net.MessageToClient;
-import com.github.dcysteine.neicustomdiagram.main.config.ConfigGuiFactory;
+import net.minecraftforge.common.MinecraftForge;
 
+import com.github.dcysteine.neicustomdiagram.main.config.Config;
+import com.github.dcysteine.neicustomdiagram.main.config.ConfigGuiFactory;
+import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
+import cpw.mods.fml.relauncher.Side;
 
-/**
- * Main entry point for NEI Custom Diagram.
- */
+/** Main entry point for NEI Custom Diagram. */
 @Mod(
         modid = NeiCustomDiagram.MOD_ID,
         name = NeiCustomDiagram.MOD_NAME,
         version = NeiCustomDiagram.MOD_VERSION,
-        acceptableRemoteVersions = NeiCustomDiagram.MOD_VERSION,
+        acceptableRemoteVersions = "*", // Client-side-only mod.
         dependencies = NeiCustomDiagram.MOD_DEPENDENCIES,
         guiFactory = ConfigGuiFactory.CLASS_NAME)
 public final class NeiCustomDiagram {
@@ -39,36 +40,63 @@ public final class NeiCustomDiagram {
     @Instance(MOD_ID)
     public static NeiCustomDiagram instance;
 
-    @SidedProxy(
-            clientSide = "com.github.dcysteine.neicustomdiagram.main.ClientProxy",
-            serverSide = "com.github.dcysteine.neicustomdiagram.main.CommonProxy")
-    public static CommonProxy proxy;
+    private boolean hasGenerated;
 
-    @EventHandler
-    @SuppressWarnings("unused")
-    public void onPreInit(FMLPreInitializationEvent event) {
-        proxy.onPreInit(event);
+    public NeiCustomDiagram() {
+        this.hasGenerated = false;
     }
 
     @EventHandler
     @SuppressWarnings("unused")
     public void onInitialization(FMLInitializationEvent event) {
-        proxy.onInitialization(event);
+        if (event.getSide() != Side.CLIENT) {
+            return;
+        }
+        Logger.MOD.info("Mod initialization starting...");
+
+        ConfigGuiFactory.checkClassName();
+
+        Config.initialize();
+        Registry.INSTANCE.initialize();
+        Config.initializeDiagramGroupVisibility(Registry.INSTANCE.infoList());
+        Config.saveConfig();
+        NeiIntegration.INSTANCE.initialize(Registry.INSTANCE.infoList());
+
+        MinecraftForge.EVENT_BUS.register(NeiIntegration.INSTANCE);
+        if (ConfigOptions.GENERATE_DIAGRAMS_ON_CLIENT_CONNECT.get()) {
+            FMLCommonHandler.instance().bus().register(this);
+        }
+
+        Logger.MOD.info("Mod initialization complete!");
     }
 
     @EventHandler
     @SuppressWarnings("unused")
     public void onLoadComplete(FMLLoadCompleteEvent event) {
-        proxy.onLoadComplete(event);
+        if (event.getSide() != Side.CLIENT || ConfigOptions.GENERATE_DIAGRAMS_ON_CLIENT_CONNECT.get()) {
+            return;
+        }
+        Logger.MOD.info("Mod post-load starting...");
+
+        Registry.INSTANCE.generateDiagramGroups();
+        Registry.INSTANCE.cleanUp();
+        hasGenerated = true;
+
+        Logger.MOD.info("Mod post-load complete!");
     }
 
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onClientConnected(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        proxy.onClientConnected(event);
-    }
+        if (!ConfigOptions.GENERATE_DIAGRAMS_ON_CLIENT_CONNECT.get() || hasGenerated) {
+            return;
+        }
+        Logger.MOD.info("Mod pre-connect starting...");
 
-    public void handleClientMessage(MessageToClient message) {
-        message.onMessage();
+        Registry.INSTANCE.generateDiagramGroups();
+        Registry.INSTANCE.cleanUp();
+        hasGenerated = true;
+
+        Logger.MOD.info("Mod pre-connect complete!");
     }
 }

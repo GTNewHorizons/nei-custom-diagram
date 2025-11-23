@@ -15,8 +15,6 @@ public final class ConfigOptions {
 
     private static final List<Option<?>> allOptions = new ArrayList<>();
 
-    private static final List<Option<?>> serverOptions = new ArrayList<>();
-
     public static final Option<Boolean> CTRL_FAST_FORWARD = new BooleanOption(
             Category.OPTIONS,
             "ctrl_fast_forward",
@@ -123,15 +121,6 @@ public final class ConfigOptions {
             false,
             "Enables more debug logging when failing to generate diagram for certain ore processing steps").register();
 
-    public static final Option<Integer> ENDER_STORAGE_SERVER_VIEW_LEVEL = new IntegerOption(
-            Category.OPTIONS,
-            "ender_storage_server_global_view_level",
-            0,
-            "Set the visible level of the server public channel.Private channels should always be visible, but only tank has achieved this\n"
-                    + "0 = it's visible to everyone,\n"
-                    + "1 = only op is visible,\n"
-                    + "2 = nobody can see it.").register().registerServer();
-
     public enum Category {
 
         OPTIONS("options"),
@@ -175,11 +164,6 @@ public final class ConfigOptions {
         /** Chain this method right after construction. */
         Option<T> register() {
             allOptions.add(this);
-            return this;
-        }
-
-        Option<T> registerServer() {
-            serverOptions.add(this);
             return this;
         }
 
@@ -296,10 +280,6 @@ public final class ConfigOptions {
 
     public static ImmutableList<Option<?>> getAllOptions() {
         return ImmutableList.copyOf(allOptions);
-    }
-
-    public static ImmutableList<Option<?>> getAllServerOptions() {
-        return ImmutableList.copyOf(serverOptions);
     }
 
     public static DiagramGroupVisibility getDiagramGroupVisibility(DiagramGroupInfo info) {

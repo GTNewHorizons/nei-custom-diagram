@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -29,17 +28,12 @@ public final class EnderStorageUtil {
         PERSONAL;
 
         public String stringParam() {
-            return stringParam(null);
-        }
-
-        public String stringParam(EntityPlayerMP player) {
             switch (this) {
                 case GLOBAL:
                     return "global";
 
                 case PERSONAL:
-                    return player == null ? Minecraft.getMinecraft().thePlayer.getDisplayName()
-                            : player.getDisplayName();
+                    return Minecraft.getMinecraft().thePlayer.getDisplayName();
             }
 
             throw new IllegalStateException("Unhandled Owner: " + this);
