@@ -176,7 +176,6 @@ class RecipeHandler {
         CANNING_MACHINE(RecipeMaps.cannerRecipes, ItemList.Machine_HV_Canner, "canningmachinelabel"),
         LATHE(RecipeMaps.latheRecipes, ItemList.Machine_HV_Lathe, "lathelabel"),
         CUTTING_MACHINE(RecipeMaps.cutterRecipes, ItemList.Machine_HV_Cutter, "cuttingmachinelabel"),
-        SLICING_MACHINE(RecipeMaps.slicerRecipes, ItemList.Machine_HV_Slicer, "slicingmachinelabel"),
         EXTRUDER(RecipeMaps.extruderRecipes, ItemList.Machine_HV_Extruder, "extruderlabel"),
         FORGE_HAMMER(RecipeMaps.hammerRecipes, ItemList.Machine_HV_Hammer, "forgehammerlabel"),
         // Amplifabricator, Mass Fabrication, fuels
