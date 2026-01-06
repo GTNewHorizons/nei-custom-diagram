@@ -72,6 +72,7 @@ class DiagramFactory {
         CASING(LayoutHandler.SlotKeys.CASING, OrePrefixes.itemCasing),
         BARS(LayoutHandler.SlotKeys.BARS, OrePrefixes.bars),
         FRAME_BOX(LayoutHandler.SlotKeys.FRAME_BOX, OrePrefixes.frameGt),
+        SHEET_METAL(LayoutHandler.SlotKeys.SHEET_METAL, OrePrefixes.sheetmetal),
 
         WIRES(LayoutHandler.SlotGroupKeys.WIRES, OrePrefixes.wireGt01, OrePrefixes.wireGt02, OrePrefixes.wireGt04,
                 OrePrefixes.wireGt08, OrePrefixes.wireGt12, OrePrefixes.wireGt16),
