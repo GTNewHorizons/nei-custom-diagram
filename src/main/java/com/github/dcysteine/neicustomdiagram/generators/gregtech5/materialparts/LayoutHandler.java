@@ -33,6 +33,7 @@ class LayoutHandler {
         static final Layout.SlotKey CASING = Layout.SlotKey.create("casing");
         static final Layout.SlotKey BARS = Layout.SlotKey.create("bars");
         static final Layout.SlotKey FRAME_BOX = Layout.SlotKey.create("frame-box");
+        static final Layout.SlotKey SHEET_METAL = Layout.SlotKey.create("sheet-metal");
 
         static final Layout.SlotKey FINE_WIRE = Layout.SlotKey.create("fine-wire");
     }
@@ -105,6 +106,7 @@ class LayoutHandler {
         optionalLayoutsBuilder.add(buildCasingLayout());
         optionalLayoutsBuilder.add(buildBarsLayout());
         optionalLayoutsBuilder.add(buildFrameBoxLayout());
+        optionalLayoutsBuilder.add(buildSheetMetalLayout());
         optionalLayoutsBuilder.add(buildWiresLayout());
         optionalLayoutsBuilder.add(buildFineWireLayout());
         optionalLayoutsBuilder.add(buildCablesLayout());
@@ -374,6 +376,15 @@ class LayoutHandler {
                 SlotKeys.FRAME_BOX,
                 Slot.builder(Grid.GRID.grid(12, 16)).setTooltip(
                         Tooltip.create(Lang.GREGTECH_5_MATERIAL_PARTS.trans("frameboxslot"), Tooltip.SLOT_FORMATTING))
+                        .build())
+                .build();
+    }
+
+    private Layout buildSheetMetalLayout() {
+        return Layout.builder().putSlot(
+                SlotKeys.SHEET_METAL,
+                Slot.builder(Grid.GRID.grid(12, 18)).setTooltip(
+                        Tooltip.create(Lang.GREGTECH_5_MATERIAL_PARTS.trans("sheetmetalslot"), Tooltip.SLOT_FORMATTING))
                         .build())
                 .build();
     }
