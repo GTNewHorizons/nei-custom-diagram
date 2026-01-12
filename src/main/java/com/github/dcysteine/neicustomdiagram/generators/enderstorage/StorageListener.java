@@ -17,8 +17,6 @@ public class StorageListener {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void clientStorageUpdate(EnderStorageStoredEvent event) {
-        System.out.println("EnderStorageStoredEvent received: type=" + event.type + ", global=" + event.global);
-
         switch (event.type) {
             case EnderStorageStoredEvent.TYPE_ITEM:
                 EnderStorageChestOverview.nextIsRemote = false;
