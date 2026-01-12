@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.github.dcysteine.neicustomdiagram.generators.enderstorage.chestoverview.EnderStorageChestOverview;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 
@@ -117,7 +116,7 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
                 packetCustom.writeInt(EnderStorageStoredEvent.TYPE_LIQUID);
                 packetCustom.sendToServer();
                 return Lists.newArrayList(buildNoDataDiagram(owner));
-            }else{
+            } else {
                 nextIsRemote = true;
             }
         }

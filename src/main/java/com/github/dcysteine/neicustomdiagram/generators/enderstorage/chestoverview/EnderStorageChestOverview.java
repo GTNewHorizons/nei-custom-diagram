@@ -112,7 +112,7 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
                 packetCustom.writeInt(EnderStorageStoredEvent.TYPE_ITEM);
                 packetCustom.sendToServer();
                 return Lists.newArrayList(buildNoDataDiagram(owner));
-            }else{
+            } else {
                 nextIsRemote = true;
             }
         }
