@@ -67,7 +67,7 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
     private Layout layout;
     private Layout noDataLayout;
 
-    public static boolean nextIsRemote = false;
+    public static boolean nextIsRemote = true;
 
     public EnderStorageChestOverview(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.ENDER_STORAGE_CHEST_OVERVIEW.trans("groupname"), groupId, ICON, 4)
@@ -105,13 +105,16 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
     }
 
     private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner) {
-        if (!Minecraft.getMinecraft().isSingleplayer() && !nextIsRemote) {
-            nextIsRemote = true;
-            PacketCustom packetCustom = new PacketCustom(EnderStorageSPH.channel, 2);
-            packetCustom.writeBoolean(owner == EnderStorageUtil.Owner.GLOBAL);
-            packetCustom.writeInt(EnderStorageStoredEvent.TYPE_ITEM);
-            packetCustom.sendToServer();
-            return Lists.newArrayList(buildNoDataDiagram(owner));
+        if (!Minecraft.getMinecraft().isSingleplayer()) {
+            if (nextIsRemote) {
+                PacketCustom packetCustom = new PacketCustom(EnderStorageSPH.channel, 2);
+                packetCustom.writeBoolean(owner == EnderStorageUtil.Owner.GLOBAL);
+                packetCustom.writeInt(EnderStorageStoredEvent.TYPE_ITEM);
+                packetCustom.sendToServer();
+                return Lists.newArrayList(buildNoDataDiagram(owner));
+            }else{
+                nextIsRemote = true;
+            }
         }
 
         List<Diagram> diagrams = EnderStorageUtil.getEnderChests(owner).entrySet().stream()

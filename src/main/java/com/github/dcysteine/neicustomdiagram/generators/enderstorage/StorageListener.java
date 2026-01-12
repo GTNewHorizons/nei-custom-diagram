@@ -5,15 +5,19 @@ import com.github.dcysteine.neicustomdiagram.generators.enderstorage.tankovervie
 
 import codechicken.enderstorage.event.EnderStorageStoredEvent;
 import codechicken.nei.recipe.GuiUsageRecipe;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@EventBusSubscriber(side = Side.CLIENT)
 public class StorageListener {
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public void clientStorageUpdate(EnderStorageStoredEvent event) {
+    public static void clientStorageUpdate(EnderStorageStoredEvent event) {
+        System.out.println("EnderStorageStoredEvent received: type=" + event.type + ", global=" + event.global);
+
         switch (event.type) {
             case EnderStorageStoredEvent.TYPE_ITEM:
                 EnderStorageChestOverview.nextIsRemote = false;

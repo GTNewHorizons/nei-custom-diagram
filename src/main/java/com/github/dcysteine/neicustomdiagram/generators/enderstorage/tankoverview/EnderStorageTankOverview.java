@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.github.dcysteine.neicustomdiagram.generators.enderstorage.chestoverview.EnderStorageChestOverview;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 
@@ -69,7 +70,7 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
     private List<Layout> tankLayouts;
     private Layout noDataLayout;
 
-    public static boolean nextIsRemote = false;
+    public static boolean nextIsRemote = true;
 
     public EnderStorageTankOverview(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("groupname"), groupId, ICON, 2)
@@ -109,13 +110,16 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
     }
 
     private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner) {
-        if (!Minecraft.getMinecraft().isSingleplayer() && !nextIsRemote) {
-            nextIsRemote = true;
-            PacketCustom packetCustom = new PacketCustom(EnderStorageSPH.channel, 2);
-            packetCustom.writeBoolean(owner == EnderStorageUtil.Owner.GLOBAL);
-            packetCustom.writeInt(EnderStorageStoredEvent.TYPE_LIQUID);
-            packetCustom.sendToServer();
-            return Lists.newArrayList(buildNoDataDiagram(owner));
+        if (!Minecraft.getMinecraft().isSingleplayer()) {
+            if (nextIsRemote) {
+                PacketCustom packetCustom = new PacketCustom(EnderStorageSPH.channel, 2);
+                packetCustom.writeBoolean(owner == EnderStorageUtil.Owner.GLOBAL);
+                packetCustom.writeInt(EnderStorageStoredEvent.TYPE_LIQUID);
+                packetCustom.sendToServer();
+                return Lists.newArrayList(buildNoDataDiagram(owner));
+            }else{
+                nextIsRemote = true;
+            }
         }
 
         List<Map.Entry<EnderStorageFrequency, EnderLiquidStorage>> tanks = EnderStorageUtil.getEnderTanks(owner)
