@@ -276,7 +276,7 @@ class CircuitLineHandler {
         ImmutableList.Builder<CircuitLine> individualCircuitsBuilder = ImmutableList.builder();
         if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
             individualCircuitsBuilder.add(
-                    CircuitLine.builder().addBoard(ItemComponent.create(GT_Loader_Items.NandChipBoard)).setStartTier(0)
+                    CircuitLine.builder().addBoard(ItemComponent.create(ItemList.NandChipArray.get(1))).setStartTier(0)
                             .addCircuit(GregTechOreDictUtil.getComponent(ItemList.NandChip)).build());
         } else {
             individualCircuitsBuilder.add(
@@ -293,7 +293,7 @@ class CircuitLineHandler {
 
         ImmutableList.Builder<ItemComponent> additionalDiagramItemsBuilder = ImmutableList.builder();
         if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
-            additionalDiagramItemsBuilder.add(ItemComponent.create(GT_Loader_Items.NandChipBoard));
+            additionalDiagramItemsBuilder.add(ItemComponent.create(ItemList.NandChipArray.get(1)));
         }
         additionalDiagramItems = additionalDiagramItemsBuilder.build();
 
