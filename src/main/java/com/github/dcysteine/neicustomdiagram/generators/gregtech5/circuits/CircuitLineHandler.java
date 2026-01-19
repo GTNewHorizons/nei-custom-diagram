@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import com.dreammaster.gthandler.GT_Loader_Items;
 import com.dreammaster.item.NHItemList;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
