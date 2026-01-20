@@ -9,12 +9,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import com.dreammaster.gthandler.CustomItemList;
 import com.dreammaster.item.NHItemList;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.github.dcysteine.neicustomdiagram.main.Registry;
-import com.github.dcysteine.neicustomdiagram.util.dreamcraft.DreamcraftUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
@@ -133,22 +131,21 @@ class CircuitLineHandler {
         ImmutableList.Builder<CircuitLine> circuitLinesBuilder = ImmutableList.builder();
         if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
             circuitLinesBuilder.add(
-                    CircuitLine.builder().setStartTier(0)
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitULV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitLV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitMV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitHV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitEV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitIV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitLuV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitZPM.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitUV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitUHV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitUEV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitUIV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitUMV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitUXV.getIS()))
-                            .addCircuits(ItemComponent.create(NHItemList.CircuitMAX.getIS())).build());
+                    CircuitLine.builder().setStartTier(0).addCircuits(ItemComponent.create(NHItemList.CircuitULV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitLV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitMV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitHV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitEV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitIV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitLuV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitZPM.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUHV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUEV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUIV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUMV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitUXV.get()))
+                            .addCircuits(ItemComponent.create(NHItemList.CircuitMAX.get())).build());
         }
         circuitLinesBuilder
                 .add(
@@ -278,8 +275,8 @@ class CircuitLineHandler {
         ImmutableList.Builder<CircuitLine> individualCircuitsBuilder = ImmutableList.builder();
         if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
             individualCircuitsBuilder.add(
-                    CircuitLine.builder().addBoard(DreamcraftUtil.getComponent(CustomItemList.NandChipBoard))
-                            .setStartTier(0).addCircuit(GregTechOreDictUtil.getComponent(ItemList.NandChip)).build());
+                    CircuitLine.builder().addBoard(ItemComponent.create(ItemList.NandChipArray.get(1))).setStartTier(0)
+                            .addCircuit(GregTechOreDictUtil.getComponent(ItemList.NandChip)).build());
         } else {
             individualCircuitsBuilder.add(
                     CircuitLine.builder()
@@ -295,7 +292,7 @@ class CircuitLineHandler {
 
         ImmutableList.Builder<ItemComponent> additionalDiagramItemsBuilder = ImmutableList.builder();
         if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
-            additionalDiagramItemsBuilder.add(DreamcraftUtil.getComponent(CustomItemList.NandChipBoard));
+            additionalDiagramItemsBuilder.add(ItemComponent.create(ItemList.NandChipArray.get(1)));
         }
         additionalDiagramItems = additionalDiagramItemsBuilder.build();
 
