@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
@@ -33,7 +34,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import codechicken.enderstorage.event.EnderStorageStoredEvent;
+import codechicken.enderstorage.internal.EnderStorageSPH;
 import codechicken.enderstorage.storage.item.EnderItemStorage;
+import codechicken.lib.packet.PacketCustom;
 
 public final class EnderStorageChestOverview implements DiagramGenerator {
 
@@ -62,6 +66,8 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
     private final DiagramGroupInfo info;
     private Layout layout;
     private Layout noDataLayout;
+
+    public static boolean nextIsRemote = true;
 
     public EnderStorageChestOverview(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.ENDER_STORAGE_CHEST_OVERVIEW.trans("groupname"), groupId, ICON, 4)
@@ -99,6 +105,18 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
     }
 
     private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner) {
+        if (!Minecraft.getMinecraft().isSingleplayer()) {
+            if (nextIsRemote) {
+                PacketCustom packetCustom = new PacketCustom(EnderStorageSPH.channel, 2);
+                packetCustom.writeBoolean(owner == EnderStorageUtil.Owner.GLOBAL);
+                packetCustom.writeInt(EnderStorageStoredEvent.TYPE_ITEM);
+                packetCustom.sendToServer();
+                return Lists.newArrayList(buildNoDataDiagram(owner));
+            } else {
+                nextIsRemote = true;
+            }
+        }
+
         List<Diagram> diagrams = EnderStorageUtil.getEnderChests(owner).entrySet().stream()
                 .filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue()))
                 .map(entry -> buildDiagram(owner, entry.getKey(), entry.getValue())).collect(Collectors.toList());
