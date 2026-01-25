@@ -123,7 +123,6 @@ class RecipeHandler {
         POLARIZER(RecipeMaps.polarizerRecipes, ItemList.Machine_HV_Polarizer, "polarizerlabel"),
         MACERATOR(RecipeMaps.maceratorRecipes, ItemList.Machine_HV_Macerator, "maceratorlabel"),
         CHEMICAL_BATH(RecipeMaps.chemicalBathRecipes, ItemList.Machine_HV_ChemicalBath, "chemicalbathlabel"),
-        FLUID_CANNER(RecipeMaps.fluidCannerRecipes, ItemList.Machine_HV_FluidCanner, "fluidcannerlabel"),
         BREWERY(RecipeMaps.brewingRecipes, ItemList.Machine_HV_Brewery, "brewerylabel"),
         FLUID_HEATER(RecipeMaps.fluidHeaterRecipes, ItemList.Machine_HV_FluidHeater, "fluidheaterlabel"),
         DISTILLERY(RecipeMaps.distilleryRecipes, ItemList.Machine_HV_Distillery, "distillerylabel"),
