@@ -47,7 +47,7 @@ class LayoutHandler {
         static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE_MACERATE = Layout.SlotGroupKey
                 .create("ore-thermal-centrifuge-macerate");
         static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE_MACERATE_EXTRA = Layout.SlotGroupKey
-                .create("ore-thermal-centrifuge-macerate-2");
+                .create("ore-thermal-centrifuge-macerate-extra");
         static final Layout.SlotGroupKey ADDITIONAL_RECIPE_OUTPUTS = Layout.SlotGroupKey
                 .create("additional-recipe-outputs");
 
