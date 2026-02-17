@@ -116,12 +116,16 @@ public final class GregTechOreProcessing implements DiagramGenerator {
         if (Registry.ModDependency.GT_PLUS_PLUS.isLoaded()) {
             for (Material material : Material.mMaterialMap) {
                 ItemStack ore = material.getOre(1);
+                ItemStack rawOre = material.getRawOre(1);
                 if (ore == null || !(Block.getBlockFromItem(ore.getItem()) instanceof BlockBaseOre)) {
                     // Skip non-GT++ ore blocks to avoid duplicate diagrams.
                     continue;
                 }
 
-                buildDiagram(matcherBuilder, ImmutableList.of(ItemComponent.create(ore)), Optional.ofNullable(null));
+                buildDiagram(
+                        matcherBuilder,
+                        ImmutableList.of(ItemComponent.create(ore)),
+                        Optional.of(ItemComponent.create(rawOre)));
             }
         }
 
