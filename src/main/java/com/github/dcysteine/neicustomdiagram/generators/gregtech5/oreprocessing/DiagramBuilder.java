@@ -119,7 +119,7 @@ class DiagramBuilder {
         // Both crushed ore and purified ore are inputs to the thermal centrifuge, and so we need to
         // check that they produce the same output items.
         Optional<ItemComponent> centrifugedOreOptional;
-        boolean sameCurshedPurifiedOutputs = true;
+        boolean crushedAndPurifiedOutputsAreEqual = true;
         if (crushedOreOptional.isPresent() && purifiedOreOptional.isPresent()) {
             ItemComponent crushedOre = crushedOreOptional.get();
             ItemComponent purifiedOre = purifiedOreOptional.get();
@@ -135,8 +135,8 @@ class DiagramBuilder {
             Optional<List<DisplayComponent>> filteredPurifiedOreOutputs = purifiedOreOutputs.map(Lists::newArrayList);
             filteredPurifiedOreOutputs.ifPresent(outputs -> ComponentTransformer.removeComponent(outputs, STONE_DUST));
 
-            sameCurshedPurifiedOutputs = filteredCrushedOreOutputs.equals(filteredPurifiedOreOutputs);
-            if (sameCurshedPurifiedOutputs) {
+            crushedAndPurifiedOutputsAreEqual = filteredCrushedOreOutputs.equals(filteredPurifiedOreOutputs);
+            if (crushedAndPurifiedOutputsAreEqual) {
                 if (purifiedOreOutputs.isPresent()) {
                     centrifugedOreOptional = handleRecipes(
                             RecipeHandler.RecipeMap.THERMAL_CENTRIFUGE,
@@ -150,18 +150,21 @@ class DiagramBuilder {
                     centrifugedOreOptional = Optional.empty();
                 }
             } else {
-                handleRecipes(
+                centrifugedOreOptional = handleRecipes(
                         RecipeHandler.RecipeMap.THERMAL_CENTRIFUGE,
                         crushedOre,
                         LayoutHandler.SlotGroupKeys.ORE_THERMAL_CENTRIFUGE_CRUSHED);
-                centrifugedOreOptional = handleRecipes(
+                Optional<ItemComponent> helper = handleRecipes(
                         RecipeHandler.RecipeMap.THERMAL_CENTRIFUGE,
                         purifiedOre,
                         LayoutHandler.SlotGroupKeys.ORE_THERMAL_CENTRIFUGE_PURIFIED);
 
+                centrifugedOreOptional = centrifugedOreOptional.isPresent() ? centrifugedOreOptional : helper;
+
                 // Check if the output ores differ, we don't want to show the next macerator step in this case
-                if (filteredCrushedOreOutputs.isPresent() && purifiedOreOutputs.isPresent()
-                        && !filteredCrushedOreOutputs.get().get(0).equals(purifiedOreOutputs.get().get(0))) {
+                // We can assume that the first element in the list is the ore
+                if (filteredCrushedOreOutputs.isPresent() && filteredPurifiedOreOutputs.isPresent()
+                        && !filteredCrushedOreOutputs.get().get(0).equals(filteredPurifiedOreOutputs.get().get(0))) {
                     if (ConfigOptions.OREPROC_DEBUG_LOGGING.get()) {
                         Logger.GREGTECH_5_ORE_PROCESSING.warn(
                                 "Crushed ore and purified ore have different thermal centrifuge ore outputs:"
@@ -224,7 +227,7 @@ class DiagramBuilder {
                     LayoutHandler.SlotGroupKeys.PURIFIED_DUST_ELECTROMAGNETIC_SEPARATE);
         });
 
-        if (sameCurshedPurifiedOutputs) {
+        if (crushedAndPurifiedOutputsAreEqual) {
             centrifugedOreOptional.ifPresent(
                     centrifugedOre -> handleRecipes(
                             RecipeHandler.RecipeMap.MACERATOR,

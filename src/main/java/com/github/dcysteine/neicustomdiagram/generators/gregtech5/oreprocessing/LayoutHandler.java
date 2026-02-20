@@ -39,11 +39,15 @@ class LayoutHandler {
                 .create("purified-dust-centrifuge");
         static final Layout.SlotGroupKey PURIFIED_DUST_ELECTROMAGNETIC_SEPARATE = Layout.SlotGroupKey
                 .create("purified-dust-electromagnetic-separate");
+        // TC output slots when the purified and crushed recipe outputs are the same
         static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE = Layout.SlotGroupKey.create("ore-thermal-centrifuge");
+        // TC output slots for crushed recipe when the purified and crushed recipe outputs are NOT the same
         static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE_CRUSHED = Layout.SlotGroupKey
                 .create("ore-thermal-centrifuge-crushed");
+        // TC output slots for purified recipe when the purified and crushed recipe outputs are NOT the same
         static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE_PURIFIED = Layout.SlotGroupKey
                 .create("ore-thermal-centrifuge-purified");
+        // Macerator output slots after TC
         static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE_MACERATE = Layout.SlotGroupKey
                 .create("ore-thermal-centrifuge-macerate");
         static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE_MACERATE_EXTRA = Layout.SlotGroupKey
