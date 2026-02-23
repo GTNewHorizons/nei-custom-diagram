@@ -3,7 +3,7 @@ package com.github.dcysteine.neicustomdiagram.generators.enderstorage.chestoverv
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
@@ -67,13 +67,11 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
     private Layout layout;
     private Layout noDataLayout;
 
-    public static boolean nextIsRemote = true;
-
     public EnderStorageChestOverview(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.ENDER_STORAGE_CHEST_OVERVIEW.trans("groupname"), groupId, ICON, 4)
                 .setDescription(
                         "This diagram displays ender chest used frequencies and contents."
-                                + "\nUnfortunately, it doesn't work well on servers.")
+                                + "\nHowever, the data can only be viewed if this feature is enabled on the server.")
                 .build();
     }
 
@@ -87,12 +85,16 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
         layout = buildLayout();
         noDataLayout = buildNoDataLayout();
 
-        ImmutableMap<String, Supplier<Collection<Diagram>>> customBehaviorMap = ImmutableMap.of(
+        ImmutableMap<String, Function<Object[], Collection<Diagram>>> customBehaviorMap = ImmutableMap.of(
                 info.groupId() + LOOKUP_GLOBAL_CHESTS_SUFFIX,
-                () -> generateDiagrams(EnderStorageUtil.Owner.GLOBAL),
+                (Object[] stacks) -> generateDiagrams(EnderStorageUtil.Owner.GLOBAL, stacks),
                 info.groupId() + LOOKUP_PERSONAL_CHESTS_SUFFIX,
-                () -> generateDiagrams(EnderStorageUtil.Owner.PERSONAL));
-        return new CustomDiagramGroup(info, new CustomDiagramMatcher(this::generateDiagrams), customBehaviorMap);
+                (Object[] stacks) -> generateDiagrams(EnderStorageUtil.Owner.PERSONAL, stacks));
+        return new CustomDiagramGroup(
+                info,
+                new CustomDiagramMatcher(this::generateDiagrams),
+                ImmutableMap.of(),
+                customBehaviorMap);
     }
 
     private Collection<Diagram> generateDiagrams(Interactable.RecipeType recipeType, Component component) {
@@ -104,17 +106,13 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
         return generateDiagrams(EnderStorageUtil.Owner.GLOBAL);
     }
 
-    private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner) {
-        if (!Minecraft.getMinecraft().isSingleplayer()) {
-            if (nextIsRemote) {
-                PacketCustom packetCustom = new PacketCustom(EnderStorageSPH.channel, 2);
-                packetCustom.writeBoolean(owner == EnderStorageUtil.Owner.GLOBAL);
-                packetCustom.writeInt(EnderStorageStoredEvent.TYPE_ITEM);
-                packetCustom.sendToServer();
-                return Lists.newArrayList(buildNoDataDiagram(owner));
-            } else {
-                nextIsRemote = true;
-            }
+    private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner, Object... stacks) {
+        if (!Minecraft.getMinecraft().isSingleplayer() && (stacks == null || stacks.length == 0)) {
+            PacketCustom packetCustom = new PacketCustom(EnderStorageSPH.channel, 2);
+            packetCustom.writeBoolean(owner == EnderStorageUtil.Owner.GLOBAL);
+            packetCustom.writeInt(EnderStorageStoredEvent.TYPE_ITEM);
+            packetCustom.sendToServer();
+            return Lists.newArrayList(buildNoDataDiagram(owner));
         }
 
         List<Diagram> diagrams = EnderStorageUtil.getEnderChests(owner).entrySet().stream()
