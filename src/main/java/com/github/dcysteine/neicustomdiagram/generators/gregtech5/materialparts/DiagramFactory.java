@@ -45,8 +45,8 @@ class DiagramFactory {
 
     private enum MaterialPart {
 
-        GEMS(LayoutHandler.SlotGroupKeys.GEMS, OrePrefixes.gemChipped, OrePrefixes.gemFlawed, OrePrefixes.gemFlawless,
-                OrePrefixes.gemExquisite),
+        // spotless:off
+        GEMS(LayoutHandler.SlotGroupKeys.GEMS, OrePrefixes.gemChipped, OrePrefixes.gemFlawed, OrePrefixes.gemFlawless, OrePrefixes.gemExquisite),
         GEM(LayoutHandler.SlotKeys.GEM, OrePrefixes.gem),
         LENS(LayoutHandler.SlotKeys.LENS, OrePrefixes.lens),
 
@@ -58,8 +58,7 @@ class DiagramFactory {
 
         ALLOY_PLATE(LayoutHandler.SlotKeys.ALLOY_PLATE, OrePrefixes.plateAlloy),
         PLATES(LayoutHandler.SlotGroupKeys.PLATES, OrePrefixes.plate, OrePrefixes.foil, OrePrefixes.plateDense),
-        MULTI_PLATES(LayoutHandler.SlotGroupKeys.MULTI_PLATES, OrePrefixes.plateDouble, OrePrefixes.plateTriple,
-                OrePrefixes.plateQuadruple, OrePrefixes.plateQuintuple),
+        MULTI_PLATES(LayoutHandler.SlotGroupKeys.MULTI_PLATES, OrePrefixes.plateDouble, OrePrefixes.plateTriple, OrePrefixes.plateQuadruple, OrePrefixes.plateQuintuple),
         SUPERDENSE_PLATES(LayoutHandler.SlotKeys.SUPERDENSE_PLATES, OrePrefixes.plateSuperdense),
 
         RODS(LayoutHandler.SlotGroupKeys.RODS, OrePrefixes.stick, OrePrefixes.stickLong),
@@ -74,18 +73,15 @@ class DiagramFactory {
         FRAME_BOX(LayoutHandler.SlotKeys.FRAME_BOX, OrePrefixes.frameGt),
         SHEET_METAL(LayoutHandler.SlotKeys.SHEET_METAL, OrePrefixes.sheetmetal),
 
-        WIRES(LayoutHandler.SlotGroupKeys.WIRES, OrePrefixes.wireGt01, OrePrefixes.wireGt02, OrePrefixes.wireGt04,
-                OrePrefixes.wireGt08, OrePrefixes.wireGt12, OrePrefixes.wireGt16),
+        WIRES(LayoutHandler.SlotGroupKeys.WIRES, OrePrefixes.wireGt01, OrePrefixes.wireGt02, OrePrefixes.wireGt04, OrePrefixes.wireGt08, OrePrefixes.wireGt12, OrePrefixes.wireGt16),
         FINE_WIRE(LayoutHandler.SlotKeys.FINE_WIRE, OrePrefixes.wireFine),
-        CABLES(LayoutHandler.SlotGroupKeys.CABLES, OrePrefixes.cableGt01, OrePrefixes.cableGt02, OrePrefixes.cableGt04,
-                OrePrefixes.cableGt08, OrePrefixes.cableGt12, OrePrefixes.cableGt16),
+        CABLES(LayoutHandler.SlotGroupKeys.CABLES, OrePrefixes.cableGt01, OrePrefixes.cableGt02, OrePrefixes.cableGt04, OrePrefixes.cableGt08, OrePrefixes.cableGt12, OrePrefixes.cableGt16),
 
-        PIPES(LayoutHandler.SlotGroupKeys.PIPES, OrePrefixes.pipeTiny, OrePrefixes.pipeSmall, OrePrefixes.pipeMedium,
-                OrePrefixes.pipeLarge, OrePrefixes.pipeHuge),
-        SPECIAL_PIPES(LayoutHandler.SlotGroupKeys.SPECIAL_PIPES, OrePrefixes.pipeQuadruple, OrePrefixes.pipeNonuple,
-                OrePrefixes.pipeRestrictiveTiny, OrePrefixes.pipeRestrictiveSmall, OrePrefixes.pipeRestrictiveMedium,
-                OrePrefixes.pipeRestrictiveLarge, OrePrefixes.pipeRestrictiveHuge);
+        PIPES(LayoutHandler.SlotGroupKeys.PIPES, OrePrefixes.pipeTiny, OrePrefixes.pipeSmall, OrePrefixes.pipeMedium, OrePrefixes.pipeLarge, OrePrefixes.pipeHuge),
+        SPECIAL_PIPES(LayoutHandler.SlotGroupKeys.SPECIAL_PIPES, OrePrefixes.pipeQuadruple, OrePrefixes.pipeNonuple, OrePrefixes.pipeRestrictiveTiny, OrePrefixes.pipeRestrictiveSmall, OrePrefixes.pipeRestrictiveMedium, OrePrefixes.pipeRestrictiveLarge, OrePrefixes.pipeRestrictiveHuge);
+        // spotless:on
 
+        private static final MaterialPart[] VALUES = values();
         private final Layout.Key slotKey;
         private final ImmutableList<OrePrefixes> prefixes;
 
@@ -196,7 +192,7 @@ class DiagramFactory {
                 material.getSeverelySteamCracked(1000),
                 Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypeseverelysteamcracked"));
 
-        Arrays.stream(MaterialPart.values()).forEach(part -> part.insertIntoSlot(diagramBuilder, material));
+        Arrays.stream(MaterialPart.VALUES).forEach(part -> part.insertIntoSlot(diagramBuilder, material));
         return diagramBuilder.build();
     }
 
