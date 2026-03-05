@@ -28,6 +28,7 @@ class DiagramFactory {
 
         TURBINE_BLADE(LayoutHandler.SlotKeys.TURBINE_BLADE, OrePrefixes.turbineBlade);
 
+        private static final MaterialPart[] VALUES = values();
         private final Layout.Key slotKey;
         private final ImmutableList<OrePrefixes> prefixes;
 
@@ -78,8 +79,7 @@ class DiagramFactory {
         diagramBuilder.autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.ELECTRIC_SCANNERS)
                 .insertEachGroupSafe(recipeHandler.getElectricScanners(material));
 
-        Arrays.stream(DiagramFactory.MaterialPart.values())
-                .forEach(part -> part.insertIntoSlot(diagramBuilder, material));
+        Arrays.stream(MaterialPart.VALUES).forEach(part -> part.insertIntoSlot(diagramBuilder, material));
         return diagramBuilder.build();
     }
 
