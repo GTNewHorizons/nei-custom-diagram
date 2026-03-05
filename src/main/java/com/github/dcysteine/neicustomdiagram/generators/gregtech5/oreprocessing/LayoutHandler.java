@@ -39,11 +39,22 @@ class LayoutHandler {
                 .create("purified-dust-centrifuge");
         static final Layout.SlotGroupKey PURIFIED_DUST_ELECTROMAGNETIC_SEPARATE = Layout.SlotGroupKey
                 .create("purified-dust-electromagnetic-separate");
+        // TC output slots when the purified and crushed recipe outputs are the same
         static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE = Layout.SlotGroupKey.create("ore-thermal-centrifuge");
+        // TC output slots for crushed recipe when the purified and crushed recipe outputs are NOT the same
+        static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE_CRUSHED = Layout.SlotGroupKey
+                .create("ore-thermal-centrifuge-crushed");
+        // TC output slots for purified recipe when the purified and crushed recipe outputs are NOT the same
+        static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE_PURIFIED = Layout.SlotGroupKey
+                .create("ore-thermal-centrifuge-purified");
+        // Macerator output slots after TC
         static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE_MACERATE = Layout.SlotGroupKey
                 .create("ore-thermal-centrifuge-macerate");
+        static final Layout.SlotGroupKey ORE_THERMAL_CENTRIFUGE_MACERATE_EXTRA = Layout.SlotGroupKey
+                .create("ore-thermal-centrifuge-macerate-extra");
         static final Layout.SlotGroupKey ADDITIONAL_RECIPE_OUTPUTS = Layout.SlotGroupKey
                 .create("additional-recipe-outputs");
+
     }
 
     static final class AdditionalRecipeLabelPositions {
@@ -84,7 +95,9 @@ class LayoutHandler {
         layoutsBuilder.add(buildPurifiedDustCentrifugeLayout());
         layoutsBuilder.add(buildPurifiedDustElectromagneticSeparateLayout());
         layoutsBuilder.add(buildOreThermalCentrifugeLayout());
+        layoutsBuilder.add(buildOreThermalCentrifugeExtraLayout());
         layoutsBuilder.add(buildOreThermalCentrifugeMacerateLayout());
+        layoutsBuilder.add(buildOreThermalCentrifugeMacerateExtraLayout());
         layoutsBuilder.add(buildAdditionalRecipeOutputsLayout());
         layouts = layoutsBuilder.build();
     }
@@ -315,6 +328,29 @@ class LayoutHandler {
                 .putSlotGroup(SlotGroupKeys.ORE_THERMAL_CENTRIFUGE, outputSlots).build();
     }
 
+    private Layout buildOreThermalCentrifugeExtraLayout() {
+        Lines lines = Lines.builder(Grid.GRID.grid(4, 7)).addSegment(Grid.GRID.grid(5, 7))
+                .addSegment(Grid.GRID.grid(5, 10)).addSegment(Grid.GRID.grid(4, 10))
+                .addArrow(Grid.GRID.edge(4, 12, Grid.Direction.N)).move(Grid.GRID.grid(8, 10))
+                .addSegment(Grid.GRID.grid(6, 10)).addArrow(Grid.GRID.edge(6, 12, Grid.Direction.N)).build();
+
+        CustomInteractable label1 = labelHandler
+                .buildLabel(LabelHandler.ItemLabel.THERMAL_CENTRIFUGE, Grid.GRID.grid(4, 10));
+        CustomInteractable label2 = labelHandler
+                .buildLabel(LabelHandler.ItemLabel.THERMAL_CENTRIFUGE, Grid.GRID.grid(6, 10));
+
+        SlotGroup outputSlots1 = SlotGroup.builder(1, 2, Grid.GRID.grid(4, 12), Grid.Direction.S).setDefaultTooltip(
+                Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("thermalcentrifugeslot"), Tooltip.SLOT_FORMATTING))
+                .build();
+        SlotGroup outputSlots2 = SlotGroup.builder(1, 2, Grid.GRID.grid(6, 12), Grid.Direction.S).setDefaultTooltip(
+                Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("thermalcentrifugeslot"), Tooltip.SLOT_FORMATTING))
+                .build();
+
+        return Layout.builder().addLines(lines).addInteractable(label1).addInteractable(label2)
+                .putSlotGroup(SlotGroupKeys.ORE_THERMAL_CENTRIFUGE_CRUSHED, outputSlots1)
+                .putSlotGroup(SlotGroupKeys.ORE_THERMAL_CENTRIFUGE_PURIFIED, outputSlots2).build();
+    }
+
     private Layout buildOreThermalCentrifugeMacerateLayout() {
         Lines lines = Lines.builder(Grid.GRID.grid(6, 14)).addSegment(Grid.GRID.grid(4, 14))
                 .addArrow(Grid.GRID.edge(4, 16, Grid.Direction.N)).build();
@@ -328,6 +364,22 @@ class LayoutHandler {
 
         return Layout.builder().addLines(lines).addInteractable(label)
                 .putSlotGroup(SlotGroupKeys.ORE_THERMAL_CENTRIFUGE_MACERATE, outputSlots).build();
+    }
+
+    private Layout buildOreThermalCentrifugeMacerateExtraLayout() {
+        Lines lines = Lines.builder(Grid.GRID.grid(4, 12)).addSegment(Grid.GRID.grid(6, 12)).move(Grid.GRID.grid(5, 12))
+                .addSegment(Grid.GRID.grid(5, 15)).addSegment(Grid.GRID.grid(6, 15)).addSegment(Grid.GRID.grid(6, 16))
+                .addArrow(Grid.GRID.edge(4, 16, Grid.Direction.E)).build();
+
+        CustomInteractable label = labelHandler.buildLabel(LabelHandler.ItemLabel.MACERATOR, Grid.GRID.grid(6, 16));
+
+        SlotGroup outputSlots = SlotGroup.builder(1, 2, Grid.GRID.grid(4, 16), Grid.Direction.S)
+                .setDefaultTooltip(
+                        Tooltip.create(Lang.GREGTECH_5_ORE_PROCESSING.trans("maceratorslot"), Tooltip.SLOT_FORMATTING))
+                .build();
+
+        return Layout.builder().addLines(lines).addInteractable(label)
+                .putSlotGroup(SlotGroupKeys.ORE_THERMAL_CENTRIFUGE_MACERATE_EXTRA, outputSlots).build();
     }
 
     private Layout buildAdditionalRecipeOutputsLayout() {
