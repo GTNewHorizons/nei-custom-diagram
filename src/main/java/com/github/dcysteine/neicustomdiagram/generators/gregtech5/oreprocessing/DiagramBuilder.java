@@ -150,6 +150,9 @@ class DiagramBuilder {
                     centrifugedOreOptional = Optional.empty();
                 }
             } else {
+                // If only one of these two doesn't have a recipe, both output boxes and the final macerator step will
+                // still be drawn
+                // This doesn't happen for any ores as of 05.03.2026
                 centrifugedOreOptional = handleRecipes(
                         RecipeHandler.RecipeMap.THERMAL_CENTRIFUGE,
                         crushedOre,
@@ -179,6 +182,30 @@ class DiagramBuilder {
                                 crushedOre);
                     }
                     centrifugedOreOptional = Optional.empty();
+                }
+
+                if (!filteredCrushedOreOutputs.isPresent()) {
+                    if (ConfigOptions.OREPROC_DEBUG_LOGGING.get()) {
+                        Logger.GREGTECH_5_ORE_PROCESSING.warn(
+                                "Crushed ore has a missing thermal centrifuge recipe:" + "\n[{}]\n ->\n[{}]",
+                                crushedOre,
+                                crushedOreOutputs);
+                    } else {
+                        Logger.GREGTECH_5_ORE_PROCESSING
+                                .warn("Crushed [{}] has a missing thermal centrifuge recipe", crushedOre);
+                    }
+                }
+
+                if (!filteredPurifiedOreOutputs.isPresent()) {
+                    if (ConfigOptions.OREPROC_DEBUG_LOGGING.get()) {
+                        Logger.GREGTECH_5_ORE_PROCESSING.warn(
+                                "Purified ore has a missing thermal centrifuge recipe:" + "\n[{}]\n ->\n[{}]",
+                                purifiedOre,
+                                purifiedOreOutputs);
+                    } else {
+                        Logger.GREGTECH_5_ORE_PROCESSING
+                                .warn("Purified [{}] has a missing thermal centrifuge recipe", purifiedOre);
+                    }
                 }
             }
         } else {
