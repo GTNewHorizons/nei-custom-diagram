@@ -4,10 +4,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.CustomDiagramGroup;
@@ -35,7 +36,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import codechicken.enderstorage.event.EnderStorageStoredEvent;
+import codechicken.enderstorage.internal.EnderStorageSPH;
 import codechicken.enderstorage.storage.liquid.EnderLiquidStorage;
+import codechicken.lib.packet.PacketCustom;
 
 public final class EnderStorageTankOverview implements DiagramGenerator {
 
@@ -68,8 +72,8 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
     public EnderStorageTankOverview(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("groupname"), groupId, ICON, 2)
                 .setDescription(
-                        "This diagram displays ender tank used frequencies and contents."
-                                + "\nUnfortunately, it doesn't work on servers.")
+                        "This diagram displays ender chest used frequencies and contents."
+                                + "\nHowever, the data can only be viewed if this feature is enabled on the server.")
                 .build();
     }
 
@@ -85,12 +89,16 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
                 .collect(Collectors.toList());
         noDataLayout = buildNoDataLayout();
 
-        ImmutableMap<String, Supplier<Collection<Diagram>>> customBehaviorMap = ImmutableMap.of(
+        ImmutableMap<String, Function<Object[], Collection<Diagram>>> customBehaviorMap = ImmutableMap.of(
                 info.groupId() + LOOKUP_GLOBAL_TANKS_SUFFIX,
-                () -> generateDiagrams(EnderStorageUtil.Owner.GLOBAL),
+                (Object[] stacks) -> generateDiagrams(EnderStorageUtil.Owner.GLOBAL, stacks),
                 info.groupId() + LOOKUP_PERSONAL_TANKS_SUFFIX,
-                () -> generateDiagrams(EnderStorageUtil.Owner.PERSONAL));
-        return new CustomDiagramGroup(info, new CustomDiagramMatcher(this::generateDiagrams), customBehaviorMap);
+                (Object[] stacks) -> generateDiagrams(EnderStorageUtil.Owner.PERSONAL, stacks));
+        return new CustomDiagramGroup(
+                info,
+                new CustomDiagramMatcher(this::generateDiagrams),
+                ImmutableMap.of(),
+                customBehaviorMap);
     }
 
     private Collection<Diagram> generateDiagrams(Interactable.RecipeType recipeType, Component component) {
@@ -102,7 +110,15 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
         return generateDiagrams(EnderStorageUtil.Owner.GLOBAL);
     }
 
-    private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner) {
+    private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner, Object... stacks) {
+        if (!Minecraft.getMinecraft().isSingleplayer() && (stacks == null || stacks.length == 0)) {
+            PacketCustom packetCustom = new PacketCustom(EnderStorageSPH.channel, 2);
+            packetCustom.writeBoolean(owner == EnderStorageUtil.Owner.GLOBAL);
+            packetCustom.writeInt(EnderStorageStoredEvent.TYPE_LIQUID);
+            packetCustom.sendToServer();
+            return Lists.newArrayList(buildNoDataDiagram(owner));
+        }
+
         List<Map.Entry<EnderStorageFrequency, EnderLiquidStorage>> tanks = EnderStorageUtil.getEnderTanks(owner)
                 .entrySet().stream().filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue()))
                 .collect(Collectors.toList());
