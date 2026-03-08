@@ -2,7 +2,6 @@ package com.github.dcysteine.neicustomdiagram.api.diagram;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.CustomInteractable;
@@ -36,18 +35,12 @@ public class CustomDiagramGroup extends DiagramGroup {
      * a prefix of all custom behavior IDs.
      */
     private final ImmutableMap<String, Supplier<Collection<Diagram>>> customBehaviorMap;
-    /**
-     * more flexible but more complex cousin, allowing you to specify a function that takes in the stacks passed by NEI
-     * and returns a collection of diagrams.
-     */
-    private final ImmutableMap<String, Function<Object[], Collection<Diagram>>> customMultiBehaviorMap;
 
     public CustomDiagramGroup(DiagramGroupInfo info, DiagramMatcher matcher,
             Supplier<DiagramState> diagramStateSupplier, Map<String, Supplier<Collection<Diagram>>> customBehaviorMap) {
         super(info, matcher, diagramStateSupplier);
 
         this.customBehaviorMap = ImmutableMap.copyOf(customBehaviorMap);
-        this.customMultiBehaviorMap = ImmutableMap.of();
     }
 
     public CustomDiagramGroup(DiagramGroupInfo info, DiagramMatcher matcher,
@@ -55,23 +48,12 @@ public class CustomDiagramGroup extends DiagramGroup {
         super(info, matcher);
 
         this.customBehaviorMap = ImmutableMap.copyOf(customBehaviorMap);
-        this.customMultiBehaviorMap = ImmutableMap.of();
-    }
-
-    public CustomDiagramGroup(DiagramGroupInfo info, DiagramMatcher matcher,
-            Map<String, Supplier<Collection<Diagram>>> customBehaviorMap,
-            Map<String, Function<Object[], Collection<Diagram>>> customMultiBehaviorMap) {
-        super(info, matcher);
-
-        this.customBehaviorMap = ImmutableMap.copyOf(customBehaviorMap);
-        this.customMultiBehaviorMap = ImmutableMap.copyOf(customMultiBehaviorMap);
     }
 
     public CustomDiagramGroup(CustomDiagramGroup parent, Iterable<? extends Diagram> diagrams) {
         super(parent, diagrams);
 
         this.customBehaviorMap = parent.customBehaviorMap;
-        this.customMultiBehaviorMap = parent.customMultiBehaviorMap;
     }
 
     @Override
@@ -83,10 +65,6 @@ public class CustomDiagramGroup extends DiagramGroup {
     protected Collection<Diagram> matchDiagrams(String id, Interactable.RecipeType recipeType, Object... stacks) {
         if (customBehaviorMap.containsKey(id)) {
             return customBehaviorMap.get(id).get();
-        }
-
-        if (customMultiBehaviorMap.containsKey(id)) {
-            return customMultiBehaviorMap.get(id).apply(stacks);
         }
 
         return super.matchDiagrams(id, recipeType, stacks);

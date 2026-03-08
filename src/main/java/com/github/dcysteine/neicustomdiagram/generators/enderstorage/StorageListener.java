@@ -1,8 +1,6 @@
 package com.github.dcysteine.neicustomdiagram.generators.enderstorage;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
 import com.github.dcysteine.neicustomdiagram.generators.enderstorage.chestoverview.EnderStorageChestOverview;
 import com.github.dcysteine.neicustomdiagram.generators.enderstorage.tankoverview.EnderStorageTankOverview;
@@ -19,6 +17,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @EventBusSubscriber(side = Side.CLIENT)
 public class StorageListener {
+
+    public static final String REFRESH_VIEW_SUFFIX = ".reFreshView";
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
@@ -41,7 +41,7 @@ public class StorageListener {
                 id = "";
         }
         if (!id.isEmpty() && id.startsWith(currentId)) {
-            GuiUsageRecipe.openRecipeGui(id, new ItemStack(Item.getItemById(0)));
+            GuiUsageRecipe.openRecipeGui(id + REFRESH_VIEW_SUFFIX);
         }
     }
 }
