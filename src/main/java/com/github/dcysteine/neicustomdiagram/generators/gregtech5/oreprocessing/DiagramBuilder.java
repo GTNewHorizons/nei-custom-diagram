@@ -119,6 +119,7 @@ class DiagramBuilder {
         // Both crushed ore and purified ore are inputs to the thermal centrifuge, and so we need to
         // check that they produce the same output items.
         Optional<ItemComponent> centrifugedOreOptional;
+        boolean crushedAndPurifiedOutputsAreEqual = true;
         if (crushedOreOptional.isPresent() && purifiedOreOptional.isPresent()) {
             ItemComponent crushedOre = crushedOreOptional.get();
             ItemComponent purifiedOre = purifiedOreOptional.get();
@@ -128,12 +129,14 @@ class DiagramBuilder {
             Optional<ImmutableList<DisplayComponent>> purifiedOreOutputs = recipeHandler
                     .getUniqueRecipeOutput(RecipeHandler.RecipeMap.THERMAL_CENTRIFUGE, purifiedOre);
 
-            // Need to filter out stone dust from crushedOreOutputs, as it won't be present in
-            // purifiedOreOutputs.
+            // Need to filter out stone dust from both
             Optional<List<DisplayComponent>> filteredCrushedOreOutputs = crushedOreOutputs.map(Lists::newArrayList);
             filteredCrushedOreOutputs.ifPresent(outputs -> ComponentTransformer.removeComponent(outputs, STONE_DUST));
+            Optional<List<DisplayComponent>> filteredPurifiedOreOutputs = purifiedOreOutputs.map(Lists::newArrayList);
+            filteredPurifiedOreOutputs.ifPresent(outputs -> ComponentTransformer.removeComponent(outputs, STONE_DUST));
 
-            if (filteredCrushedOreOutputs.equals(purifiedOreOutputs)) {
+            crushedAndPurifiedOutputsAreEqual = filteredCrushedOreOutputs.equals(filteredPurifiedOreOutputs);
+            if (crushedAndPurifiedOutputsAreEqual) {
                 if (purifiedOreOutputs.isPresent()) {
                     centrifugedOreOptional = handleRecipes(
                             RecipeHandler.RecipeMap.THERMAL_CENTRIFUGE,
@@ -147,19 +150,63 @@ class DiagramBuilder {
                     centrifugedOreOptional = Optional.empty();
                 }
             } else {
-                if (ConfigOptions.OREPROC_DEBUG_LOGGING.get()) {
-                    Logger.GREGTECH_5_ORE_PROCESSING.warn(
-                            "Crushed ore and purified ore have different thermal centrifuge outputs:"
-                                    + "\n[{}]\n ->\n[{}]\n\n[{}]\n ->\n[{}]",
-                            crushedOre,
-                            crushedOreOutputs,
-                            purifiedOre,
-                            purifiedOreOutputs);
-                } else {
-                    Logger.GREGTECH_5_ORE_PROCESSING
-                            .warn("Crushed and purified [{}] have different thermal centrifuge outputs.", crushedOre);
+                // If only one of these two doesn't have a recipe, both output boxes and the final macerator step will
+                // still be drawn
+                // This doesn't happen for any ores as of 05.03.2026
+                centrifugedOreOptional = handleRecipes(
+                        RecipeHandler.RecipeMap.THERMAL_CENTRIFUGE,
+                        crushedOre,
+                        LayoutHandler.SlotGroupKeys.ORE_THERMAL_CENTRIFUGE_CRUSHED);
+                Optional<ItemComponent> helper = handleRecipes(
+                        RecipeHandler.RecipeMap.THERMAL_CENTRIFUGE,
+                        purifiedOre,
+                        LayoutHandler.SlotGroupKeys.ORE_THERMAL_CENTRIFUGE_PURIFIED);
+
+                centrifugedOreOptional = centrifugedOreOptional.isPresent() ? centrifugedOreOptional : helper;
+
+                // Check if the output ores differ, we don't want to show the next macerator step in this case
+                // We can assume that the first element in the list is the ore
+                if (filteredCrushedOreOutputs.isPresent() && filteredPurifiedOreOutputs.isPresent()
+                        && !filteredCrushedOreOutputs.get().get(0).equals(filteredPurifiedOreOutputs.get().get(0))) {
+                    if (ConfigOptions.OREPROC_DEBUG_LOGGING.get()) {
+                        Logger.GREGTECH_5_ORE_PROCESSING.warn(
+                                "Crushed ore and purified ore have different thermal centrifuge ore outputs:"
+                                        + "\n[{}]\n ->\n[{}]\n\n[{}]\n ->\n[{}]",
+                                crushedOre,
+                                crushedOreOutputs,
+                                purifiedOre,
+                                purifiedOreOutputs);
+                    } else {
+                        Logger.GREGTECH_5_ORE_PROCESSING.warn(
+                                "Crushed and purified [{}] have different thermal centrifuge ore outputs.",
+                                crushedOre);
+                    }
+                    centrifugedOreOptional = Optional.empty();
                 }
-                centrifugedOreOptional = Optional.empty();
+
+                if (!filteredCrushedOreOutputs.isPresent()) {
+                    if (ConfigOptions.OREPROC_DEBUG_LOGGING.get()) {
+                        Logger.GREGTECH_5_ORE_PROCESSING.warn(
+                                "Crushed ore has a missing thermal centrifuge recipe:" + "\n[{}]\n ->\n[{}]",
+                                crushedOre,
+                                crushedOreOutputs);
+                    } else {
+                        Logger.GREGTECH_5_ORE_PROCESSING
+                                .warn("Crushed [{}] has a missing thermal centrifuge recipe", crushedOre);
+                    }
+                }
+
+                if (!filteredPurifiedOreOutputs.isPresent()) {
+                    if (ConfigOptions.OREPROC_DEBUG_LOGGING.get()) {
+                        Logger.GREGTECH_5_ORE_PROCESSING.warn(
+                                "Purified ore has a missing thermal centrifuge recipe:" + "\n[{}]\n ->\n[{}]",
+                                purifiedOre,
+                                purifiedOreOutputs);
+                    } else {
+                        Logger.GREGTECH_5_ORE_PROCESSING
+                                .warn("Purified [{}] has a missing thermal centrifuge recipe", purifiedOre);
+                    }
+                }
             }
         } else {
             centrifugedOreOptional = crushedOreOptional.flatMap(crushedOre -> {
@@ -207,11 +254,19 @@ class DiagramBuilder {
                     LayoutHandler.SlotGroupKeys.PURIFIED_DUST_ELECTROMAGNETIC_SEPARATE);
         });
 
-        centrifugedOreOptional.ifPresent(
-                centrifugedOre -> handleRecipes(
-                        RecipeHandler.RecipeMap.MACERATOR,
-                        centrifugedOre,
-                        LayoutHandler.SlotGroupKeys.ORE_THERMAL_CENTRIFUGE_MACERATE));
+        if (crushedAndPurifiedOutputsAreEqual) {
+            centrifugedOreOptional.ifPresent(
+                    centrifugedOre -> handleRecipes(
+                            RecipeHandler.RecipeMap.MACERATOR,
+                            centrifugedOre,
+                            LayoutHandler.SlotGroupKeys.ORE_THERMAL_CENTRIFUGE_MACERATE));
+        } else {
+            centrifugedOreOptional.ifPresent(
+                    centrifugedOre -> handleRecipes(
+                            RecipeHandler.RecipeMap.MACERATOR,
+                            centrifugedOre,
+                            LayoutHandler.SlotGroupKeys.ORE_THERMAL_CENTRIFUGE_MACERATE_EXTRA));
+        }
 
         HashSet<Component> additionalRecipeOutputs = new HashSet<>();
         additionalRecipeOutputs.addAll(
