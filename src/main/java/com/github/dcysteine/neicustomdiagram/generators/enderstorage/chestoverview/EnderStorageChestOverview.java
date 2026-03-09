@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
@@ -26,6 +27,7 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.layout.Text;
 import com.github.dcysteine.neicustomdiagram.api.diagram.matcher.CustomDiagramMatcher;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.draw.Draw;
+import com.github.dcysteine.neicustomdiagram.generators.enderstorage.StorageListener;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.util.enderstorage.EnderStorageFrequency;
 import com.github.dcysteine.neicustomdiagram.util.enderstorage.EnderStorageUtil;
@@ -33,7 +35,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import codechicken.enderstorage.event.EnderStorageStoredEvent;
+import codechicken.enderstorage.internal.EnderStorageSPH;
 import codechicken.enderstorage.storage.item.EnderItemStorage;
+import codechicken.lib.packet.PacketCustom;
 
 public final class EnderStorageChestOverview implements DiagramGenerator {
 
@@ -67,7 +72,7 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
         this.info = DiagramGroupInfo.builder(Lang.ENDER_STORAGE_CHEST_OVERVIEW.trans("groupname"), groupId, ICON, 4)
                 .setDescription(
                         "This diagram displays ender chest used frequencies and contents."
-                                + "\nUnfortunately, it doesn't work well on servers.")
+                                + "\nHowever, the data can only be viewed if this feature is enabled on the server.")
                 .build();
     }
 
@@ -83,9 +88,13 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
 
         ImmutableMap<String, Supplier<Collection<Diagram>>> customBehaviorMap = ImmutableMap.of(
                 info.groupId() + LOOKUP_GLOBAL_CHESTS_SUFFIX,
-                () -> generateDiagrams(EnderStorageUtil.Owner.GLOBAL),
+                () -> generateDiagrams(EnderStorageUtil.Owner.GLOBAL, false),
                 info.groupId() + LOOKUP_PERSONAL_CHESTS_SUFFIX,
-                () -> generateDiagrams(EnderStorageUtil.Owner.PERSONAL));
+                () -> generateDiagrams(EnderStorageUtil.Owner.PERSONAL, false),
+                info.groupId() + LOOKUP_GLOBAL_CHESTS_SUFFIX + StorageListener.REFRESH_VIEW_SUFFIX,
+                () -> generateDiagrams(EnderStorageUtil.Owner.GLOBAL, true),
+                info.groupId() + LOOKUP_PERSONAL_CHESTS_SUFFIX + StorageListener.REFRESH_VIEW_SUFFIX,
+                () -> generateDiagrams(EnderStorageUtil.Owner.PERSONAL, true));
         return new CustomDiagramGroup(info, new CustomDiagramMatcher(this::generateDiagrams), customBehaviorMap);
     }
 
@@ -95,10 +104,18 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
             return Lists.newArrayList();
         }
 
-        return generateDiagrams(EnderStorageUtil.Owner.GLOBAL);
+        return generateDiagrams(EnderStorageUtil.Owner.GLOBAL, false);
     }
 
-    private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner) {
+    private Collection<Diagram> generateDiagrams(EnderStorageUtil.Owner owner, boolean refreshView) {
+        if (!Minecraft.getMinecraft().isSingleplayer() && !refreshView) {
+            PacketCustom packetCustom = new PacketCustom(EnderStorageSPH.channel, 2);
+            packetCustom.writeBoolean(owner == EnderStorageUtil.Owner.GLOBAL);
+            packetCustom.writeInt(EnderStorageStoredEvent.TYPE_ITEM);
+            packetCustom.sendToServer();
+            return Lists.newArrayList(buildNoDataDiagram(owner));
+        }
+
         List<Diagram> diagrams = EnderStorageUtil.getEnderChests(owner).entrySet().stream()
                 .filter(entry -> !EnderStorageUtil.isEmpty(entry.getValue()))
                 .map(entry -> buildDiagram(owner, entry.getKey(), entry.getValue())).collect(Collectors.toList());
