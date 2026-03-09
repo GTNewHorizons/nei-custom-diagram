@@ -32,8 +32,8 @@ neicustomdiagram.generators.enderstorage.chestoverview.personallabel=Personal fr
 neicustomdiagram.generators.enderstorage.chestoverview.frequencyslot=Frequency
 neicustomdiagram.generators.enderstorage.chestoverview.inventoryslot=Chest contents
 neicustomdiagram.generators.enderstorage.chestoverview.nodataheader=No chest data!
-neicustomdiagram.generators.enderstorage.chestoverview.nodatasubheader1=Sorry, on the server, the corresponding data can only
-neicustomdiagram.generators.enderstorage.chestoverview.nodatasubheader2=be viewed after the Op or configuration file is enabled.
+neicustomdiagram.generators.enderstorage.chestoverview.nodatasubheader1=On the server, it will be viewed by operators
+neicustomdiagram.generators.enderstorage.chestoverview.nodatasubheader2=or if the config option is enabled.
 
 neicustomdiagram.generators.enderstorage.tankoverview.groupname=Ender Storage Tank Overview
 neicustomdiagram.generators.enderstorage.tankoverview.globalbutton=View global frequencies
@@ -44,8 +44,8 @@ neicustomdiagram.generators.enderstorage.tankoverview.personallabel=Personal fre
 neicustomdiagram.generators.enderstorage.tankoverview.frequencyslot=Frequency
 neicustomdiagram.generators.enderstorage.tankoverview.tankslot=Tank contents
 neicustomdiagram.generators.enderstorage.tankoverview.nodataheader=No tank data!
-neicustomdiagram.generators.enderstorage.tankoverview.nodatasubheader1=Sorry, on the server, the corresponding data can only
-neicustomdiagram.generators.enderstorage.tankoverview.nodatasubheader2=be viewed after the Op or configuration file is enabled.
+neicustomdiagram.generators.enderstorage.tankoverview.nodatasubheader1=On the server, it will be viewed by operators
+neicustomdiagram.generators.enderstorage.tankoverview.nodatasubheader2=or if the config option is enabled.
 
 neicustomdiagram.generators.forge.fluidcontainers.groupname=Forge Fluid Containers
 neicustomdiagram.generators.forge.fluidcontainers.fluidlabel=Fluid

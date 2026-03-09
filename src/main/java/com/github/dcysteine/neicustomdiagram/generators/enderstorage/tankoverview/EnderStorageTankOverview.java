@@ -73,7 +73,7 @@ public final class EnderStorageTankOverview implements DiagramGenerator {
     public EnderStorageTankOverview(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.ENDER_STORAGE_TANK_OVERVIEW.trans("groupname"), groupId, ICON, 2)
                 .setDescription(
-                        "This diagram displays ender chest used frequencies and contents."
+                        "This diagram displays ender tank used frequencies and contents."
                                 + "\nHowever, the data can only be viewed if this feature is enabled on the server.")
                 .build();
     }

@@ -18,7 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @EventBusSubscriber(side = Side.CLIENT)
 public class StorageListener {
 
-    public static final String REFRESH_VIEW_SUFFIX = ".reFreshView";
+    public static final String REFRESH_VIEW_SUFFIX = "-refreshView";
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
