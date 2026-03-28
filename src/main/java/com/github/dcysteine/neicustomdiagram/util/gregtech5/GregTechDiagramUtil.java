@@ -22,7 +22,7 @@ public final class GregTechDiagramUtil {
     public static Interactable buildMaterialInfoButton(Point pos, Materials material) {
         Tooltip.Builder tooltipBuilder = Tooltip.builder()
                 .addTextLine(GregTechFormatting.getMaterialDescription(material)).setFormatting(Tooltip.INFO_FORMATTING)
-                .addTextLine(material.mChemicalFormula);
+                .addTextLine(material.getChemicalFormula());
 
         if (material.isRadioactive() || material.mHeatDamage != 0) {
             tooltipBuilder.addSpacing().setFormatting(Tooltip.URGENT_FORMATTING);
