@@ -1,9 +1,12 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.recipedebugger;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -44,6 +48,7 @@ import codechicken.nei.NEIServerUtils;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMapBackend;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
@@ -51,6 +56,8 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 
 class RecipeHandler {
+
+    private static final Method MATCH_RECIPE_STREAM_METHOD = getMatchRecipeStreamMethod();
 
     static final Item PROGRAMMED_CIRCUIT = ItemList.Circuit_Integrated.getItem();
     static final ImmutableSet<ItemComponent> PROGRAMMED_CIRCUITS = ImmutableSet.copyOf(
@@ -339,6 +346,8 @@ class RecipeHandler {
     }
 
     final Map<RecipeMap, RecipePartitioner> allRecipes;
+    final Map<GTRecipe, Recipe> recipeByRawRecipe;
+    final Map<Recipe, GTRecipe> rawRecipeByRecipe;
     final List<Recipe> consumeCircuitRecipes;
     final List<Recipe> unnecessaryCircuitRecipes;
     final Set<Recipe> collidingRecipes;
@@ -349,6 +358,8 @@ class RecipeHandler {
 
     RecipeHandler() {
         this.allRecipes = new HashMap<>();
+        this.recipeByRawRecipe = new IdentityHashMap<>();
+        this.rawRecipeByRecipe = new IdentityHashMap<>();
         this.consumeCircuitRecipes = new ArrayList<>();
         this.unnecessaryCircuitRecipes = new ArrayList<>();
         this.collidingRecipes = new LinkedHashSet<>();
@@ -370,8 +381,14 @@ class RecipeHandler {
             Logger.GREGTECH_5_RECIPE_DEBUGGER.info("Checking recipes, pass 1: {}", recipeMap.name());
 
             ImmutableList.Builder<Recipe> recipeListBuilder = ImmutableList.builder();
-            recipeMap.recipeMap.getAllRecipes().stream().map(recipe -> Recipe.create(recipeMap, recipe))
-                    .filter(recipe -> RecipeHandler.filterRecipes(recipeMap, recipe)).forEach(recipeListBuilder::add);
+            recipeMap.recipeMap.getAllRecipes().forEach(rawRecipe -> {
+                Recipe recipe = Recipe.create(recipeMap, rawRecipe);
+                recipeByRawRecipe.put(rawRecipe, recipe);
+                rawRecipeByRecipe.put(recipe, rawRecipe);
+                if (RecipeHandler.filterRecipes(recipeMap, recipe)) {
+                    recipeListBuilder.add(recipe);
+                }
+            });
 
             RecipePartitioner recipePartitioner = new RecipePartitioner(recipeListBuilder.build());
             recipePartitioner.initialize();
@@ -399,7 +416,7 @@ class RecipeHandler {
                     unnecessaryCircuitRecipes.add(recipe);
                 }
 
-                collidingRecipes.addAll(findCollidingRecipes(recipe, matchingRecipes));
+                collidingRecipes.addAll(findCollidingRecipes(recipe));
 
                 if (voidingRecipe(recipe)) {
                     voidingRecipes.add(recipe);
@@ -419,6 +436,24 @@ class RecipeHandler {
         Logger.GREGTECH_5_RECIPE_DEBUGGER.info("Checking crafting table recipes");
         ((List<IRecipe>) CraftingManager.getInstance().getRecipeList()).stream().map(Recipe::createIfBadItemStack)
                 .filter(Optional::isPresent).map(Optional::get).forEach(badCraftingTableRecipes::add);
+    }
+
+    private static Method getMatchRecipeStreamMethod() {
+        try {
+            Method method = RecipeMapBackend.class.getDeclaredMethod(
+                    "matchRecipeStream",
+                    ItemStack[].class,
+                    FluidStack[].class,
+                    ItemStack.class,
+                    GTRecipe.class,
+                    boolean.class,
+                    boolean.class,
+                    boolean.class);
+            method.setAccessible(true);
+            return method;
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Failed to access GT recipe collision matcher", e);
+        }
     }
 
     static Set<Component> filterCircuits(Set<Component> components) {
@@ -497,18 +532,20 @@ class RecipeHandler {
 
     // TODO this won't find cases where we have multiple identical recipes
     // (maybe differing in recipe time or voltage or something). Do we care?
-    private static Set<Recipe> findCollidingRecipes(Recipe recipe, Iterable<Recipe> recipes) {
+    private Set<Recipe> findCollidingRecipes(Recipe recipe) {
         Set<Recipe> collidingRecipes = Sets.newLinkedHashSet();
         collidingRecipes.add(recipe);
 
-        for (Recipe otherRecipe : recipes) {
-            if (recipe == otherRecipe) {
-                continue;
-            }
+        GTRecipe rawRecipe = rawRecipeByRecipe.get(recipe);
+        if (rawRecipe == null || recipe.recipeMap().recipeMap == null) {
+            return Sets.newHashSet();
+        }
 
-            if (isSubset(recipe.inputs().keySet(), otherRecipe.inputs().keySet())) {
-                collidingRecipes.add(otherRecipe);
-            }
+        try (Stream<GTRecipe> matchingRecipes = matchRecipeStream(
+                recipe.recipeMap().recipeMap.getBackend(),
+                rawRecipe)) {
+            matchingRecipes.filter(otherRecipe -> otherRecipe != rawRecipe).map(recipeByRawRecipe::get)
+                    .filter(Objects::nonNull).forEach(collidingRecipes::add);
         }
 
         if (collidingRecipes.size() > 1) {
@@ -516,6 +553,39 @@ class RecipeHandler {
         } else {
             return Sets.newHashSet();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Stream<GTRecipe> matchRecipeStream(RecipeMapBackend recipeMapBackend, GTRecipe recipe) {
+        try {
+            return (Stream<GTRecipe>) MATCH_RECIPE_STREAM_METHOD.invoke(
+                    recipeMapBackend,
+                    copyItemInputs(recipe.mInputs),
+                    copyFluidInputs(recipe.mFluidInputs),
+                    null,
+                    null,
+                    false,
+                    true,
+                    true);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("Failed to evaluate GT recipe collisions", e);
+        }
+    }
+
+    private static ItemStack[] copyItemInputs(ItemStack[] itemInputs) {
+        ItemStack[] copies = new ItemStack[itemInputs.length];
+        for (int i = 0; i < itemInputs.length; i++) {
+            copies[i] = itemInputs[i] == null ? null : itemInputs[i].copy();
+        }
+        return copies;
+    }
+
+    private static FluidStack[] copyFluidInputs(FluidStack[] fluidInputs) {
+        FluidStack[] copies = new FluidStack[fluidInputs.length];
+        for (int i = 0; i < fluidInputs.length; i++) {
+            copies[i] = fluidInputs[i] == null ? null : fluidInputs[i].copy();
+        }
+        return copies;
     }
 
     private static boolean voidingRecipe(Recipe recipe) {
