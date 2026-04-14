@@ -361,7 +361,6 @@ class RecipeHandler {
 
     final Map<RecipeMap, RecipePartitioner> allRecipes;
     final Map<GTRecipe, Recipe> recipeByRawRecipe;
-    final Map<Recipe, GTRecipe> rawRecipeByRecipe;
     final List<Recipe> consumeCircuitRecipes;
     final List<Recipe> unnecessaryCircuitRecipes;
     final Set<Recipe> collidingRecipes;
@@ -373,7 +372,6 @@ class RecipeHandler {
     RecipeHandler() {
         this.allRecipes = new HashMap<>();
         this.recipeByRawRecipe = new IdentityHashMap<>();
-        this.rawRecipeByRecipe = new IdentityHashMap<>();
         this.consumeCircuitRecipes = new ArrayList<>();
         this.unnecessaryCircuitRecipes = new ArrayList<>();
         this.collidingRecipes = new LinkedHashSet<>();
@@ -397,9 +395,8 @@ class RecipeHandler {
             ImmutableList.Builder<Recipe> recipeListBuilder = ImmutableList.builder();
             recipeMap.recipeMap.getAllRecipes().forEach(rawRecipe -> {
                 Recipe recipe = Recipe.create(recipeMap, rawRecipe);
-                recipeByRawRecipe.put(rawRecipe, recipe);
-                rawRecipeByRecipe.put(recipe, rawRecipe);
                 if (RecipeHandler.filterRecipes(recipeMap, recipe)) {
+                    recipeByRawRecipe.put(rawRecipe, recipe);
                     recipeListBuilder.add(recipe);
                 }
             });
@@ -419,7 +416,12 @@ class RecipeHandler {
                     .info("Checking recipes, pass 2: {} [{}]", recipeMap.name(), allRecipes.get(recipeMap).size());
 
             RecipePartitioner recipePartitioner = allRecipes.get(recipeMap);
-            for (Recipe recipe : recipePartitioner.allRecipes()) {
+            for (GTRecipe rawRecipe : recipeMap.recipeMap.getAllRecipes()) {
+                Recipe recipe = recipeByRawRecipe.get(rawRecipe);
+                if (recipe == null) {
+                    continue;
+                }
+
                 Iterable<Recipe> matchingRecipes = recipePartitioner.lookup(recipe.inputs().keySet());
 
                 if (consumesCircuit(recipe)) {
@@ -430,7 +432,7 @@ class RecipeHandler {
                     unnecessaryCircuitRecipes.add(recipe);
                 }
 
-                collidingRecipes.addAll(findCollidingRecipes(recipe));
+                collidingRecipes.addAll(findCollidingRecipes(rawRecipe, recipe));
 
                 if (voidingRecipe(recipe)) {
                     voidingRecipes.add(recipe);
@@ -546,22 +548,23 @@ class RecipeHandler {
 
     // TODO this won't find cases where we have multiple identical recipes
     // (maybe differing in recipe time or voltage or something). Do we care?
-    private Set<Recipe> findCollidingRecipes(Recipe recipe) {
+    private Set<Recipe> findCollidingRecipes(GTRecipe rawRecipe, Recipe recipe) {
         Set<Recipe> collidingRecipes = Sets.newLinkedHashSet();
         collidingRecipes.add(recipe);
 
-        GTRecipe rawRecipe = rawRecipeByRecipe.get(recipe);
-        if (rawRecipe == null || recipe.recipeMap().recipeMap == null) {
+        if (recipe.recipeMap().recipeMap == null) {
             return Sets.newHashSet();
         }
 
         try (Stream<GTRecipe> matchingRecipes = matchRecipeStream(
                 recipe.recipeMap().recipeMap.getBackend(),
                 rawRecipe)) {
-            matchingRecipes.filter(otherRecipe -> otherRecipe != rawRecipe)
-                    .filter(otherRecipe -> !isEquivalentRecipe(rawRecipe, otherRecipe))
-                    .filter(otherRecipe -> recipesCollide(rawRecipe, otherRecipe)).map(recipeByRawRecipe::get)
-                    .filter(Objects::nonNull).forEach(collidingRecipes::add);
+            matchingRecipes.filter(otherRecipe -> otherRecipe != rawRecipe).forEach(otherRawRecipe -> {
+                Recipe otherRecipe = recipeByRawRecipe.get(otherRawRecipe);
+                if (otherRecipe != null && recipesCollide(rawRecipe, recipe, otherRawRecipe, otherRecipe)) {
+                    collidingRecipes.add(otherRecipe);
+                }
+            });
         }
 
         if (collidingRecipes.size() > 1) {
@@ -571,21 +574,21 @@ class RecipeHandler {
         }
     }
 
-    private static boolean isEquivalentRecipe(GTRecipe recipe, GTRecipe otherRecipe) {
-        return declaredInputsEquivalent(recipe, otherRecipe)
-                && normalizedOutputs(recipe).equals(normalizedOutputs(otherRecipe));
-    }
-
-    private static boolean recipesCollide(GTRecipe recipe, GTRecipe otherRecipe) {
-        if (!circuitsAreCompatible(recipe, otherRecipe)) {
+    private static boolean recipesCollide(GTRecipe rawRecipe, Recipe recipe, GTRecipe otherRawRecipe,
+            Recipe otherRecipe) {
+        if (otherRawRecipe == null) {
             return false;
         }
-
-        return declaredInputsSubsetOf(recipe, otherRecipe, false) || declaredInputsSubsetOf(otherRecipe, recipe, false);
-    }
-
-    private static boolean declaredInputsEquivalent(GTRecipe recipe, GTRecipe otherRecipe) {
-        return declaredInputsSubsetOf(recipe, otherRecipe, true) && declaredInputsSubsetOf(otherRecipe, recipe, true);
+        if (declaredInputsSubsetOf(rawRecipe, otherRawRecipe, true)
+                && declaredInputsSubsetOf(otherRawRecipe, rawRecipe, true)
+                && recipe.outputs().equals(otherRecipe.outputs())) {
+            return false;
+        }
+        if (!circuitsAreCompatible(rawRecipe, otherRawRecipe)) {
+            return false;
+        }
+        return declaredInputsSubsetOf(rawRecipe, otherRawRecipe, false)
+                || declaredInputsSubsetOf(otherRawRecipe, rawRecipe, false);
     }
 
     private static boolean declaredInputsSubsetOf(GTRecipe subsetRecipe, GTRecipe supersetRecipe,
@@ -597,39 +600,26 @@ class RecipeHandler {
         List<ItemRequirement> neededItems = extractItemRequirements(subsetRecipe, includeCircuits);
         List<ItemRequirement> availableItems = extractItemRequirements(supersetRecipe, includeCircuits);
         int[] remainingAmounts = availableItems.stream().mapToInt(itemRequirement -> itemRequirement.amount).toArray();
-        return itemRequirementsSubsetOf(neededItems, 0, availableItems, remainingAmounts);
+        if (neededItems.isEmpty()) {
+            return true;
+        }
+        return itemRequirementsSubsetOf(neededItems, 0, neededItems.get(0).amount, availableItems, remainingAmounts);
     }
 
     private static boolean circuitsAreCompatible(GTRecipe recipe, GTRecipe otherRecipe) {
-        List<ItemRequirement> circuits = extractCircuitRequirements(recipe);
-        List<ItemRequirement> otherCircuits = extractCircuitRequirements(otherRecipe);
+        List<ItemRequirement> circuits = extractItemRequirements(recipe, true).stream()
+                .filter(itemRequirement -> itemRequirement.stack.getItem() == PROGRAMMED_CIRCUIT)
+                .collect(Collectors.toList());
+        List<ItemRequirement> otherCircuits = extractItemRequirements(otherRecipe, true).stream()
+                .filter(itemRequirement -> itemRequirement.stack.getItem() == PROGRAMMED_CIRCUIT)
+                .collect(Collectors.toList());
         if (circuits.isEmpty() || otherCircuits.isEmpty()) {
             return true;
         }
         int[] remainingAmounts = otherCircuits.stream().mapToInt(itemRequirement -> itemRequirement.amount).toArray();
-        return itemRequirementsSubsetOf(circuits, 0, otherCircuits, remainingAmounts)
+        return itemRequirementsSubsetOf(circuits, 0, circuits.get(0).amount, otherCircuits, remainingAmounts)
                 && circuits.stream().mapToInt(itemRequirement -> itemRequirement.amount).sum()
                         == otherCircuits.stream().mapToInt(itemRequirement -> itemRequirement.amount).sum();
-    }
-
-    private static Map<Component, Integer> normalizedOutputs(GTRecipe recipe) {
-        Map<Component, Integer> outputs = new HashMap<>();
-        for (ItemStack itemStack : recipe.mOutputs) {
-            if (itemStack == null) {
-                continue;
-            }
-            outputs.merge(
-                    ItemComponent.createWithNbt(GTOreDictUnificator.get_nocopy(itemStack)),
-                    itemStack.stackSize,
-                    Integer::sum);
-        }
-        for (FluidStack fluidStack : recipe.mFluidOutputs) {
-            if (fluidStack == null) {
-                continue;
-            }
-            outputs.merge(FluidComponent.createWithNbt(fluidStack), fluidStack.amount, Integer::sum);
-        }
-        return outputs;
     }
 
     private static boolean fluidInputsSubsetOf(GTRecipe subsetRecipe, GTRecipe supersetRecipe) {
@@ -650,12 +640,6 @@ class RecipeHandler {
         }
 
         return isSubsetComparingStackSizes(subsetFluids, supersetFluids);
-    }
-
-    private static List<ItemRequirement> extractCircuitRequirements(GTRecipe recipe) {
-        return extractItemRequirements(recipe, true).stream()
-                .filter(itemRequirement -> itemRequirement.stack.getItem() == PROGRAMMED_CIRCUIT)
-                .collect(Collectors.toList());
     }
 
     private static List<ItemRequirement> extractItemRequirements(GTRecipe recipe, boolean includeCircuits) {
@@ -682,19 +666,18 @@ class RecipeHandler {
     }
 
     private static boolean itemRequirementsSubsetOf(List<ItemRequirement> neededItems, int neededIndex,
-            List<ItemRequirement> availableItems, int[] remainingAmounts) {
-        if (neededIndex >= neededItems.size()) {
-            return true;
-        }
-
-        ItemRequirement neededItem = neededItems.get(neededIndex);
-        return itemRequirementSubsetOf(neededItems, neededIndex, neededItem.amount, availableItems, remainingAmounts);
-    }
-
-    private static boolean itemRequirementSubsetOf(List<ItemRequirement> neededItems, int neededIndex,
             int remainingNeededAmount, List<ItemRequirement> availableItems, int[] remainingAmounts) {
         if (remainingNeededAmount <= 0) {
-            return itemRequirementsSubsetOf(neededItems, neededIndex + 1, availableItems, remainingAmounts);
+            int nextNeededIndex = neededIndex + 1;
+            if (nextNeededIndex >= neededItems.size()) {
+                return true;
+            }
+            return itemRequirementsSubsetOf(
+                    neededItems,
+                    nextNeededIndex,
+                    neededItems.get(nextNeededIndex).amount,
+                    availableItems,
+                    remainingAmounts);
         }
 
         ItemRequirement neededItem = neededItems.get(neededIndex);
@@ -705,7 +688,7 @@ class RecipeHandler {
 
             int takenAmount = Math.min(remainingNeededAmount, remainingAmounts[i]);
             remainingAmounts[i] -= takenAmount;
-            if (itemRequirementSubsetOf(
+            if (itemRequirementsSubsetOf(
                     neededItems,
                     neededIndex,
                     remainingNeededAmount - takenAmount,
