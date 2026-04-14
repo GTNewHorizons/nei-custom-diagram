@@ -26,6 +26,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -345,6 +346,19 @@ class RecipeHandler {
         abstract ImmutableList<DisplayComponent> displayOutputs();
     }
 
+    private static final class ItemRequirement {
+
+        final ItemStack stack;
+        final int amount;
+        final int oreDictId;
+
+        ItemRequirement(ItemStack stack, int amount, int oreDictId) {
+            this.stack = stack;
+            this.amount = amount;
+            this.oreDictId = oreDictId;
+        }
+    }
+
     final Map<RecipeMap, RecipePartitioner> allRecipes;
     final Map<GTRecipe, Recipe> recipeByRawRecipe;
     final Map<Recipe, GTRecipe> rawRecipeByRecipe;
@@ -544,7 +558,9 @@ class RecipeHandler {
         try (Stream<GTRecipe> matchingRecipes = matchRecipeStream(
                 recipe.recipeMap().recipeMap.getBackend(),
                 rawRecipe)) {
-            matchingRecipes.filter(otherRecipe -> otherRecipe != rawRecipe).map(recipeByRawRecipe::get)
+            matchingRecipes.filter(otherRecipe -> otherRecipe != rawRecipe)
+                    .filter(otherRecipe -> !isEquivalentRecipe(rawRecipe, otherRecipe))
+                    .filter(otherRecipe -> recipesCollide(rawRecipe, otherRecipe)).map(recipeByRawRecipe::get)
                     .filter(Objects::nonNull).forEach(collidingRecipes::add);
         }
 
@@ -553,6 +569,177 @@ class RecipeHandler {
         } else {
             return Sets.newHashSet();
         }
+    }
+
+    private static boolean isEquivalentRecipe(GTRecipe recipe, GTRecipe otherRecipe) {
+        return declaredInputsEquivalent(recipe, otherRecipe)
+                && normalizedOutputs(recipe).equals(normalizedOutputs(otherRecipe));
+    }
+
+    private static boolean recipesCollide(GTRecipe recipe, GTRecipe otherRecipe) {
+        if (!circuitsAreCompatible(recipe, otherRecipe)) {
+            return false;
+        }
+
+        return declaredInputsSubsetOf(recipe, otherRecipe, false) || declaredInputsSubsetOf(otherRecipe, recipe, false);
+    }
+
+    private static boolean declaredInputsEquivalent(GTRecipe recipe, GTRecipe otherRecipe) {
+        return declaredInputsSubsetOf(recipe, otherRecipe, true) && declaredInputsSubsetOf(otherRecipe, recipe, true);
+    }
+
+    private static boolean declaredInputsSubsetOf(GTRecipe subsetRecipe, GTRecipe supersetRecipe,
+            boolean includeCircuits) {
+        if (!fluidInputsSubsetOf(subsetRecipe, supersetRecipe)) {
+            return false;
+        }
+
+        List<ItemRequirement> neededItems = extractItemRequirements(subsetRecipe, includeCircuits);
+        List<ItemRequirement> availableItems = extractItemRequirements(supersetRecipe, includeCircuits);
+        int[] remainingAmounts = availableItems.stream().mapToInt(itemRequirement -> itemRequirement.amount).toArray();
+        return itemRequirementsSubsetOf(neededItems, 0, availableItems, remainingAmounts);
+    }
+
+    private static boolean circuitsAreCompatible(GTRecipe recipe, GTRecipe otherRecipe) {
+        List<ItemRequirement> circuits = extractCircuitRequirements(recipe);
+        List<ItemRequirement> otherCircuits = extractCircuitRequirements(otherRecipe);
+        if (circuits.isEmpty() || otherCircuits.isEmpty()) {
+            return true;
+        }
+        int[] remainingAmounts = otherCircuits.stream().mapToInt(itemRequirement -> itemRequirement.amount).toArray();
+        return itemRequirementsSubsetOf(circuits, 0, otherCircuits, remainingAmounts)
+                && circuits.stream().mapToInt(itemRequirement -> itemRequirement.amount).sum()
+                        == otherCircuits.stream().mapToInt(itemRequirement -> itemRequirement.amount).sum();
+    }
+
+    private static Map<Component, Integer> normalizedOutputs(GTRecipe recipe) {
+        Map<Component, Integer> outputs = new HashMap<>();
+        for (ItemStack itemStack : recipe.mOutputs) {
+            if (itemStack == null) {
+                continue;
+            }
+            outputs.merge(
+                    ItemComponent.createWithNbt(GTOreDictUnificator.get_nocopy(itemStack)),
+                    itemStack.stackSize,
+                    Integer::sum);
+        }
+        for (FluidStack fluidStack : recipe.mFluidOutputs) {
+            if (fluidStack == null) {
+                continue;
+            }
+            outputs.merge(FluidComponent.createWithNbt(fluidStack), fluidStack.amount, Integer::sum);
+        }
+        return outputs;
+    }
+
+    private static boolean fluidInputsSubsetOf(GTRecipe subsetRecipe, GTRecipe supersetRecipe) {
+        Map<Component, Integer> subsetFluids = new HashMap<>();
+        for (FluidStack fluidStack : subsetRecipe.mFluidInputs) {
+            if (fluidStack == null) {
+                continue;
+            }
+            subsetFluids.merge(FluidComponent.createWithNbt(fluidStack), fluidStack.amount, Integer::sum);
+        }
+
+        Map<Component, Integer> supersetFluids = new HashMap<>();
+        for (FluidStack fluidStack : supersetRecipe.mFluidInputs) {
+            if (fluidStack == null) {
+                continue;
+            }
+            supersetFluids.merge(FluidComponent.createWithNbt(fluidStack), fluidStack.amount, Integer::sum);
+        }
+
+        return isSubsetComparingStackSizes(subsetFluids, supersetFluids);
+    }
+
+    private static List<ItemRequirement> extractCircuitRequirements(GTRecipe recipe) {
+        return extractItemRequirements(recipe, true).stream()
+                .filter(itemRequirement -> itemRequirement.stack.getItem() == PROGRAMMED_CIRCUIT)
+                .collect(Collectors.toList());
+    }
+
+    private static List<ItemRequirement> extractItemRequirements(GTRecipe recipe, boolean includeCircuits) {
+        List<ItemRequirement> requirements = new ArrayList<>();
+        int[] oreDictIds = recipe instanceof GTRecipe.GTRecipe_WithAlt
+                ? ((GTRecipe.GTRecipe_WithAlt) recipe).mOreDictIds
+                : null;
+
+        for (int i = 0; i < recipe.mInputs.length; i++) {
+            ItemStack itemStack = recipe.mInputs[i];
+            if (itemStack == null) {
+                continue;
+            }
+            if (!includeCircuits && itemStack.getItem() == PROGRAMMED_CIRCUIT) {
+                continue;
+            }
+
+            int oreDictId = oreDictIds != null && i < oreDictIds.length ? oreDictIds[i] : -1;
+            requirements.add(
+                    new ItemRequirement(GTOreDictUnificator.get_nocopy(itemStack), itemStack.stackSize, oreDictId));
+        }
+
+        return requirements;
+    }
+
+    private static boolean itemRequirementsSubsetOf(List<ItemRequirement> neededItems, int neededIndex,
+            List<ItemRequirement> availableItems, int[] remainingAmounts) {
+        if (neededIndex >= neededItems.size()) {
+            return true;
+        }
+
+        ItemRequirement neededItem = neededItems.get(neededIndex);
+        return itemRequirementSubsetOf(neededItems, neededIndex, neededItem.amount, availableItems, remainingAmounts);
+    }
+
+    private static boolean itemRequirementSubsetOf(List<ItemRequirement> neededItems, int neededIndex,
+            int remainingNeededAmount, List<ItemRequirement> availableItems, int[] remainingAmounts) {
+        if (remainingNeededAmount <= 0) {
+            return itemRequirementsSubsetOf(neededItems, neededIndex + 1, availableItems, remainingAmounts);
+        }
+
+        ItemRequirement neededItem = neededItems.get(neededIndex);
+        for (int i = 0; i < availableItems.size(); i++) {
+            if (remainingAmounts[i] <= 0 || !itemRequirementsMatch(neededItem, availableItems.get(i))) {
+                continue;
+            }
+
+            int takenAmount = Math.min(remainingNeededAmount, remainingAmounts[i]);
+            remainingAmounts[i] -= takenAmount;
+            if (itemRequirementSubsetOf(
+                    neededItems,
+                    neededIndex,
+                    remainingNeededAmount - takenAmount,
+                    availableItems,
+                    remainingAmounts)) {
+                return true;
+            }
+            remainingAmounts[i] += takenAmount;
+        }
+
+        return false;
+    }
+
+    private static boolean itemRequirementsMatch(ItemRequirement left, ItemRequirement right) {
+        if (left.oreDictId >= 0 && right.oreDictId >= 0) {
+            return left.oreDictId == right.oreDictId;
+        }
+        if (left.oreDictId >= 0) {
+            return stackMatchesOreDict(right.stack, left.oreDictId);
+        }
+        if (right.oreDictId >= 0) {
+            return stackMatchesOreDict(left.stack, right.oreDictId);
+        }
+        return GTOreDictUnificator.isInputStackEqual(left.stack, right.stack)
+                || GTOreDictUnificator.isInputStackEqual(right.stack, left.stack);
+    }
+
+    private static boolean stackMatchesOreDict(ItemStack itemStack, int oreDictId) {
+        for (int stackOreDictId : OreDictionary.getOreIDs(itemStack)) {
+            if (stackOreDictId == oreDictId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @SuppressWarnings("unchecked")
