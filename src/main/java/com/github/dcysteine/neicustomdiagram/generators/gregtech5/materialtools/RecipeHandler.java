@@ -1,6 +1,8 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.materialtools;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,11 +20,9 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.main.Mods;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechFormatting;
-import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.SortedSetMultimap;
 
 import detrav.items.DetravMetaGeneratedTool01;
 import gregtech.api.enums.Materials;
@@ -42,26 +42,36 @@ class RecipeHandler {
      * would normally be stored in NBT. We use this as a key in our multimaps to allow us to group together tools with
      * different NBT but that are the same base tool.
      */
-    @AutoValue
-    abstract static class BaseTool implements Comparable<BaseTool> {
+    private static class BaseTool {
 
-        private static final Comparator<BaseTool> COMPARATOR = Comparator
-                .<BaseTool, Integer>comparing(b -> b.primaryMaterial().mMetaItemSubID)
-                .thenComparing(b -> b.primaryMaterial().mName).thenComparing(BaseTool::itemComponent);
+        public final ItemComponent itemComponent;
+        public final Materials primaryMaterial;
 
-        private static BaseTool create(ItemStack itemStack) {
-            return new AutoValue_RecipeHandler_BaseTool(
-                    ItemComponent.create(itemStack),
-                    MetaGeneratedTool.getPrimaryMaterial(itemStack));
+        private BaseTool(ItemStack itemStack) {
+            itemComponent = ItemComponent.create(itemStack);
+            primaryMaterial = MetaGeneratedTool.getPrimaryMaterial(itemStack);
         }
 
-        abstract ItemComponent itemComponent();
-
-        abstract Materials primaryMaterial();
+        public static BaseTool create(ItemStack itemStack) {
+            return new BaseTool(itemStack);
+        }
 
         @Override
-        public int compareTo(BaseTool other) {
-            return COMPARATOR.compare(this, other);
+        public boolean equals(Object object) {
+            if (object == this) return true;
+            if (!(object instanceof BaseTool)) return false;
+            BaseTool baseTool = (BaseTool) object;
+            return baseTool.primaryMaterial.getId() == primaryMaterial.getId()
+                    && baseTool.itemComponent.item() == itemComponent.item()
+                    && baseTool.itemComponent.damage() == itemComponent.damage();
+        }
+
+        @Override
+        public int hashCode() {
+            int result = primaryMaterial.getId();
+            result = 31 * result + itemComponent.item().hashCode();
+            result = 31 * result + itemComponent.damage();
+            return result;
         }
     }
 
@@ -79,38 +89,31 @@ class RecipeHandler {
     private static final int ELECTRIC_SCANNER_ID_START = 100;
 
     /**
-     * Multimap of base tool (without NBT) to sorted set of tool item components (with NBT).
-     *
+     * Map of base tool (without NBT) to a set of tool item components (with NBT).
      * <p>
      * This is an intermediary data structure which we use to group tools together ignoring extraneous NBT such as
-     * electrical stats. We use a sorted set to hold the values, to ensure that item components are iterated through in
-     * order taking into account extraneous NBT.
+     * electrical stats.
      */
-    private final SortedSetMultimap<BaseTool, ItemComponent> toolsMultimap;
+    private final HashMap<BaseTool, HashSet<ItemComponent>> tools = new HashMap<>();
 
     /**
-     * Multimap of base tool (without NBT) to sorted set of tool item components (with NBT).
-     *
+     * Map of base tool (without NBT) to sorted set of tool item components (with NBT).
      * <p>
      * This is an intermediary data structure which we use to group tools together ignoring extraneous NBT such as
-     * electrical stats. We use a sorted set to hold the values, to ensure that item components are iterated through in
-     * order taking into account extraneous NBT.
+     * electrical stats.
      */
-    private final SortedSetMultimap<BaseTool, ItemComponent> gtPlusPlusToolsMultimap;
+    private final HashMap<BaseTool, HashSet<ItemComponent>> gtPlusPlusTools = new HashMap<>();
 
     /**
-     * Multimap of base tool (without NBT) to sorted set of Detrav scanner components (with NBT).
-     *
+     * Map of base tool (without NBT) to sorted set of Detrav scanner components (with NBT).
      * <p>
      * This is an intermediary data structure which we use to group tools together ignoring extraneous NBT such as
-     * electrical stats. We use a sorted set to hold the values, to ensure that item components are iterated through in
-     * order taking into account extraneous NBT.
+     * electrical stats.
      */
-    private final SortedSetMultimap<BaseTool, ItemComponent> scannersMultimap;
+    private final HashMap<BaseTool, HashSet<ItemComponent>> scanners = new HashMap<>();
 
     /**
      * Multimap of material to list of lists of tools with that primary material.
-     *
      * <p>
      * We group together tools with the same base item but different NBT (which will be electrical stats). This is why
      * values will be lists of lists.
@@ -119,7 +122,6 @@ class RecipeHandler {
 
     /**
      * Multimap of material to list of lists of turbines with that primary material.
-     *
      * <p>
      * We group together tools with the same base item but different NBT (which will be electrical stats). This is why
      * values will be lists of lists. Though in practice, turbines don't have electric stats, so each inner list will
@@ -129,7 +131,6 @@ class RecipeHandler {
 
     /**
      * Multimap of material to list of lists of Detrav scanners with that primary material.
-     *
      * <p>
      * We group together tools with the same base item but different NBT (which will be electrical stats). This is why
      * values will be lists of lists. Though in practice, scanners don't have electric stats, so each inner list will
@@ -139,7 +140,6 @@ class RecipeHandler {
 
     /**
      * Multimap of material to list of lists of Detrav electric scanners with that primary material.
-     *
      * <p>
      * We group together tools with the same base item but different NBT (which will be electrical stats). This is why
      * values will be lists of lists. Though in practice, scanners don't have varying electric stats, so each inner list
@@ -148,9 +148,6 @@ class RecipeHandler {
     private final ListMultimap<Materials, ImmutableList<DisplayComponent>> materialElectricScannersMultimap;
 
     RecipeHandler() {
-        this.toolsMultimap = MultimapBuilder.hashKeys().treeSetValues().build();
-        this.gtPlusPlusToolsMultimap = MultimapBuilder.hashKeys().treeSetValues().build();
-        this.scannersMultimap = MultimapBuilder.hashKeys().treeSetValues().build();
         this.materialToolsMultimap = MultimapBuilder.hashKeys().arrayListValues().build();
         this.materialTurbinesMultimap = MultimapBuilder.hashKeys().arrayListValues().build();
         this.materialScannersMultimap = MultimapBuilder.hashKeys().arrayListValues().build();
@@ -166,36 +163,44 @@ class RecipeHandler {
         RecipeMaps.assemblerRecipes.getAllRecipes().forEach(recipe -> addTool(recipe.getOutput(0)));
 
         // Second pass: iterate through and construct DisplayComponents for found tools.
-        // We iterate on SortedSet copies so that the resulting lists of tools are ordered.
-        for (BaseTool baseTool : toolsMultimap.keySet()) {
-            ImmutableList<DisplayComponent> displayComponents = ImmutableList.copyOf(
-                    toolsMultimap.get(baseTool).stream().map(RecipeHandler::buildDisplayComponent)
-                            .sorted(EU_CAPACITY_COMPARATOR).collect(Collectors.toList()));
+        for (HashMap.Entry<BaseTool, HashSet<ItemComponent>> entry : tools.entrySet()) {
+            BaseTool baseTool = entry.getKey();
+            HashSet<ItemComponent> itemComponents = entry.getValue();
 
-            if (TURBINE_TOOL_IDS.contains(baseTool.itemComponent().damage())) {
-                materialTurbinesMultimap.put(baseTool.primaryMaterial(), displayComponents);
+            ImmutableList<DisplayComponent> displayComponents = ImmutableList.copyOf(
+                    itemComponents.stream().map(RecipeHandler::buildDisplayComponent).sorted(EU_CAPACITY_COMPARATOR)
+                            .collect(Collectors.toList()));
+
+            if (TURBINE_TOOL_IDS.contains(baseTool.itemComponent.damage())) {
+                materialTurbinesMultimap.put(baseTool.primaryMaterial, displayComponents);
             } else {
-                materialToolsMultimap.put(baseTool.primaryMaterial(), displayComponents);
+                materialToolsMultimap.put(baseTool.primaryMaterial, displayComponents);
             }
         }
 
-        for (BaseTool baseTool : gtPlusPlusToolsMultimap.keySet()) {
-            ImmutableList<DisplayComponent> displayComponents = ImmutableList.copyOf(
-                    gtPlusPlusToolsMultimap.get(baseTool).stream().map(RecipeHandler::buildDisplayComponent)
-                            .sorted(EU_CAPACITY_COMPARATOR).collect(Collectors.toList()));
+        for (HashMap.Entry<BaseTool, HashSet<ItemComponent>> entry : gtPlusPlusTools.entrySet()) {
+            BaseTool baseTool = entry.getKey();
+            HashSet<ItemComponent> itemComponents = entry.getValue();
 
-            materialToolsMultimap.put(baseTool.primaryMaterial(), displayComponents);
+            ImmutableList<DisplayComponent> displayComponents = ImmutableList.copyOf(
+                    itemComponents.stream().map(RecipeHandler::buildDisplayComponent).sorted(EU_CAPACITY_COMPARATOR)
+                            .collect(Collectors.toList()));
+
+            materialToolsMultimap.put(baseTool.primaryMaterial, displayComponents);
         }
 
-        for (BaseTool baseTool : scannersMultimap.keySet()) {
-            ImmutableList<DisplayComponent> displayComponents = ImmutableList.copyOf(
-                    scannersMultimap.get(baseTool).stream().map(RecipeHandler::buildDisplayComponent)
-                            .sorted(EU_CAPACITY_COMPARATOR).collect(Collectors.toList()));
+        for (HashMap.Entry<BaseTool, HashSet<ItemComponent>> entry : scanners.entrySet()) {
+            BaseTool baseTool = entry.getKey();
+            HashSet<ItemComponent> itemComponents = entry.getValue();
 
-            if (baseTool.itemComponent().damage() >= ELECTRIC_SCANNER_ID_START) {
-                materialElectricScannersMultimap.put(baseTool.primaryMaterial(), displayComponents);
+            ImmutableList<DisplayComponent> displayComponents = ImmutableList.copyOf(
+                    itemComponents.stream().map(RecipeHandler::buildDisplayComponent).sorted(EU_CAPACITY_COMPARATOR)
+                            .collect(Collectors.toList()));
+
+            if (baseTool.itemComponent.damage() >= ELECTRIC_SCANNER_ID_START) {
+                materialElectricScannersMultimap.put(baseTool.primaryMaterial, displayComponents);
             } else {
-                materialScannersMultimap.put(baseTool.primaryMaterial(), displayComponents);
+                materialScannersMultimap.put(baseTool.primaryMaterial, displayComponents);
             }
         }
     }
@@ -253,19 +258,18 @@ class RecipeHandler {
         }
 
         if (itemStack.getItem() == MetaGeneratedTool01.INSTANCE) {
-            toolsMultimap.put(BaseTool.create(itemStack), ItemComponent.createWithNbt(itemStack));
+            tools.computeIfAbsent(BaseTool.create(itemStack), tool -> new HashSet<>())
+                    .add(ItemComponent.createWithNbt(itemStack));
         }
 
-        if (Mods.GT_PLUS_PLUS.isLoaded()) {
-            if (itemStack.getItem() == MetaGeneratedGregtechTools.INSTANCE) {
-                gtPlusPlusToolsMultimap.put(BaseTool.create(itemStack), ItemComponent.createWithNbt(itemStack));
-            }
+        if (Mods.GT_PLUS_PLUS.isLoaded() && itemStack.getItem() == MetaGeneratedGregtechTools.INSTANCE) {
+            gtPlusPlusTools.computeIfAbsent(BaseTool.create(itemStack), tool -> new HashSet<>())
+                    .add(ItemComponent.createWithNbt(itemStack));
         }
 
-        if (Mods.DETRAV_SCANNER.isLoaded()) {
-            if (itemStack.getItem() == DetravMetaGeneratedTool01.INSTANCE) {
-                scannersMultimap.put(BaseTool.create(itemStack), ItemComponent.createWithNbt(itemStack));
-            }
+        if (Mods.DETRAV_SCANNER.isLoaded() && itemStack.getItem() == DetravMetaGeneratedTool01.INSTANCE) {
+            scanners.computeIfAbsent(BaseTool.create(itemStack), tool -> new HashSet<>())
+                    .add(ItemComponent.createWithNbt(itemStack));
         }
     }
 
