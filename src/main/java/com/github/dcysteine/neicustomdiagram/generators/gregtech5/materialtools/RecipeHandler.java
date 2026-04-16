@@ -16,7 +16,7 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayCompon
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
-import com.github.dcysteine.neicustomdiagram.main.Registry;
+import com.github.dcysteine.neicustomdiagram.main.Mods;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechFormatting;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
@@ -257,13 +257,13 @@ class RecipeHandler {
             toolsMultimap.put(BaseTool.create(itemStack), ItemComponent.createWithNbt(itemStack));
         }
 
-        if (Registry.ModDependency.GT_PLUS_PLUS.isLoaded()) {
+        if (Mods.GT_PLUS_PLUS.isLoaded()) {
             if (itemStack.getItem() == MetaGeneratedGregtechTools.INSTANCE) {
                 gtPlusPlusToolsMultimap.put(BaseTool.create(itemStack), ItemComponent.createWithNbt(itemStack));
             }
         }
 
-        if (Registry.ModDependency.DETRAV_SCANNER.isLoaded()) {
+        if (Mods.DETRAV_SCANNER.isLoaded()) {
             if (itemStack.getItem() == DetravMetaGeneratedTool01.INSTANCE) {
                 scannersMultimap.put(BaseTool.create(itemStack), ItemComponent.createWithNbt(itemStack));
             }
