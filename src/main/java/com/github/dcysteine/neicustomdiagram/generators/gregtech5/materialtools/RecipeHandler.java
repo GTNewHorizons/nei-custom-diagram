@@ -20,7 +20,6 @@ import com.github.dcysteine.neicustomdiagram.main.Mods;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechFormatting;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SortedSetMultimap;
@@ -168,7 +167,7 @@ class RecipeHandler {
 
         // Second pass: iterate through and construct DisplayComponents for found tools.
         // We iterate on SortedSet copies so that the resulting lists of tools are ordered.
-        for (BaseTool baseTool : ImmutableSortedSet.copyOf(toolsMultimap.keySet())) {
+        for (BaseTool baseTool : toolsMultimap.keySet()) {
             ImmutableList<DisplayComponent> displayComponents = ImmutableList.copyOf(
                     toolsMultimap.get(baseTool).stream().map(RecipeHandler::buildDisplayComponent)
                             .sorted(EU_CAPACITY_COMPARATOR).collect(Collectors.toList()));
@@ -180,7 +179,7 @@ class RecipeHandler {
             }
         }
 
-        for (BaseTool baseTool : ImmutableSortedSet.copyOf(gtPlusPlusToolsMultimap.keySet())) {
+        for (BaseTool baseTool : gtPlusPlusToolsMultimap.keySet()) {
             ImmutableList<DisplayComponent> displayComponents = ImmutableList.copyOf(
                     gtPlusPlusToolsMultimap.get(baseTool).stream().map(RecipeHandler::buildDisplayComponent)
                             .sorted(EU_CAPACITY_COMPARATOR).collect(Collectors.toList()));
@@ -188,7 +187,7 @@ class RecipeHandler {
             materialToolsMultimap.put(baseTool.primaryMaterial(), displayComponents);
         }
 
-        for (BaseTool baseTool : ImmutableSortedSet.copyOf(scannersMultimap.keySet())) {
+        for (BaseTool baseTool : scannersMultimap.keySet()) {
             ImmutableList<DisplayComponent> displayComponents = ImmutableList.copyOf(
                     scannersMultimap.get(baseTool).stream().map(RecipeHandler::buildDisplayComponent)
                             .sorted(EU_CAPACITY_COMPARATOR).collect(Collectors.toList()));
