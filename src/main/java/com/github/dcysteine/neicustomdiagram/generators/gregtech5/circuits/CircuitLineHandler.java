@@ -228,15 +228,30 @@ class CircuitLineHandler {
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_Biowaresupercomputer),
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_Biomainframe))
                         .build());
-        circuitLinesBuilder.add(
-                CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Optical))
-                        .setStartTier(8)
-                        .addCircuits(
-                                GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalProcessor),
-                                GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalAssembly),
-                                GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalComputer),
-                                GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalMainframe))
-                        .build());
+        if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
+            circuitLinesBuilder.add(
+                    CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Optical))
+                            .setStartTier(8)
+                            .addCircuits(
+                                    GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalProcessor),
+                                    GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalAssembly),
+                                    GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalComputer),
+                                    GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalMainframe),
+                                    ItemComponent.create(NHItemList.PikoCircuit.get()),
+                                    ItemComponent.create(NHItemList.QuantumCircuit.get()),
+                                    ItemComponent.create(NHItemList.PlanckCircuit.get()))
+                            .build());
+        } else {
+            circuitLinesBuilder.add(
+                    CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Optical))
+                            .setStartTier(8)
+                            .addCircuits(
+                                    GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalProcessor),
+                                    GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalAssembly),
+                                    GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalComputer),
+                                    GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalMainframe))
+                            .build());
+        }
         circuitLinesBuilder.add(
                 CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Exotic))
                         .setStartTier(9)
