@@ -238,8 +238,7 @@ class CircuitLineHandler {
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_OpticalMainframe))
                         .build());
         circuitLinesBuilder.add(
-                CircuitLine.builder()
-                        // TODO board does not exist yet
+                CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Exotic))
                         .setStartTier(9)
                         .addCircuits(
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_ExoticProcessor),
@@ -248,8 +247,7 @@ class CircuitLineHandler {
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_ExoticMainframe))
                         .build());
         circuitLinesBuilder.add(
-                CircuitLine.builder()
-                        // TODO board does not exist yet
+                CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Cosmic))
                         .setStartTier(10)
                         .addCircuits(
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_CosmicProcessor),
@@ -258,8 +256,7 @@ class CircuitLineHandler {
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_CosmicMainframe))
                         .build());
         circuitLinesBuilder.add(
-                CircuitLine.builder()
-                        // TODO board does not exist yet
+                CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Transcendent))
                         .setStartTier(11)
                         .addCircuits(
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_TranscendentProcessor),
