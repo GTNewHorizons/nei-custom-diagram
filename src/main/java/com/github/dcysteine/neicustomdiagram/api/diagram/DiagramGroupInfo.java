@@ -69,8 +69,8 @@ public abstract class DiagramGroupInfo {
     public abstract String description();
 
     public void buildHandlerInfo(HandlerInfo.Builder builder) {
-        builder.setDisplayStack(icon().stack()).setHeight(Grid.TOTAL_HEIGHT / diagramsPerPage())
-                .setUseCustomScroll(useCustomScroll()).setMaxRecipesPerPage(diagramsPerPage());
+        builder.setDisplayStack(icon().stack()).setUseCustomScroll(useCustomScroll())
+                .setMultipleWidgetsAllowed(diagramsPerPage() > 1);
     }
 
     public static Builder builder(String groupName, String groupId, ItemComponent icon, int diagramsPerPage) {
