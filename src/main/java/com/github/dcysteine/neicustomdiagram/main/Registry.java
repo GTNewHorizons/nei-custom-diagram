@@ -13,6 +13,7 @@ import com.github.dcysteine.neicustomdiagram.generators.enderstorage.chestovervi
 import com.github.dcysteine.neicustomdiagram.generators.enderstorage.tankoverview.EnderStorageTankOverview;
 import com.github.dcysteine.neicustomdiagram.generators.forge.fluidcontainers.ForgeFluidContainers;
 import com.github.dcysteine.neicustomdiagram.generators.forge.oredictionary.ForgeOreDictionary;
+import com.github.dcysteine.neicustomdiagram.generators.forge.worldgenloot.ForgeWorldgenLoot;
 import com.github.dcysteine.neicustomdiagram.generators.gregtech5.circuits.GregTechCircuits;
 import com.github.dcysteine.neicustomdiagram.generators.gregtech5.lenses.GregTechLenses;
 import com.github.dcysteine.neicustomdiagram.generators.gregtech5.materialparts.GregTechMaterialParts;
@@ -60,6 +61,7 @@ public enum Registry {
                         ModDependency.ENDER_STORAGE));
         entriesBuilder.add(RegistryEntry.create("forge.fluidcontainers", ForgeFluidContainers::new));
         entriesBuilder.add(RegistryEntry.create("forge.oredictionary", ForgeOreDictionary::new));
+        entriesBuilder.add(RegistryEntry.create("forge.worldgenloot", ForgeWorldgenLoot::new));
         entriesBuilder.add(RegistryEntry.create("gregtech.circuits", GregTechCircuits::new, ModDependency.GREGTECH_5));
         entriesBuilder.add(RegistryEntry.create("gregtech.lenses", GregTechLenses::new, ModDependency.GREGTECH_5));
         entriesBuilder.add(

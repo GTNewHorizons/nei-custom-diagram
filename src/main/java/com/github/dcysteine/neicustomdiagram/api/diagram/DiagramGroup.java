@@ -103,6 +103,12 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
         return diagrams.size();
     }
 
+    @Override
+    public int getRecipeHeight(int recipe) {
+        final Diagram diagram = diagrams.get(recipe);
+        return diagram.dimension(diagramState).height();
+    }
+
     public DiagramGroup loadDiagrams(String id, Interactable.RecipeType recipeType, Object... stacks) {
         Collection<Diagram> matchingDiagrams = matchDiagrams(id, recipeType, stacks);
 
@@ -145,6 +151,8 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
                         : FluidComponent.createWithNbt(fluidStack);
 
                 return matcher.match(recipeType, fluidComponent);
+            case "all":
+                return matcher.all();
         }
 
         return ImmutableList.of();
