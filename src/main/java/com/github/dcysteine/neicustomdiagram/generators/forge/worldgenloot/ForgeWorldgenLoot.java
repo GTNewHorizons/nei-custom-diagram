@@ -150,8 +150,8 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
         final int cols = 9;
         final int rows = Math.max(1, (itemCount + cols - 1) / cols);
 
-        return Layout.builder().addInteractable(new AllDiagramsButton(info, Grid.GRID.grid(0, 0)))
-                .addInteractable(CustomInteractable.builder(labelText).setTooltip(Tooltip.create(name, Tooltip.SLOT_FORMATTING)).build())
+        return Layout.builder().addInteractable(new AllDiagramsButton(info, Grid.GRID.grid(0, 0))).addInteractable(
+                CustomInteractable.builder(labelText).setTooltip(Tooltip.create(name, Tooltip.SLOT_FORMATTING)).build())
                 .putSlotGroup(
                         SLOT_GROUP_KEY,
                         SlotGroup.builder(cols, rows, Grid.GRID.grid(6, 2), Grid.Direction.S).build())
