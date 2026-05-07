@@ -57,6 +57,12 @@ neicustomdiagram.generators.forge.fluidcontainers.containersslot=Containers
 neicustomdiagram.generators.forge.oredictionary.groupname=Forge Ore Dictionary
 neicustomdiagram.generators.forge.oredictionary.orenamelabel=Ore name
 
+neicustomdiagram.generators.forge.worldgenloot.groupname=World-Gen Loot
+neicustomdiagram.generators.forge.worldgenloot.categorylabel=Chest category
+neicustomdiagram.generators.forge.worldgenloot.amount=Amount: %d
+neicustomdiagram.generators.forge.worldgenloot.amountrange=Amount: %d-%d
+neicustomdiagram.generators.forge.worldgenloot.chance=Chance: %s%%
+
 neicustomdiagram.generators.gregtech5.circuits.groupname=GregTech Circuits
 neicustomdiagram.generators.gregtech5.circuits.tierlabel=%s tier
 neicustomdiagram.generators.gregtech5.circuits.circuitboardsslot=Circuit boards

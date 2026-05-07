@@ -66,6 +66,8 @@ public abstract class Layout implements Drawable {
 
     public abstract ImmutableMap<SlotGroupKey, SlotGroup> slotGroups();
 
+    public abstract int paddingBottom();
+
     public Optional<Slot> slot(SlotKey key) {
         return Optional.ofNullable(slots().get(key));
     }
@@ -85,7 +87,8 @@ public abstract class Layout implements Drawable {
 
     @Override
     public Dimension maxDimension() {
-        return Drawable.computeMaxDimension(drawables());
+        Dimension base = Drawable.computeMaxDimension(drawables());
+        return Dimension.create(base.width(), base.height() + paddingBottom());
     }
 
     @Override
@@ -107,7 +110,7 @@ public abstract class Layout implements Drawable {
     public abstract String toPrettyString();
 
     public static Builder builder() {
-        return new AutoValue_Layout.Builder();
+        return new AutoValue_Layout.Builder().setPaddingBottom(0);
     }
 
     public abstract Builder toBuilder();
@@ -134,6 +137,8 @@ public abstract class Layout implements Drawable {
         public abstract Builder setSlotGroups(Map<SlotGroupKey, SlotGroup> slotGroups);
 
         public abstract ImmutableMap.Builder<SlotGroupKey, SlotGroup> slotGroupsBuilder();
+
+        public abstract Builder setPaddingBottom(int paddingBottom);
 
         public Builder addLines(Lines lines) {
             linesBuilder().add(lines);
@@ -191,6 +196,7 @@ public abstract class Layout implements Drawable {
             addAllInteractables(layout.interactables());
             putAllSlots(layout.slots());
             putAllSlotGroups(layout.slotGroups());
+            setPaddingBottom(layout.paddingBottom());
             return this;
         }
 
