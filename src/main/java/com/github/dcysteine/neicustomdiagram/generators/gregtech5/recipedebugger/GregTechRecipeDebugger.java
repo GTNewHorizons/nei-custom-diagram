@@ -87,7 +87,7 @@ public final class GregTechRecipeDebugger implements DiagramGenerator {
     private final DiagramHandler diagramHandler;
 
     public GregTechRecipeDebugger(String groupId) {
-        this.info = DiagramGroupInfo.builder(Lang.GREGTECH_5_RECIPE_DEBUGGER.trans("groupname"), groupId, ICON, 1)
+        this.info = DiagramGroupInfo.builder(Lang.GREGTECH_5_RECIPE_DEBUGGER.trans("groupname"), groupId, ICON, 2)
                 .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
                 .setDescription(
                         "This diagram checks for recipe collisions and various other recipe" + " issues."

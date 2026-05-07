@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-
-import org.lwjgl.input.Keyboard;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
@@ -22,14 +22,11 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.Interactable;
 import com.github.dcysteine.neicustomdiagram.api.diagram.interactable.InteractiveComponentGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.matcher.DiagramMatcher;
-import com.github.dcysteine.neicustomdiagram.api.draw.Dimension;
 import com.github.dcysteine.neicustomdiagram.api.draw.Point;
-import com.github.dcysteine.neicustomdiagram.api.draw.scroll.MouseButton;
-import com.github.dcysteine.neicustomdiagram.api.draw.scroll.ScrollDirection;
-import com.github.dcysteine.neicustomdiagram.api.draw.scroll.ScrollManager;
 import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
 import com.google.common.collect.ImmutableList;
 
+import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.NEIClientUtils;
 import codechicken.nei.PositionedStack;
@@ -46,7 +43,6 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
     protected final DiagramMatcher matcher;
     protected final Supplier<DiagramState> diagramStateSupplier;
 
-    protected final ScrollManager scrollManager;
     protected final DiagramState diagramState;
     protected final ImmutableList<Diagram> diagrams;
 
@@ -55,7 +51,6 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
         this.matcher = matcher;
         this.diagramStateSupplier = diagramStateSupplier;
 
-        this.scrollManager = new ScrollManager();
         this.diagramState = diagramStateSupplier.get();
         this.diagrams = ImmutableList.of();
     }
@@ -69,7 +64,6 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
         this.matcher = parent.matcher;
         this.diagramStateSupplier = parent.diagramStateSupplier;
 
-        this.scrollManager = new ScrollManager();
         this.diagramState = this.diagramStateSupplier.get();
         this.diagrams = ImmutableList.copyOf(diagrams);
     }
@@ -106,7 +100,7 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
     @Override
     public int getRecipeHeight(int recipe) {
         final Diagram diagram = diagrams.get(recipe);
-        return diagram.dimension(diagramState).height();
+        return diagram.dimension(diagramState).height() + 3;
     }
 
     public DiagramGroup loadDiagrams(String id, Interactable.RecipeType recipeType, Object... stacks) {
@@ -171,46 +165,32 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
     @OverridingMethodsMustInvokeSuper
     @Override
     public void onUpdate() {
-        scrollManager.tick();
         diagramState.tick();
     }
 
     @Override
     public void drawBackground(int recipe) {
-        Diagram diagram = diagrams.get(recipe);
-        Dimension diagramDimension = diagram.dimension(diagramState);
-        scrollManager.refreshState(diagramDimension);
-        scrollManager.beforeDraw();
-
-        diagram.drawBackground(diagramState);
-
-        scrollManager.afterDraw();
+        diagrams.get(recipe).drawBackground(diagramState);
     }
 
     @Override
     public void drawForeground(int recipe) {
-        scrollManager.beforeDraw();
-
         diagrams.get(recipe).drawForeground(diagramState);
         Optional<Interactable> interactable = findHoveredInteractable(recipe);
         interactable.ifPresent(i -> i.drawOverlay(diagramState));
-
-        scrollManager.afterDraw();
     }
 
     public void drawTooltip(GuiRecipe<?> gui, int recipe) {
-        scrollManager.drawScrollbars();
-
         Optional<Interactable> interactable = findHoveredInteractable(recipe);
-        interactable.ifPresent(i -> i.drawTooltip(diagramState, scrollManager.getAbsoluteMousePosition()));
+        if (interactable.isPresent()) {
+            java.awt.Point mouse = GuiDraw.getMousePosition();
+            interactable.get().drawTooltip(diagramState, Point.create(mouse.x, mouse.y));
+        }
     }
 
     protected Optional<Interactable> findHoveredInteractable(int recipe) {
-        if (!mouseInDiagramBounds()) {
-            return Optional.empty();
-        }
+        Point mousePos = getRelativeMousePosition(recipe);
 
-        Point mousePos = scrollManager.getRelativeMousePosition(recipe);
         for (Interactable interactable : diagrams.get(recipe).interactables(diagramState)) {
             if (interactable.checkBoundingBox(mousePos)) {
                 return Optional.of(interactable);
@@ -220,8 +200,30 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
         return Optional.empty();
     }
 
+    private Point getRelativeMousePosition(int recipe) {
+        final GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+        if (!(screen instanceof GuiRecipe)) {
+            return Point.create(0, 0);
+        }
+
+        GuiRecipe<?> guiRecipe = (GuiRecipe<?>) screen;
+        java.awt.Point mouse = GuiDraw.getMousePosition();
+        java.awt.Point offset = guiRecipe.getRecipePosition(recipe);
+        int x = mouse.x - (guiRecipe.guiLeft + offset.x);
+        int y = mouse.y - (guiRecipe.guiTop + offset.y);
+        return Point.create(x, y);
+    }
+
     public boolean mouseInDiagramBounds() {
-        return scrollManager.mouseInDiagramBounds();
+        final GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+        if (!(screen instanceof GuiRecipe)) {
+            return false;
+        }
+        GuiRecipe<?> guiRecipe = (GuiRecipe<?>) screen;
+        java.awt.Point mouse = GuiDraw.getMousePosition();
+        int xDiff = mouse.x - guiRecipe.guiLeft;
+        int yDiff = mouse.y - guiRecipe.guiTop;
+        return xDiff >= 0 && xDiff <= guiRecipe.xSize && yDiff >= 0 && yDiff <= guiRecipe.ySize;
     }
 
     public boolean interact(int recipe, Interactable.RecipeType recipeType) {
@@ -242,24 +244,8 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
     public boolean keyTyped(GuiRecipe<?> gui, char keyChar, int keyCode, int recipe) {
         if (keyCode == NEIClientConfig.getKeyBinding("gui.recipe")) {
             return interact(recipe, Interactable.RecipeType.CRAFTING);
-
         } else if (keyCode == NEIClientConfig.getKeyBinding("gui.usage")) {
             return interact(recipe, Interactable.RecipeType.USAGE);
-        }
-
-        Dimension diagramDimension = diagrams.get(recipe).dimension(diagramState);
-        switch (keyCode) {
-            case Keyboard.KEY_UP:
-                return scrollManager.keyboardScroll(diagramDimension, ScrollDirection.UP);
-
-            case Keyboard.KEY_DOWN:
-                return scrollManager.keyboardScroll(diagramDimension, ScrollDirection.DOWN);
-
-            case Keyboard.KEY_LEFT:
-                return scrollManager.keyboardScroll(diagramDimension, ScrollDirection.LEFT);
-
-            case Keyboard.KEY_RIGHT:
-                return scrollManager.keyboardScroll(diagramDimension, ScrollDirection.RIGHT);
         }
 
         return false;
@@ -271,11 +257,6 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
      */
     @Override
     public boolean mouseClicked(GuiRecipe<?> gui, int button, int recipe) {
-        MouseButton mouseButton = button == 0 ? MouseButton.LEFT : MouseButton.RIGHT;
-        if (scrollManager.mouseClickScrollbar(mouseButton)) {
-            return true;
-        }
-
         switch (button) {
             case 0:
                 return interact(recipe, Interactable.RecipeType.CRAFTING);
@@ -289,18 +270,13 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
 
     @Override
     public boolean mouseScrolled(GuiRecipe<?> gui, int scroll, int recipe) {
-        ScrollDirection direction = scroll > 0 ? ScrollDirection.UP : ScrollDirection.DOWN;
 
-        if (mouseInDiagramBounds() && NEIClientUtils.shiftKey()) {
-            diagramState.scroll(direction);
+        if (NEIClientUtils.shiftKey() && findHoveredInteractable(recipe).isPresent()) {
+            diagramState.scroll(scroll > 0);
             return true;
         }
 
-        if (scrollManager.mouseScroll(direction)) {
-            return true;
-        } else {
-            return mouseInDiagramBounds() && ConfigOptions.DISABLE_PAGE_SCROLL.get();
-        }
+        return false;
     }
 
     public Optional<ItemStack> getStackUnderMouse(int recipe) {

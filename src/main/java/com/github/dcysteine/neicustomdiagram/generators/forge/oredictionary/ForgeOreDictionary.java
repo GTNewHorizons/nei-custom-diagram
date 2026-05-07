@@ -72,21 +72,25 @@ public final class ForgeOreDictionary implements DiagramGenerator {
                 .map(OreDictUtil::getPermutations).map(ComponentTransformer::transformToDisplay)
                 .collect(Collectors.toList());
 
-        Diagram.Builder builder = Diagram.builder().addLayout(buildLayout(oreName));
+        Diagram.Builder builder = Diagram.builder()
+                .addLayout(buildLayout(oreName, displayComponentPermutations.size()));
         builder.autoInsertIntoSlotGroup(SLOT_GROUP_KEY).insertEachGroupSafe(displayComponentPermutations);
 
         return builder.build();
     }
 
-    private static Layout buildLayout(String oreName) {
-        boolean small = GuiDraw.getStringWidth(oreName) > Grid.TOTAL_WIDTH - 4;
-        Text oreNameText = Text.builder(oreName, Grid.GRID.grid(6, 0), Grid.Direction.N).setSmall(small).build();
-        Interactable oreNameLabel = CustomInteractable.builder(oreNameText)
+    private static Layout buildLayout(String oreName, int permutationCount) {
+        final int rows = Math.max(1, (permutationCount + 8) / 9);
+        final boolean small = GuiDraw.getStringWidth(oreName) > Grid.TOTAL_WIDTH - 4;
+        final Text oreNameText = Text.builder(oreName, Grid.GRID.grid(6, 0), Grid.Direction.N).setSmall(small).build();
+        final Interactable oreNameLabel = CustomInteractable.builder(oreNameText)
                 .setTooltip(Tooltip.create(Lang.FORGE_ORE_DICTIONARY.trans("orenamelabel"), Tooltip.SLOT_FORMATTING))
                 .build();
 
         return Layout.builder().addInteractable(oreNameLabel)
-                .putSlotGroup(SLOT_GROUP_KEY, SlotGroup.builder(9, 8, Grid.GRID.grid(6, 1), Grid.Direction.S).build())
+                .putSlotGroup(
+                        SLOT_GROUP_KEY,
+                        SlotGroup.builder(9, rows, Grid.GRID.grid(6, 1), Grid.Direction.S).build())
                 .build();
     }
 }
