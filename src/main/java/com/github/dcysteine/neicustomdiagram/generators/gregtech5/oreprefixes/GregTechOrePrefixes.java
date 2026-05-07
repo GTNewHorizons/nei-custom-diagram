@@ -50,7 +50,7 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
     private ImmutableBiMap<Materials, Diagram> materialsMap;
 
     public GregTechOrePrefixes(String groupId) {
-        this.info = DiagramGroupInfo.builder(Lang.GREGTECH_5_ORE_PREFIXES.trans("groupname"), groupId, ICON, 1)
+        this.info = DiagramGroupInfo.builder(Lang.GREGTECH_5_ORE_PREFIXES.trans("groupname"), groupId, ICON, 2)
                 // No point in showing the diagram for a single item. So require at least 2.
                 .setEmptyDiagramPredicate(DiagramUtil.buildEmptyDiagramPredicate(2))
                 .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
@@ -78,8 +78,6 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
     }
 
     private Diagram generateDiagram(Materials material) {
-        Diagram.Builder builder = Diagram.builder().addLayout(buildLayout(material));
-
         List<DisplayComponent> components = new ArrayList<>();
         for (OrePrefixes prefix : OrePrefixes.VALUES) {
             Optional<ItemComponent> componentOptional = GregTechOreDictUtil.getComponent(prefix, material);
@@ -94,6 +92,8 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
                                     Tooltip.INFO_FORMATTING))
                             .build());
         }
+
+        Diagram.Builder builder = Diagram.builder().addLayout(buildLayout(material, components.size()));
         builder.autoInsertIntoSlotGroup(SLOT_GROUP_KEY).insertEachSafe(components);
 
         return builder.build();
@@ -121,10 +121,14 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
         return Lists.newArrayList();
     }
 
-    private Layout buildLayout(Materials material) {
+    private Layout buildLayout(Materials material, int itemsCount) {
+        final int rows = Math.max(1, (itemsCount + 8) / 9);
+
         return Layout.builder().addInteractable(new AllDiagramsButton(info, Grid.GRID.grid(0, 0)))
                 .addInteractable(GregTechDiagramUtil.buildMaterialInfoButton(Grid.GRID.grid(2, 0), material))
-                .putSlotGroup(SLOT_GROUP_KEY, SlotGroup.builder(9, 12, Grid.GRID.grid(6, 2), Grid.Direction.S).build())
+                .putSlotGroup(
+                        SLOT_GROUP_KEY,
+                        SlotGroup.builder(9, rows, Grid.GRID.grid(6, 2), Grid.Direction.S).build())
                 .build();
     }
 }

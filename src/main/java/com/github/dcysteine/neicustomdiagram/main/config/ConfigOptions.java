@@ -22,19 +22,6 @@ public final class ConfigOptions {
             "Enables fast-forwarding through component cycles by holding down <Ctrl>."
                     + "\nFast-forward backwards with <Ctrl + Shift>.").register();
 
-    public static final Option<Boolean> DISABLE_PAGE_SCROLL = new BooleanOption(
-            Category.OPTIONS,
-            "disable_page_scroll",
-            false,
-            "The default behavior is that if a diagram is too large to fit," + " scrolling will scroll the diagram;"
-                    + "\notherwise, you will get the default behavior of scrolling through"
-                    + " pages."
-                    + "\nThis option disables that default behavior. This is convenient if"
-                    + " you need to scroll a lot,"
-                    + "\nand want to avoid accidentally scrolling through pages."
-                    + "\nYou can still scroll through pages while mousing over the page"
-                    + " number.").register();
-
     public static final Option<Boolean> GENERATE_DIAGRAMS_ON_CLIENT_CONNECT = new BooleanOption(
             Category.OPTIONS,
             "generate_diagrams_on_client_connect",
@@ -61,20 +48,6 @@ public final class ConfigOptions {
                     + "\n  neicustomdiagram.diagramgroup.<mod name>.<diagram group name>"
                     + "\nChanging this option requires a restart to take effect.",
             true).register();
-
-    public static final Option<Integer> MOUSE_SCROLL_SPEED = new IntegerOption(
-            Category.OPTIONS,
-            "mouse_scroll_speed",
-            12,
-            "Sets the mouse scroll wheel scroll speed, in pixels."
-                    + "\nUse a negative value to invert the scroll direction.").register();
-
-    public static final Option<Integer> KEYBOARD_SCROLL_SPEED = new IntegerOption(
-            Category.OPTIONS,
-            "keyboard_scroll_speed",
-            36,
-            "Sets the keyboard arrow keys scroll speed, in pixels."
-                    + "\nUse a negative value to invert the scroll direction.").register();
 
     public static final Option<Boolean> SHOW_EMPTY_DIAGRAMS = new BooleanOption(
             Category.OPTIONS,

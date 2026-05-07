@@ -32,7 +32,7 @@ class LayoutFactory {
 
     static final class SlotGroupKeys {
 
-        static final int RECIPES_PER_PAGE = 3;
+        static final int RECIPES_PER_PAGE = 1;
         static final ImmutableList<Layout.SlotGroupKey> RECIPE_INPUTS = ImmutableList.copyOf(
                 IntStream.range(0, RECIPES_PER_PAGE).mapToObj(i -> Layout.SlotGroupKey.create("recipe-inputs-" + i))
                         .collect(Collectors.toList()));

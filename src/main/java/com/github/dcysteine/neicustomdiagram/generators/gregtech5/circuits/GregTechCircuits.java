@@ -1,6 +1,6 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.circuits;
 
-import com.github.dcysteine.neicustomdiagram.api.diagram.CustomDiagramGroup;
+import com.github.dcysteine.neicustomdiagram.api.diagram.AdaptiveWidthDiagramGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
@@ -61,7 +61,7 @@ public final class GregTechCircuits implements DiagramGenerator {
         ComponentDiagramMatcher.Builder matcherBuilder = ComponentDiagramMatcher.builder();
         circuitLineHandler.allCircuits().forEach(circuit -> diagramFactory.buildDiagrams(circuit, matcherBuilder));
 
-        return new CustomDiagramGroup(
+        return new AdaptiveWidthDiagramGroup(
                 info,
                 matcherBuilder.build(),
                 ImmutableMap.of(info.groupId(), () -> overviewDiagram));
