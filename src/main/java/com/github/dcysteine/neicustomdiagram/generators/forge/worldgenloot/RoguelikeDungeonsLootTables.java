@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
+import com.github.dcysteine.neicustomdiagram.main.Lang;
 
 import greymerk.roguelike.dungeon.Dungeon;
 import greymerk.roguelike.treasure.loot.ILoot;
@@ -44,8 +45,7 @@ final class RoguelikeDungeonsLootTables {
                 extractRecursive(provider, level, entries);
 
                 if (!entries.isEmpty()) {
-                    String name = "Roguelike: " + lootType.name() + " / Level " + level;
-                    result.add(new LootTable(name, entries));
+                    result.add(new LootTable(getLootLabel(lootType.name(), level), entries));
                 }
             }
         }
@@ -66,7 +66,7 @@ final class RoguelikeDungeonsLootTables {
 
             List<LootTable> result = new ArrayList<>();
             for (Map.Entry<String, ?> entry : settingsMap.entrySet()) {
-                extractDungeonConfigLoot("Roguelike Config [" + entry.getKey() + "]", entry.getValue(), result);
+                extractDungeonConfigLoot(entry.getKey(), entry.getValue(), result);
             }
             return result;
         } catch (Exception e) {
@@ -74,7 +74,7 @@ final class RoguelikeDungeonsLootTables {
         }
     }
 
-    private static void extractDungeonConfigLoot(String displayName, Object dungeonSettings, List<LootTable> out) {
+    private static void extractDungeonConfigLoot(String configKey, Object dungeonSettings, List<LootTable> out) {
         try {
             Object lootRuleManager = getField(dungeonSettings, "lootRules", Object.class);
             if (lootRuleManager == null) return;
@@ -96,10 +96,17 @@ final class RoguelikeDungeonsLootTables {
 
             for (Map.Entry<Integer, List<LootEntry>> levelEntry : byLevel.entrySet()) {
                 if (!levelEntry.getValue().isEmpty()) {
-                    out.add(new LootTable(displayName + " / Level " + levelEntry.getKey(), levelEntry.getValue()));
+                    out.add(new LootTable(getLootLabel(configKey, levelEntry.getKey()), levelEntry.getValue()));
                 }
             }
         } catch (Exception ignored) {}
+    }
+
+    private static String getLootLabel(String configKey, int level) {
+        final String key = "roguelikedungeons.loot." + configKey.toLowerCase().replaceAll("[^a-z0-9]+", "_");
+        final String lootName = Lang.FORGE_WORLDGEN_LOOT.canTranslate(key) ? Lang.FORGE_WORLDGEN_LOOT.trans(key)
+                : configKey;
+        return Lang.FORGE_WORLDGEN_LOOT.transf("roguelikedungeons.groupname", lootName, level);
     }
 
     private static void extractRecursive(Object obj, int level, List<LootEntry> out) {

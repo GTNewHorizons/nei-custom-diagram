@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 
@@ -13,10 +12,7 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent
 public record LootTable(String name, List<LootEntry> entries, int totalWeight) {
 
     public LootTable(String name, List<LootEntry> entries) {
-        this(
-                EnumChatFormatting.getTextWithoutFormattingCodes(name),
-                entries,
-                entries.stream().mapToInt(LootEntry::weight).sum());
+        this(name, entries, entries.stream().mapToInt(LootEntry::weight).sum());
     }
 
     public boolean isEmpty() {

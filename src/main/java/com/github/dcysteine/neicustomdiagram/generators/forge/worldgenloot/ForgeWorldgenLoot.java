@@ -90,7 +90,13 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
         List<LootTable> tables = new ArrayList<>();
 
         for (Map.Entry<String, ChestGenHooks> entry : getChestInfo().entrySet()) {
-            LootTable table = LootTable.fromChestGenHooks(entry.getKey(), entry.getValue());
+            String name = entry.getKey();
+
+            if (Lang.FORGE_WORLDGEN_LOOT.canTranslate("forge.loot." + name)) {
+                name = Lang.FORGE_WORLDGEN_LOOT.trans("forge.loot." + name);
+            }
+
+            LootTable table = LootTable.fromChestGenHooks(name, entry.getValue());
             if (table != null) tables.add(table);
         }
 
@@ -141,10 +147,11 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
     }
 
     private Layout buildLayout(String name, int itemCount) {
-        final String displayName = NEIClientUtils.cropText(GuiDraw.fontRenderer, name, Grid.TOTAL_WIDTH - 20);
-        final Text labelText = Text.builder(displayName, Grid.GRID.grid(6, 0).translate(10, 5), Grid.Direction.N)
+        final String displayName = NEIClientUtils.cropText(GuiDraw.fontRenderer, name, Grid.TOTAL_WIDTH - 22);
+        final int displayNameWidth = GuiDraw.getStringWidth(displayName);
+        final int labelX = displayNameWidth > Grid.TOTAL_WIDTH - 40 ? 11 : 0;
+        final Text labelText = Text.builder(displayName, Grid.GRID.grid(6, 0).translate(labelX, 6), Grid.Direction.N)
                 .build();
-
         final int cols = 9;
         final int rows = Math.max(1, (itemCount + cols - 1) / cols);
 
@@ -153,7 +160,8 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
                 .putSlotGroup(
                         SLOT_GROUP_KEY,
                         SlotGroup.builder(cols, rows, Grid.GRID.grid(6, 2), Grid.Direction.S).build())
-                .setPaddingBottom(6).build();
+
+                .addInteractable(new AllDiagramsButton(info, Grid.GRID.grid(12, 0))).setPaddingBottom(6).build();
     }
 
     @SuppressWarnings("unchecked")

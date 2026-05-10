@@ -42,6 +42,10 @@ public final class Lang {
         this.prefix = prefix;
     }
 
+    public boolean canTranslate(String key) {
+        return StatCollector.canTranslate(prefix + key);
+    }
+
     public String trans(String key) {
         return StatCollector.translateToLocal(prefix + key);
     }
