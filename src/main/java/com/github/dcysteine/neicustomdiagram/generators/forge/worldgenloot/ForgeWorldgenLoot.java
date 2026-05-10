@@ -54,7 +54,7 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
 
     public ForgeWorldgenLoot(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.FORGE_WORLDGEN_LOOT.trans("groupname"), groupId, ICON, 2)
-                .setUseCustomScroll(false).setDefaultVisibility(DiagramGroupVisibility.DISABLED)
+                .setUseCustomScroll(false).setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN)
                 .setDescription("This diagram displays world-gen loot tables registered via Forge ChestGenHooks.")
                 .build();
     }
@@ -77,8 +77,8 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
             Diagram diagram = buildDiagram(table);
             diagramsBuilder.add(diagram);
 
-            for (LootEntry entry : table.entries) {
-                multimapBuilder.put(entry.item, diagram);
+            for (LootEntry entry : table.entries()) {
+                multimapBuilder.put(entry.item(), diagram);
             }
         }
 
@@ -113,13 +113,13 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
     }
 
     private Diagram buildDiagram(LootTable table) {
-        Diagram.Builder builder = Diagram.builder().addLayout(buildLayout(table.name, table.entries.size()));
+        Diagram.Builder builder = Diagram.builder().addLayout(buildLayout(table.name(), table.entries().size()));
         Diagram.Builder.SlotGroupAutoSubBuilder slots = builder.autoInsertIntoSlotGroup(SLOT_GROUP_KEY);
 
-        for (LootEntry entry : table.entries) {
+        for (LootEntry entry : table.entries()) {
             slots.insertIntoNextSlot(
-                    DisplayComponent.builder(entry.item).setStackSize(entry.max)
-                            .setAdditionalTooltip(buildTooltip(entry, table.totalWeight)).build());
+                    DisplayComponent.builder(entry.item()).setStackSize(entry.max())
+                            .setAdditionalTooltip(buildTooltip(entry, table.totalWeight())).build());
         }
 
         return builder.build();
@@ -128,14 +128,14 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
     private Tooltip buildTooltip(LootEntry entry, int totalWeight) {
         Tooltip.Builder builder = Tooltip.builder().setFormatting(Tooltip.INFO_FORMATTING);
 
-        if (entry.min != entry.max) {
-            builder.addTextLine(Lang.FORGE_WORLDGEN_LOOT.transf("amountrange", entry.min, entry.max));
+        if (entry.min() != entry.max()) {
+            builder.addTextLine(Lang.FORGE_WORLDGEN_LOOT.transf("amountrange", entry.min(), entry.max()));
         } else {
-            builder.addTextLine(Lang.FORGE_WORLDGEN_LOOT.transf("amount", entry.max));
+            builder.addTextLine(Lang.FORGE_WORLDGEN_LOOT.transf("amount", entry.max()));
         }
 
         if (totalWeight > 0) {
-            double pct = (double) entry.weight / totalWeight * 100.0;
+            double pct = (double) entry.weight() / totalWeight * 100.0;
             builder.addTextLine(Lang.FORGE_WORLDGEN_LOOT.transf("chance", CHANCE_FORMAT.format(pct)));
         }
 

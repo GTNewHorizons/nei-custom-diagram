@@ -10,23 +10,20 @@ import net.minecraftforge.common.ChestGenHooks;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 
-final class LootTable {
+public record LootTable(String name, List<LootEntry> entries, int totalWeight) {
 
-    final String name;
-    final List<LootEntry> entries;
-    final int totalWeight;
-
-    LootTable(String name, List<LootEntry> entries) {
-        this.name = EnumChatFormatting.getTextWithoutFormattingCodes(name);
-        this.entries = entries;
-        this.totalWeight = entries.stream().mapToInt(e -> e.weight).sum();
+    public LootTable(String name, List<LootEntry> entries) {
+        this(
+                EnumChatFormatting.getTextWithoutFormattingCodes(name),
+                entries,
+                entries.stream().mapToInt(LootEntry::weight).sum());
     }
 
-    boolean isEmpty() {
+    public boolean isEmpty() {
         return entries.isEmpty();
     }
 
-    static LootTable fromChestGenHooks(String name, ChestGenHooks hooks) {
+    public static LootTable fromChestGenHooks(String name, ChestGenHooks hooks) {
         WeightedRandomChestContent[] contents = hooks.getItems(new Random());
         if (contents == null) return null;
 
