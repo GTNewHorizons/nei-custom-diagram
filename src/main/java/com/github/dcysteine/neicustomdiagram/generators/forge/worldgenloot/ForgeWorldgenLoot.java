@@ -49,7 +49,6 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
 
     private final DiagramGroupInfo info;
 
-    private ImmutableList<Diagram> allDiagrams;
     private ImmutableListMultimap<ItemComponent, Diagram> itemToDiagrams;
 
     public ForgeWorldgenLoot(String groupId) {
@@ -82,10 +81,9 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
             }
         }
 
-        allDiagrams = diagramsBuilder.build();
         itemToDiagrams = multimapBuilder.build();
 
-        return new DiagramGroup(info, new CustomDiagramMatcher(allDiagrams, this::getDiagrams));
+        return new DiagramGroup(info, new CustomDiagramMatcher(diagramsBuilder.build(), this::getDiagrams));
     }
 
     private List<LootTable> collectTables() {
