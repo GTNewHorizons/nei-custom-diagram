@@ -23,7 +23,7 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.layout.SlotGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.matcher.CustomDiagramMatcher;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
-import com.github.dcysteine.neicustomdiagram.main.Registry;
+import com.github.dcysteine.neicustomdiagram.main.Mods;
 import com.github.dcysteine.neicustomdiagram.main.config.DiagramGroupVisibility;
 import com.github.dcysteine.neicustomdiagram.util.FluidDictUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechFluidDictUtil;
@@ -84,7 +84,7 @@ public final class ForgeFluidContainers implements DiagramGenerator {
 
     private List<Diagram> getDiagram(Interactable.RecipeType unused, Component component) {
         Optional<FluidComponent> fluidOptional = FluidDictUtil.getFluidContents(component);
-        if (!fluidOptional.isPresent() && Registry.ModDependency.GREGTECH_5.isLoaded()) {
+        if (!fluidOptional.isPresent() && Mods.GREGTECH_5.isLoaded()) {
             // Try looking up GregTech fluid display stack.
             if (component.type() == Component.ComponentType.ITEM) {
                 fluidOptional = GregTechFluidDictUtil.displayItemToFluid((ItemComponent) component);
@@ -130,7 +130,7 @@ public final class ForgeFluidContainers implements DiagramGenerator {
                                                 Tooltip.SLOT_FORMATTING))
                                 .build()));
 
-        if (Registry.ModDependency.GREGTECH_5.isLoaded()) {
+        if (Mods.GREGTECH_5.isLoaded()) {
             Optional<ItemComponent> displayItemOptional = GregTechFluidDictUtil.fluidToDisplayItem(fluid);
             displayItemOptional.ifPresent(
                     displayItem -> fluidsBuilder.insertIntoNextSlot(

@@ -20,6 +20,7 @@ public final class Lang {
 
     public static final Lang FORGE_FLUID_CONTAINERS = new Lang("neicustomdiagram.generators.forge.fluidcontainers.");
     public static final Lang FORGE_ORE_DICTIONARY = new Lang("neicustomdiagram.generators.forge.oredictionary.");
+    public static final Lang FORGE_WORLDGEN_LOOT = new Lang("neicustomdiagram.generators.forge.worldgenloot.");
 
     public static final Lang GREGTECH_5_CIRCUITS = new Lang("neicustomdiagram.generators.gregtech5.circuits.");
     public static final Lang GREGTECH_5_LENSES = new Lang("neicustomdiagram.generators.gregtech5.lenses.");
@@ -39,6 +40,10 @@ public final class Lang {
 
     private Lang(String prefix) {
         this.prefix = prefix;
+    }
+
+    public boolean canTranslate(String key) {
+        return StatCollector.canTranslate(prefix + key);
     }
 
     public String trans(String key) {

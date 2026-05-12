@@ -145,6 +145,8 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
                         : FluidComponent.createWithNbt(fluidStack);
 
                 return matcher.match(recipeType, fluidComponent);
+            case "all":
+                return matcher.all();
         }
 
         return ImmutableList.of();

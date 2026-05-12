@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import com.dreammaster.item.NHItemList;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
-import com.github.dcysteine.neicustomdiagram.main.Registry;
+import com.github.dcysteine.neicustomdiagram.main.Mods;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
@@ -129,7 +129,7 @@ class CircuitLineHandler {
     /** This method must be called before any other methods are called. */
     void initialize() {
         ImmutableList.Builder<CircuitLine> circuitLinesBuilder = ImmutableList.builder();
-        if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
+        if (Mods.GTNH_CORE_MOD.isLoaded()) {
             circuitLinesBuilder.add(
                     CircuitLine.builder().setStartTier(0).addCircuits(ItemComponent.create(NHItemList.CircuitULV.get()))
                             .addCircuits(ItemComponent.create(NHItemList.CircuitLV.get()))
@@ -228,7 +228,7 @@ class CircuitLineHandler {
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_Biowaresupercomputer),
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_Biomainframe))
                         .build());
-        if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
+        if (Mods.GREGTECH_5.isLoaded()) {
             circuitLinesBuilder.add(
                     CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Optical))
                             .setStartTier(8)
@@ -285,7 +285,7 @@ class CircuitLineHandler {
         circuitLines = circuitLinesBuilder.build();
 
         ImmutableList.Builder<CircuitLine> individualCircuitsBuilder = ImmutableList.builder();
-        if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
+        if (Mods.GTNH_CORE_MOD.isLoaded()) {
             individualCircuitsBuilder.add(
                     CircuitLine.builder().addBoard(ItemComponent.create(ItemList.NandChipArray.get(1))).setStartTier(0)
                             .addCircuit(GregTechOreDictUtil.getComponent(ItemList.NandChip)).build());
@@ -303,7 +303,7 @@ class CircuitLineHandler {
         individualCircuits = individualCircuitsBuilder.build();
 
         ImmutableList.Builder<ItemComponent> additionalDiagramItemsBuilder = ImmutableList.builder();
-        if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
+        if (Mods.GTNH_CORE_MOD.isLoaded()) {
             additionalDiagramItemsBuilder.add(ItemComponent.create(ItemList.NandChipArray.get(1)));
         }
         additionalDiagramItems = additionalDiagramItemsBuilder.build();
