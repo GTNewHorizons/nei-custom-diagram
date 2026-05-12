@@ -160,8 +160,7 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
                 .putSlotGroup(
                         SLOT_GROUP_KEY,
                         SlotGroup.builder(cols, rows, Grid.GRID.grid(6, 2), Grid.Direction.S).build())
-
-                .addInteractable(new AllDiagramsButton(info, Grid.GRID.grid(12, 0))).setPaddingBottom(6).build();
+                .setPaddingBottom(6).build();
     }
 
     @SuppressWarnings("unchecked")
