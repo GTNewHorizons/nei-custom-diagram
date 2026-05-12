@@ -1,5 +1,6 @@
 package com.github.dcysteine.neicustomdiagram.main;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -28,8 +29,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import codechicken.nei.api.API;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
 
 /** Registry of diagram generators. Add your diagram generator here! */
 public enum Registry {
@@ -49,115 +48,46 @@ public enum Registry {
         entriesBuilder.add(RegistryEntry.create("debug.nbtviewer", NbtViewer::new));
         entriesBuilder.add(RegistryEntry.create("debug.ruler", DebugRuler::new));
         entriesBuilder.add(
-                RegistryEntry.create(
-                        "enderstorage.chestoverview",
-                        EnderStorageChestOverview::new,
-                        ModDependency.ENDER_STORAGE));
+                RegistryEntry.create("enderstorage.chestoverview", EnderStorageChestOverview::new, Mods.ENDER_STORAGE));
         entriesBuilder.add(
-                RegistryEntry.create(
-                        "enderstorage.tankoverview",
-                        EnderStorageTankOverview::new,
-                        ModDependency.ENDER_STORAGE));
+                RegistryEntry.create("enderstorage.tankoverview", EnderStorageTankOverview::new, Mods.ENDER_STORAGE));
         entriesBuilder.add(RegistryEntry.create("forge.fluidcontainers", ForgeFluidContainers::new));
         entriesBuilder.add(RegistryEntry.create("forge.oredictionary", ForgeOreDictionary::new));
-        entriesBuilder.add(RegistryEntry.create("gregtech.circuits", GregTechCircuits::new, ModDependency.GREGTECH_5));
-        entriesBuilder.add(RegistryEntry.create("gregtech.lenses", GregTechLenses::new, ModDependency.GREGTECH_5));
-        entriesBuilder.add(
-                RegistryEntry.create("gregtech.materialparts", GregTechMaterialParts::new, ModDependency.GREGTECH_5));
-        entriesBuilder.add(
-                RegistryEntry.create("gregtech.materialtools", GregTechMaterialTools::new, ModDependency.GREGTECH_5));
-        entriesBuilder.add(
-                RegistryEntry.create("gregtech.oredictionary", GregTechOreDictionary::new, ModDependency.GREGTECH_5));
+        entriesBuilder.add(RegistryEntry.create("gregtech.circuits", GregTechCircuits::new, Mods.GREGTECH_5));
+        entriesBuilder.add(RegistryEntry.create("gregtech.lenses", GregTechLenses::new, Mods.GREGTECH_5));
+        entriesBuilder.add(RegistryEntry.create("gregtech.materialparts", GregTechMaterialParts::new, Mods.GREGTECH_5));
+        entriesBuilder.add(RegistryEntry.create("gregtech.materialtools", GregTechMaterialTools::new, Mods.GREGTECH_5));
+        entriesBuilder.add(RegistryEntry.create("gregtech.oredictionary", GregTechOreDictionary::new, Mods.GREGTECH_5));
+        entriesBuilder.add(RegistryEntry.create("gregtech.oreprefixes", GregTechOrePrefixes::new, Mods.GREGTECH_5));
+        entriesBuilder.add(RegistryEntry.create("gregtech.oreprocessing", GregTechOreProcessing::new, Mods.GREGTECH_5));
         entriesBuilder
-                .add(RegistryEntry.create("gregtech.oreprefixes", GregTechOrePrefixes::new, ModDependency.GREGTECH_5));
-        entriesBuilder.add(
-                RegistryEntry.create("gregtech.oreprocessing", GregTechOreProcessing::new, ModDependency.GREGTECH_5));
-        entriesBuilder.add(
-                RegistryEntry.create("gregtech.recipedebugger", GregTechRecipeDebugger::new, ModDependency.GREGTECH_5));
+                .add(RegistryEntry.create("gregtech.recipedebugger", GregTechRecipeDebugger::new, Mods.GREGTECH_5));
 
         entries = entriesBuilder.build();
-    }
-
-    public enum ModDependency {
-
-        // If you're adding a new mod dependency here, don't forget to also add it to the list of
-        // dependencies in NeiCustomDiagram.java (if necessary).
-        ENDER_STORAGE("EnderStorage"),
-
-        GTNH_CORE_MOD("dreamcraft"),
-
-        // GregTech 5 shares a mod ID with GregTech 6, so we must also check the mod version.
-        GREGTECH_5("gregtech") {
-
-            @Override
-            public boolean isLoaded() {
-                if (super.isLoaded()) {
-                    return !getVersion().startsWith("GT6");
-                } else {
-                    return false;
-                }
-            }
-        },
-
-        // GregTech5 add-ons
-        BARTWORKS("bartworks"),
-        GT_PLUS_PLUS("miscutils"),
-        DETRAV_SCANNER("detravscannermod"),
-
-        // GregTech 6 shares a mod ID with GregTech 5, so we must also check the mod version.
-        GREGTECH_6("gregtech") {
-
-            @Override
-            public boolean isLoaded() {
-                if (super.isLoaded()) {
-                    return getVersion().startsWith("GT6");
-                } else {
-                    return false;
-                }
-            }
-        };
-
-        public final String modId;
-
-        ModDependency(String modId) {
-            this.modId = modId;
-        }
-
-        public boolean isLoaded() {
-            return Loader.isModLoaded(modId);
-        }
-
-        public String getVersion() {
-            return getMod().getVersion();
-        }
-
-        public ModContainer getMod() {
-            return Loader.instance().getIndexedModList().get(modId);
-        }
     }
 
     @AutoValue
     protected abstract static class RegistryEntry {
 
         protected static RegistryEntry create(String groupIdSuffix,
-                Function<String, DiagramGenerator> generatorConstructor, ModDependency... hardDependencies) {
+                Function<String, DiagramGenerator> generatorConstructor, Mods... hardDependencies) {
             return new AutoValue_Registry_RegistryEntry(
                     GROUP_ID_PREFIX + groupIdSuffix,
                     generatorConstructor,
-                    ImmutableSet.copyOf(hardDependencies));
+                    Arrays.asList(hardDependencies));
         }
 
         protected abstract String groupId();
 
         protected abstract Function<String, DiagramGenerator> generatorConstructor();
 
-        protected abstract ImmutableSet<ModDependency> hardDependencies();
+        protected abstract List<Mods> hardDependencies();
 
         protected DiagramGenerator get() {
             return generatorConstructor().apply(groupId());
         }
 
-        protected List<ModDependency> missingDependencies() {
+        protected List<Mods> missingDependencies() {
             return hardDependencies().stream().filter(modDependency -> !modDependency.isLoaded())
                     .collect(Collectors.toList());
         }
@@ -175,7 +105,7 @@ public enum Registry {
         ImmutableList.Builder<DiagramGenerator> generatorsBuilder = ImmutableList.builder();
         ImmutableList.Builder<DiagramGroupInfo> infoListBuilder = ImmutableList.builder();
         for (RegistryEntry entry : entries) {
-            List<ModDependency> missingDependencies = entry.missingDependencies();
+            List<Mods> missingDependencies = entry.missingDependencies();
             if (!missingDependencies.isEmpty()) {
                 Logger.MOD.warn("Diagram group [{}] is missing dependencies: {}", entry.groupId(), missingDependencies);
                 continue;

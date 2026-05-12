@@ -14,7 +14,7 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent
 import com.github.dcysteine.neicustomdiagram.api.diagram.matcher.ComponentDiagramMatcher;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.main.Logger;
-import com.github.dcysteine.neicustomdiagram.main.Registry;
+import com.github.dcysteine.neicustomdiagram.main.Mods;
 import com.github.dcysteine.neicustomdiagram.util.DiagramUtil;
 import com.github.dcysteine.neicustomdiagram.util.bartworks.BartWorksOreDictUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
@@ -95,7 +95,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             buildDiagram(matcherBuilder, rawOres, trueRawOre);
         }
 
-        if (Registry.ModDependency.BARTWORKS.isLoaded()) {
+        if (Mods.BARTWORKS.isLoaded()) {
             for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
                 Optional<ItemComponent> rawOre = BartWorksOreDictUtil.getComponent(OrePrefixes.ore, werkstoff);
                 Optional<ItemComponent> trueRawOre = BartWorksOreDictUtil.getComponent(OrePrefixes.rawOre, werkstoff);
@@ -113,7 +113,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             }
         }
 
-        if (Registry.ModDependency.GT_PLUS_PLUS.isLoaded()) {
+        if (Mods.GT_PLUS_PLUS.isLoaded()) {
             for (Material material : Material.mMaterialMap) {
                 ItemStack ore = material.getOre(1);
                 ItemStack rawOre = material.getRawOre(1);
