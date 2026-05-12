@@ -228,7 +228,7 @@ class CircuitLineHandler {
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_Biowaresupercomputer),
                                 GregTechOreDictUtil.getComponent(ItemList.Circuit_Biomainframe))
                         .build());
-        if (Registry.ModDependency.GTNH_CORE_MOD.isLoaded()) {
+        if (Mods.GREGTECH_5.isLoaded()) {
             circuitLinesBuilder.add(
                     CircuitLine.builder().addBoard(GregTechOreDictUtil.getComponent(ItemList.Circuit_Board_Optical))
                             .setStartTier(8)
