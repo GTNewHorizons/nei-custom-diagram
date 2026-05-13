@@ -209,7 +209,7 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
         return CustomInteractable.builder(ComponentLabel.create(GLOBAL_ICON, Grid.GRID.grid(0, 0))).setTooltip(
                 Tooltip.create(Lang.ENDER_STORAGE_CHEST_OVERVIEW.trans("globalbutton"), Tooltip.SPECIAL_FORMATTING))
                 .setInteract(info.groupId() + LOOKUP_GLOBAL_CHESTS_SUFFIX).setDrawBackground(Draw::drawRaisedSlot)
-                .setDrawOverlay(pos -> Draw.drawOverlay(pos, Draw.Colour.OVERLAY_BLUE)).build();
+                .setDrawOverlay(Draw::drawHoverRaisedSlot).build();
     }
 
     private CustomInteractable buildPersonalButton() {
@@ -221,6 +221,6 @@ public final class EnderStorageChestOverview implements DiagramGenerator {
                                 .addTextLine(Lang.ENDER_STORAGE_CHEST_OVERVIEW.trans("personalitemlabel"))
                                 .addComponent(EnderStorageUtil.getPersonalItem()).build())
                 .setInteract(info.groupId() + LOOKUP_PERSONAL_CHESTS_SUFFIX).setDrawBackground(Draw::drawRaisedSlot)
-                .setDrawOverlay(pos -> Draw.drawOverlay(pos, Draw.Colour.OVERLAY_BLUE)).build();
+                .setDrawOverlay(Draw::drawHoverRaisedSlot).build();
     }
 }
