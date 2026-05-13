@@ -95,6 +95,7 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
             if (Lang.FORGE_WORLDGEN_LOOT.canTranslate("forge.loot." + name)) {
                 name = Lang.FORGE_WORLDGEN_LOOT.trans("forge.loot." + name);
             }
+            name = formatLootTableName(name);
 
             LootTable table = LootTable.fromChestGenHooks(name, entry.getValue());
             if (table != null) tables.add(table);
@@ -161,6 +162,13 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
                         SLOT_GROUP_KEY,
                         SlotGroup.builder(cols, rows, Grid.GRID.grid(6, 2), Grid.Direction.S).build())
                 .setPaddingBottom(6).build();
+    }
+
+    private String formatLootTableName(String name) {
+        if (Lang.FORGE_WORLDGEN_LOOT.canTranslate("loottitleformat")) {
+            return Lang.FORGE_WORLDGEN_LOOT.transf("loottitleformat", name);
+        }
+        return name;
     }
 
     @SuppressWarnings("unchecked")
