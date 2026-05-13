@@ -266,3 +266,5 @@ neicustomdiagram.generators.gregtech5.recipedebugger.extruderlabel=压模机合�
 neicustomdiagram.generators.gregtech5.recipedebugger.forgehammerlabel=锻造锤合成表
 neicustomdiagram.generators.gregtech5.recipedebugger.nanoforgelabel=Nano Forge recipe
 neicustomdiagram.generators.gregtech5.recipedebugger.pcbfactorylabel=PCB Factory recipe
+
+neicustomdiagram.generators.forge.worldgenloot.loottitleformat=%s

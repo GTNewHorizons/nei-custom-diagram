@@ -85,7 +85,7 @@ class DiagramHandler {
                                                 .transf("diagramcount", diagramListMultimap.get(view).size()))
                                 .build())
                 .setInteract(view.behaviorId(info)).setDrawBackground(Draw::drawRaisedSlot)
-                .setDrawOverlay(pos -> Draw.drawOverlay(pos, Draw.Colour.OVERLAY_BLUE)).build();
+                .setDrawOverlay(Draw::drawHoverRaisedSlot).build();
     }
 
     private Diagram buildMenuDiagram() {

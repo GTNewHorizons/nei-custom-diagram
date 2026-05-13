@@ -17,7 +17,7 @@ public class AllDiagramsButton extends CustomInteractable {
                 CustomInteractable.buildInteractionLambda(info.groupId()),
                 Draw::drawRaisedSlot,
                 position -> {},
-                position -> Draw.drawOverlay(position, Draw.Colour.OVERLAY_BLUE));
+                Draw::drawHoverRaisedSlot);
     }
 
     public AllDiagramsButton(DiagramGroupInfo info, Point pos) {

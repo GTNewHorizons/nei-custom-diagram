@@ -95,7 +95,6 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
             if (Lang.FORGE_WORLDGEN_LOOT.canTranslate("forge.loot." + name)) {
                 name = Lang.FORGE_WORLDGEN_LOOT.trans("forge.loot." + name);
             }
-
             LootTable table = LootTable.fromChestGenHooks(name, entry.getValue());
             if (table != null) tables.add(table);
         }
@@ -147,8 +146,9 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
     }
 
     private Layout buildLayout(String name, int itemCount) {
-        final String displayName = NEIClientUtils.cropText(GuiDraw.fontRenderer, name, Grid.TOTAL_WIDTH - 22);
-        final int displayNameWidth = GuiDraw.getStringWidth(displayName);
+        final String croppedName = NEIClientUtils.cropText(GuiDraw.fontRenderer, name, Grid.TOTAL_WIDTH - 22);
+        final String displayName = formatLootTableName(croppedName);
+        final int displayNameWidth = GuiDraw.getStringWidth(croppedName);
         final int labelX = displayNameWidth > Grid.TOTAL_WIDTH - 40 ? 11 : 0;
         final Text labelText = Text.builder(displayName, Grid.GRID.grid(6, 0).translate(labelX, 6), Grid.Direction.N)
                 .build();
@@ -161,6 +161,13 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
                         SLOT_GROUP_KEY,
                         SlotGroup.builder(cols, rows, Grid.GRID.grid(6, 2), Grid.Direction.S).build())
                 .setPaddingBottom(6).build();
+    }
+
+    private String formatLootTableName(String name) {
+        if (Lang.FORGE_WORLDGEN_LOOT.canTranslate("loottitleformat")) {
+            return Lang.FORGE_WORLDGEN_LOOT.transf("loottitleformat", name);
+        }
+        return name;
     }
 
     @SuppressWarnings("unchecked")
