@@ -53,7 +53,7 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
 
     public ForgeWorldgenLoot(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.FORGE_WORLDGEN_LOOT.trans("groupname"), groupId, ICON, 2)
-                .setUseCustomScroll(false).setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN)
+                .setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN)
                 .setDescription("This diagram displays world-gen loot tables registered via Forge ChestGenHooks.")
                 .build();
     }
@@ -160,7 +160,7 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
                 .putSlotGroup(
                         SLOT_GROUP_KEY,
                         SlotGroup.builder(cols, rows, Grid.GRID.grid(6, 2), Grid.Direction.S).build())
-                .setPaddingBottom(6).build();
+                .setPaddingBottom(4).build();
     }
 
     private String formatLootTableName(String name) {
