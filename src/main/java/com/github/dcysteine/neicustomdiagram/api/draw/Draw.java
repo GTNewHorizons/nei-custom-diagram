@@ -12,6 +12,7 @@ import com.github.dcysteine.neicustomdiagram.api.Formatter;
 import com.github.dcysteine.neicustomdiagram.api.diagram.layout.Grid;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.TooltipLine;
+import com.github.dcysteine.neicustomdiagram.api.draw.Draw.TextureData;
 import com.google.auto.value.AutoValue;
 
 import codechicken.lib.gui.GuiDraw;
@@ -47,10 +48,7 @@ public final class Draw {
         public static final int YELLOW = 0xFFFFFF00;
         public static final int MAGENTA = 0xFFFF00FF;
 
-        public static final int GUI_BG = 0xFFC6C6C6;
-        public static final int SLOT_BG = 0xFF8B8B8B;
         public static final int OVERLAY_WHITE = 0x80FFFFFF;
-        public static final int OVERLAY_BLUE = 0x800000FF;
 
         // Static class.
         private Colour() {}
@@ -65,6 +63,7 @@ public final class Draw {
         public static final TextureData SLOT = create(0, 0, 18, 18);
         public static final TextureData BIG_SLOT = create(18, 0, 26, 26);
         public static final TextureData RAISED_SLOT = create(0, 18, 18, 18);
+        public static final TextureData RAISED_SLOT_HOVER = create(0, 36, 18, 18);
 
         private static TextureData create(int x, int y, int w, int h) {
             return new AutoValue_Draw_TextureData(x, y, w, h);
@@ -262,6 +261,11 @@ public final class Draw {
     /** Draws a raised slot centered on the given point. */
     public static void drawRaisedSlot(Point pos) {
         drawTexture(TextureData.RAISED_SLOT, pos);
+    }
+
+    /** Draws a raised hover slot centered on the given point. */
+    public static void drawHoverRaisedSlot(Point pos) {
+        drawTexture(TextureData.RAISED_SLOT_HOVER, pos);
     }
 
     /** Draws the specified texture centered on the given point. */

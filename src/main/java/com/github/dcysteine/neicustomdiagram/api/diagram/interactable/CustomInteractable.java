@@ -84,6 +84,8 @@ public class CustomInteractable implements Interactable {
     @Override
     public void drawOverlay(DiagramState diagramState) {
         drawOverlay.accept(position());
+        drawable.draw(diagramState);
+        drawForeground.accept(position());
     }
 
     @Override
