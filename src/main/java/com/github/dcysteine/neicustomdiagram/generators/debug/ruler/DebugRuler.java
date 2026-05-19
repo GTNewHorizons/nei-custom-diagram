@@ -52,7 +52,7 @@ public final class DebugRuler implements DiagramGenerator {
 
     public DebugRuler(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.DEBUG_RULER.trans("groupname"), groupId, ICON, 1).setIgnoreNbt(false)
-                .setDefaultVisibility(DiagramGroupVisibility.DISABLED)
+                .setDefaultVisibility(DiagramGroupVisibility.DISABLED).setWidth(RULER_WIDTH_PIXELS)
                 .setDescription(
                         "This diagram has markings to measure the GUI height in pixels."
                                 + "\nYou can also use it to view NBT data for any item."

@@ -5,6 +5,7 @@ import java.util.Collection;
 import net.minecraft.init.Items;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.github.dcysteine.neicustomdiagram.api.diagram.AdaptiveWidthDiagramGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
@@ -47,7 +48,7 @@ public final class NbtViewer implements DiagramGenerator {
 
     @Override
     public DiagramGroup generate() {
-        return new DiagramGroup(info, new CustomDiagramMatcher(this::generateDiagrams));
+        return new AdaptiveWidthDiagramGroup(info, new CustomDiagramMatcher(this::generateDiagrams));
     }
 
     private Collection<Diagram> generateDiagrams(Interactable.RecipeType recipeType, Component component) {

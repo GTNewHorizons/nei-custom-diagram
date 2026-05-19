@@ -143,7 +143,7 @@ class LayoutHandler {
                                                 Lang.GREGTECH_5_CIRCUITS.trans("circuitpartsslot"),
                                                 Tooltip.SLOT_FORMATTING))
                                 .build())
-                .build();
+                .setPaddingBottom(4).build();
     }
 
     private Layout buildHeaderLayout() {

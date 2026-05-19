@@ -35,13 +35,11 @@ public abstract class DiagramGroupInfo {
     /** If {@code true}, then NBT data will be removed when looking up a component. */
     public abstract boolean ignoreNbt();
 
-    /**
-     * If {@code true}, then this diagram group will not use NEI's scroll bar, which is smaller and more compact.
-     *
-     * <p>
-     * The standard NEI scroll bar is usually better.
-     */
-    public abstract boolean useCustomScroll();
+    public abstract boolean allowOverflowX();
+
+    public abstract boolean allowOverflowY();
+
+    public abstract int width();
 
     /**
      * An optional predicate that will be used to filter out empty diagrams, if the config setting is enabled.
@@ -69,15 +67,15 @@ public abstract class DiagramGroupInfo {
     public abstract String description();
 
     public void buildHandlerInfo(HandlerInfo.Builder builder) {
-        builder.setDisplayStack(icon().stack()).setUseCustomScroll(useCustomScroll())
-                .setMultipleWidgetsAllowed(diagramsPerPage() > 1);
+        builder.setDisplayStack(icon().stack()).setAllowOverflowX(allowOverflowX()).setAllowOverflowY(allowOverflowY())
+                .setWidth(width()).setMultipleWidgetsAllowed(diagramsPerPage() > 1);
     }
 
     public static Builder builder(String groupName, String groupId, ItemComponent icon, int diagramsPerPage) {
         return new AutoValue_DiagramGroupInfo.Builder().setGroupName(groupName).setGroupId(groupId).setIcon(icon)
-                .setDiagramsPerPage(diagramsPerPage).setIgnoreNbt(true).setUseCustomScroll(true)
-                .setEmptyDiagramPredicate(diagram -> false).setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN)
-                .setDescription("");
+                .setDiagramsPerPage(diagramsPerPage).setIgnoreNbt(true).setAllowOverflowX(false)
+                .setAllowOverflowY(false).setWidth(166).setEmptyDiagramPredicate(diagram -> false)
+                .setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN).setDescription("");
     }
 
     public abstract Builder toBuilder();
@@ -93,7 +91,11 @@ public abstract class DiagramGroupInfo {
 
         public abstract Builder setDiagramsPerPage(int diagramsPerPage);
 
-        public abstract Builder setUseCustomScroll(boolean useCustomScroll);
+        public abstract Builder setAllowOverflowX(boolean allowOverflowX);
+
+        public abstract Builder setAllowOverflowY(boolean allowOverflowY);
+
+        public abstract Builder setWidth(int width);
 
         public abstract Builder setIgnoreNbt(boolean ignoreNbt);
 
