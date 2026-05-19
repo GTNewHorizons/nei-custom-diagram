@@ -100,7 +100,7 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
     @Override
     public int getRecipeHeight(int recipe) {
         final Diagram diagram = diagrams.get(recipe);
-        return diagram.dimension(diagramState).height() + 3;
+        return diagram.dimension(diagramState).height();
     }
 
     public DiagramGroup loadDiagrams(String id, Interactable.RecipeType recipeType, Object... stacks) {
