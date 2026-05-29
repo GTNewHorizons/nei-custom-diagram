@@ -102,7 +102,7 @@ public abstract class Lines implements Drawable {
         private final ImmutableList.Builder<Segment> arrowsBuilder;
 
         public Builder(Point pos) {
-            colour = Draw.Colour.BLACK;
+            colour = Draw.EnumColours.guiLines.getColor();
             currentPosition = pos;
 
             segmentsBuilder = ImmutableList.builder();

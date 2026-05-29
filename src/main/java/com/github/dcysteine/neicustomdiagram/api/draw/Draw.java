@@ -3,6 +3,7 @@ package com.github.dcysteine.neicustomdiagram.api.draw;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
@@ -48,10 +49,44 @@ public final class Draw {
         public static final int YELLOW = 0xFFFFFF00;
         public static final int MAGENTA = 0xFFFF00FF;
 
-        public static final int OVERLAY_WHITE = 0x80FFFFFF;
-
         // Static class.
         private Colour() {}
+    }
+
+    /**
+     * Overridable colours for resource packs.
+     *
+     * <p>
+     * Each entry exposes a localization key via {@link #getUnlocalized()} that resource packs can use to override the
+     * default colour value. The key format is {@code gui.color.neicustomdiagram.<name>}.
+     */
+    public enum EnumColours {
+
+        guiLines(0xFF000000),
+        guiOverlayWhite(0x80FFFFFF),
+
+        // Add more colors here
+        ; // leave trailing semicolon
+
+        private final int defaultColor;
+
+        EnumColours(int defaultColor) {
+            this.defaultColor = defaultColor;
+        }
+
+        public int getColor() {
+            String key = getUnlocalized();
+            if (StatCollector.canTranslate(key)) {
+                try {
+                    return (int) Long.parseLong(StatCollector.translateToLocal(key), 16);
+                } catch (NumberFormatException ignored) {}
+            }
+            return defaultColor;
+        }
+
+        public String getUnlocalized() {
+            return "gui.color.neicustomdiagram." + name();
+        }
     }
 
     /** Struct class holding coordinates for mod textures. */
