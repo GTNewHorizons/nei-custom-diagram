@@ -52,7 +52,7 @@ public abstract class Lines implements Drawable {
     }
 
     /** See {@link Draw.Colour} for colour encoding information. */
-    public abstract int colour();
+    public abstract Draw.EnumColours colour();
 
     public abstract ImmutableList<Segment> segments();
 
@@ -74,8 +74,8 @@ public abstract class Lines implements Drawable {
 
     @Override
     public void draw(DiagramState diagramState) {
-        segments().forEach(segment -> segment.drawSegment(colour()));
-        arrows().forEach(segment -> segment.drawArrow(colour()));
+        segments().forEach(segment -> segment.drawSegment(colour().getColor()));
+        arrows().forEach(segment -> segment.drawArrow(colour().getColor()));
     }
 
     @ToPrettyString
@@ -95,14 +95,14 @@ public abstract class Lines implements Drawable {
      */
     public static final class Builder {
 
-        private int colour;
+        private Draw.EnumColours colour;
         private Point currentPosition;
 
         private final ImmutableList.Builder<Segment> segmentsBuilder;
         private final ImmutableList.Builder<Segment> arrowsBuilder;
 
         public Builder(Point pos) {
-            colour = Draw.EnumColours.guiLines.getColor();
+            colour = Draw.EnumColours.guiLines;
             currentPosition = pos;
 
             segmentsBuilder = ImmutableList.builder();
@@ -110,7 +110,7 @@ public abstract class Lines implements Drawable {
         }
 
         /** See {@link Draw.Colour} for colour encoding information. */
-        public Builder setColour(int colour) {
+        public Builder setColour(Draw.EnumColours colour) {
             this.colour = colour;
             return this;
         }

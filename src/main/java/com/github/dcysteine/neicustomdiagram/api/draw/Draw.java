@@ -64,6 +64,8 @@ public final class Draw {
 
         guiLines(0xFF000000),
         guiOverlayWhite(0x80FFFFFF),
+        rulerColor1(Draw.Colour.RED),
+        rulerColor2(Draw.Colour.BLUE),
 
         // Add more colors here
         ; // leave trailing semicolon
