@@ -58,11 +58,11 @@ public final class Draw {
         private static final ColorResource.Factory color = new ColorResource.Factory("neicustomdiagram");
         public static final ColorResource
         // spotless:off
-            textColor       = color.argb("textColor",       "#FF0000FF"),
-            guiLines        = color.argb("guiLines",        "#FF000000"),
-            guiOverlayWhite = color.argb("guiOverlayWhite", "#80FFFFFF"),
-            rulerColor1     = color.argb("rulerColor1",     "#FFFF0000"),
-            rulerColor2     = color.argb("rulerColor2",     "#FF0000FF");
+            textColor       = color.argb("textColor",       "0xFF0000FF"),
+            guiLines        = color.argb("guiLines",        "0xFF000000"),
+            guiOverlayWhite = color.argb("guiOverlayWhite", "0x80FFFFFF"),
+            rulerColor1     = color.argb("rulerColor1",     "0xFFFF0000"),
+            rulerColor2     = color.argb("rulerColor2",     "0xFF0000FF");
         // spotless:on
     }
 
