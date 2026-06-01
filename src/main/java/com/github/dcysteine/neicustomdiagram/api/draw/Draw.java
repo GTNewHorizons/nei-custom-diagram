@@ -3,7 +3,6 @@ package com.github.dcysteine.neicustomdiagram.api.draw;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
@@ -15,6 +14,7 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.TooltipLine;
 import com.github.dcysteine.neicustomdiagram.api.draw.Draw.TextureData;
 import com.google.auto.value.AutoValue;
+import com.gtnewhorizon.gtnhlib.color.ColorResource;
 
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
@@ -53,42 +53,17 @@ public final class Draw {
         private Colour() {}
     }
 
-    /**
-     * Overridable colours for resource packs.
-     *
-     * <p>
-     * Each entry exposes a localization key via {@link #getUnlocalized()} that resource packs can use to override the
-     * default colour value. The key format is {@code gui.color.neicustomdiagram.<name>}.
-     */
-    public enum EnumColours {
+    public static class CustomColor {
 
-        guiLines(0xFF000000),
-        guiOverlayWhite(0x80FFFFFF),
-        rulerColor1(Draw.Colour.RED),
-        rulerColor2(Draw.Colour.BLUE),
-
-        // Add more colors here
-        ; // leave trailing semicolon
-
-        private final int defaultColor;
-
-        EnumColours(int defaultColor) {
-            this.defaultColor = defaultColor;
-        }
-
-        public int getColor() {
-            String key = getUnlocalized();
-            if (StatCollector.canTranslate(key)) {
-                try {
-                    return (int) Long.parseLong(StatCollector.translateToLocal(key), 16);
-                } catch (NumberFormatException ignored) {}
-            }
-            return defaultColor;
-        }
-
-        public String getUnlocalized() {
-            return "gui.color.neicustomdiagram." + name();
-        }
+        private static final ColorResource.Factory color = new ColorResource.Factory("neicustomdiagram");
+        public static final ColorResource
+        // spotless:off
+            textColor       = color.argb("textColor",       "FF0000FF"),
+            guiLines        = color.argb("guiLines",        "FF000000"),
+            guiOverlayWhite = color.argb("guiOverlayWhite", "80FFFFFF"),
+            rulerColor1     = color.argb("rulerColor1",     "FFFF0000"),
+            rulerColor2     = color.argb("rulerColor2",     "FF0000FF");
+        // spotless:on
     }
 
     /** Struct class holding coordinates for mod textures. */

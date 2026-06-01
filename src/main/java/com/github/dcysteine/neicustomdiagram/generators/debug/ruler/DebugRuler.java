@@ -83,8 +83,8 @@ public final class DebugRuler implements DiagramGenerator {
     private static Layout buildLayout() {
         Layout.Builder layoutBuilder = Layout.builder();
 
-        Lines.Builder rulerColour1 = Lines.builder(Point.create(0, 0)).setColour(Draw.EnumColours.rulerColor1);
-        Lines.Builder rulerColour2 = Lines.builder(Point.create(0, 0)).setColour(Draw.EnumColours.rulerColor2);
+        Lines.Builder rulerColour1 = Lines.builder(Point.create(0, 0)).setColour(Draw.CustomColor.rulerColor1);
+        Lines.Builder rulerColour2 = Lines.builder(Point.create(0, 0)).setColour(Draw.CustomColor.rulerColor2);
         for (int i = RULER_SEGMENT_PIXELS; i <= RULER_WIDTH_PIXELS; i += RULER_SEGMENT_PIXELS) {
             Lines.Builder linesBuilder = i % (2 * RULER_SEGMENT_PIXELS) > 0 ? rulerColour1 : rulerColour2;
 
