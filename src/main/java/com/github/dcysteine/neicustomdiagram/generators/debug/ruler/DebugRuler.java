@@ -41,8 +41,6 @@ public final class DebugRuler implements DiagramGenerator {
     private static final int RULER_HEIGHT_SLOTS = 2 * Grid.GRID_HEIGHT;
 
     private static final int RULER_SEGMENT_PIXELS = 10;
-    private static final int RULER_COLOUR_1 = Draw.Colour.RED;
-    private static final int RULER_COLOUR_2 = Draw.Colour.BLUE;
 
     /** Format this with the slot {@code x}-index and {@code y}-index. */
     private static final String SLOT_KEY_FORMAT_STRING = "slot(%d,%d)";
