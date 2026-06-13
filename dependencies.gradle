@@ -1,5 +1,10 @@
 // Add your dependencies here
 
+configurations.create('gtnhlibEmbed') {
+    canBeConsumed = false
+    canBeResolved = true
+}
+
 dependencies {
     compileOnly('com.google.auto.value:auto-value-annotations:1.8.2')
     annotationProcessor('com.google.auto.value:auto-value:1.8.2')
@@ -12,4 +17,13 @@ dependencies {
 
     devOnlyNonPublishable('com.github.GTNewHorizons:Roguelike-Dungeons:1.6.6-GTNH:dev') { transitive = false }
     devOnlyNonPublishable('com.github.GTNewHorizons:twilightforest:2.7.33:dev') { transitive = false }
+
+    compileOnly("com.github.GTNewHorizons:GTNHLib:0.11.14:dev") { transitive = false }
+    gtnhlibEmbed("com.github.GTNewHorizons:GTNHLib:0.11.14:dev") { transitive = false }
+}
+
+tasks.jar {
+    from({ project.configurations.getByName('gtnhlibEmbed').collect { zipTree(it) } }) {
+        include 'com/gtnewhorizon/gtnhlib/color/ColorResource.class'
+    }
 }
