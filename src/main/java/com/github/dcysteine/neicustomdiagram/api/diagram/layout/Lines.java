@@ -10,6 +10,7 @@ import com.google.auto.value.extension.toprettystring.ToPrettyString;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.gtnewhorizon.gtnhlib.color.ColorResource;
 
 /**
  * Immutable class holding line segments and arrows.
@@ -51,8 +52,8 @@ public abstract class Lines implements Drawable {
         }
     }
 
-    /** See {@link Draw.Colour} for colour encoding information. */
-    public abstract int colour();
+    /** See {@link Draw.CustomColor} for colour encoding information. */
+    public abstract ColorResource colour();
 
     public abstract ImmutableList<Segment> segments();
 
@@ -74,8 +75,8 @@ public abstract class Lines implements Drawable {
 
     @Override
     public void draw(DiagramState diagramState) {
-        segments().forEach(segment -> segment.drawSegment(colour()));
-        arrows().forEach(segment -> segment.drawArrow(colour()));
+        segments().forEach(segment -> segment.drawSegment(colour().getColor()));
+        arrows().forEach(segment -> segment.drawArrow(colour().getColor()));
     }
 
     @ToPrettyString
@@ -95,14 +96,14 @@ public abstract class Lines implements Drawable {
      */
     public static final class Builder {
 
-        private int colour;
+        private ColorResource colour;
         private Point currentPosition;
 
         private final ImmutableList.Builder<Segment> segmentsBuilder;
         private final ImmutableList.Builder<Segment> arrowsBuilder;
 
         public Builder(Point pos) {
-            colour = Draw.Colour.BLACK;
+            colour = Draw.CustomColor.guiLines;
             currentPosition = pos;
 
             segmentsBuilder = ImmutableList.builder();
@@ -110,7 +111,7 @@ public abstract class Lines implements Drawable {
         }
 
         /** See {@link Draw.Colour} for colour encoding information. */
-        public Builder setColour(int colour) {
+        public Builder setColour(ColorResource colour) {
             this.colour = colour;
             return this;
         }

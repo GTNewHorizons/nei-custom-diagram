@@ -41,8 +41,6 @@ public final class DebugRuler implements DiagramGenerator {
     private static final int RULER_HEIGHT_SLOTS = 2 * Grid.GRID_HEIGHT;
 
     private static final int RULER_SEGMENT_PIXELS = 10;
-    private static final int RULER_COLOUR_1 = Draw.Colour.RED;
-    private static final int RULER_COLOUR_2 = Draw.Colour.BLUE;
 
     /** Format this with the slot {@code x}-index and {@code y}-index. */
     private static final String SLOT_KEY_FORMAT_STRING = "slot(%d,%d)";
@@ -83,8 +81,8 @@ public final class DebugRuler implements DiagramGenerator {
     private static Layout buildLayout() {
         Layout.Builder layoutBuilder = Layout.builder();
 
-        Lines.Builder rulerColour1 = Lines.builder(Point.create(0, 0)).setColour(RULER_COLOUR_1);
-        Lines.Builder rulerColour2 = Lines.builder(Point.create(0, 0)).setColour(RULER_COLOUR_2);
+        Lines.Builder rulerColour1 = Lines.builder(Point.create(0, 0)).setColour(Draw.CustomColor.rulerColor1);
+        Lines.Builder rulerColour2 = Lines.builder(Point.create(0, 0)).setColour(Draw.CustomColor.rulerColor2);
         for (int i = RULER_SEGMENT_PIXELS; i <= RULER_WIDTH_PIXELS; i += RULER_SEGMENT_PIXELS) {
             Lines.Builder linesBuilder = i % (2 * RULER_SEGMENT_PIXELS) > 0 ? rulerColour1 : rulerColour2;
 

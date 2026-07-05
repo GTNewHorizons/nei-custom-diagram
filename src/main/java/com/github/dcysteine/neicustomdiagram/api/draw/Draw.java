@@ -14,6 +14,7 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.Tooltip;
 import com.github.dcysteine.neicustomdiagram.api.diagram.tooltip.TooltipLine;
 import com.github.dcysteine.neicustomdiagram.api.draw.Draw.TextureData;
 import com.google.auto.value.AutoValue;
+import com.gtnewhorizon.gtnhlib.color.ColorResource;
 
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
@@ -48,10 +49,21 @@ public final class Draw {
         public static final int YELLOW = 0xFFFFFF00;
         public static final int MAGENTA = 0xFFFF00FF;
 
-        public static final int OVERLAY_WHITE = 0x80FFFFFF;
-
         // Static class.
         private Colour() {}
+    }
+
+    public static class CustomColor {
+
+        private static final ColorResource.Factory color = new ColorResource.Factory("neicustomdiagram");
+        public static final ColorResource
+        // spotless:off
+            textColor       = color.argb("textColor",       "0xFF0000FF"),
+            guiLines        = color.argb("guiLines",        "0xFF000000"),
+            guiOverlayWhite = color.argb("guiOverlayWhite", "0x80FFFFFF"),
+            rulerColor1     = color.argb("rulerColor1",     "0xFFFF0000"),
+            rulerColor2     = color.argb("rulerColor2",     "0xFF0000FF");
+        // spotless:on
     }
 
     /** Struct class holding coordinates for mod textures. */
