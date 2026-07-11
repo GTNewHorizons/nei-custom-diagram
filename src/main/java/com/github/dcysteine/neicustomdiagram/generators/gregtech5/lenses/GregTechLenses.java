@@ -1,5 +1,7 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.lenses;
 
+import net.minecraft.init.Items;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGenerator;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroup;
 import com.github.dcysteine.neicustomdiagram.api.diagram.DiagramGroupInfo;
@@ -14,7 +16,7 @@ import gregtech.api.enums.OrePrefixes;
 public final class GregTechLenses implements DiagramGenerator {
 
     public static final ItemComponent ICON = GregTechOreDictUtil.getComponent(OrePrefixes.lens, Materials.Emerald)
-            .get();
+            .orElseGet(() -> ItemComponent.create(Items.emerald, 0));
 
     private final DiagramGroupInfo info;
 
