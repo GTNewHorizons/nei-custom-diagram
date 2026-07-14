@@ -24,7 +24,7 @@ public class StorageListener {
     @SubscribeEvent
     public static void clientStorageUpdate(EnderStorageStoredEvent event) {
         Recipe.RecipeId recipeId = GuiRecipe_Accessor.invokeGetCurrentRecipeId(Minecraft.getMinecraft().currentScreen);
-        String currentId = recipeId == null ? "" : recipeId.getHandleName();
+        String currentId = recipeId == null ? "" : recipeId.getHandlerName();
         String id;
         switch (event.type) {
             case EnderStorageStoredEvent.TYPE_ITEM:
