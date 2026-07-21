@@ -27,9 +27,6 @@ public final class GregTechDiagramUtil {
         if (material.isRadioactive() || material.mHeatDamage != 0) {
             tooltipBuilder.addSpacing().setFormatting(Tooltip.URGENT_FORMATTING);
 
-            if (material.isRadioactive()) {
-                tooltipBuilder.addTextLine(Lang.GREGTECH_5_UTIL.trans("materialinforadioactive"));
-            }
             if (material.mHeatDamage > 0) {
                 tooltipBuilder.addTextLine(Lang.GREGTECH_5_UTIL.trans("materialinfohot"));
             } else if (material.mHeatDamage < 0) {
