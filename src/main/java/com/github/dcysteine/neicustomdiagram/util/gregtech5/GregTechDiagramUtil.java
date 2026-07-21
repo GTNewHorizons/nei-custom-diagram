@@ -24,7 +24,7 @@ public final class GregTechDiagramUtil {
                 .addTextLine(GregTechFormatting.getMaterialDescription(material)).setFormatting(Tooltip.INFO_FORMATTING)
                 .addTextLine(material.getChemicalFormula());
 
-        if (material.isRadioactive() || material.mHeatDamage != 0) {
+        if (material.mHeatDamage != 0) {
             tooltipBuilder.addSpacing().setFormatting(Tooltip.URGENT_FORMATTING);
 
             if (material.mHeatDamage > 0) {
