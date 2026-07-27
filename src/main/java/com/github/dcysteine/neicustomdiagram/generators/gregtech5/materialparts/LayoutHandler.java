@@ -34,6 +34,8 @@ class LayoutHandler {
         static final Layout.SlotKey BARS = Layout.SlotKey.create("bars");
         static final Layout.SlotKey FRAME_BOX = Layout.SlotKey.create("frame-box");
         static final Layout.SlotKey SHEET_METAL = Layout.SlotKey.create("sheet-metal");
+        static final Layout.SlotKey BOLTED_CASING = Layout.SlotKey.create("bolted-casing");
+        static final Layout.SlotKey REBOLTED_CASING = Layout.SlotKey.create("rebolted-casing");
 
         static final Layout.SlotKey FINE_WIRE = Layout.SlotKey.create("fine-wire");
     }
@@ -107,6 +109,8 @@ class LayoutHandler {
         optionalLayoutsBuilder.add(buildBarsLayout());
         optionalLayoutsBuilder.add(buildFrameBoxLayout());
         optionalLayoutsBuilder.add(buildSheetMetalLayout());
+        optionalLayoutsBuilder.add(buildBoltedCasingLayout());
+        optionalLayoutsBuilder.add(buildReboltedCasingLayout());
         optionalLayoutsBuilder.add(buildWiresLayout());
         optionalLayoutsBuilder.add(buildFineWireLayout());
         optionalLayoutsBuilder.add(buildCablesLayout());
@@ -386,6 +390,32 @@ class LayoutHandler {
                 Slot.builder(Grid.GRID.grid(12, 18)).setTooltip(
                         Tooltip.create(Lang.GREGTECH_5_MATERIAL_PARTS.trans("sheetmetalslot"), Tooltip.SLOT_FORMATTING))
                         .build())
+                .build();
+    }
+
+    private Layout buildBoltedCasingLayout() {
+        return Layout.builder()
+                .putSlot(
+                        SlotKeys.BOLTED_CASING,
+                        Slot.builder(Grid.GRID.grid(8, 18))
+                                .setTooltip(
+                                        Tooltip.create(
+                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("boltedcasingslot"),
+                                                Tooltip.SLOT_FORMATTING))
+                                .build())
+                .build();
+    }
+
+    private Layout buildReboltedCasingLayout() {
+        return Layout.builder()
+                .putSlot(
+                        SlotKeys.REBOLTED_CASING,
+                        Slot.builder(Grid.GRID.grid(10, 18))
+                                .setTooltip(
+                                        Tooltip.create(
+                                                Lang.GREGTECH_5_MATERIAL_PARTS.trans("reboltedcasingslot"),
+                                                Tooltip.SLOT_FORMATTING))
+                                .build())
                 .build();
     }
 
