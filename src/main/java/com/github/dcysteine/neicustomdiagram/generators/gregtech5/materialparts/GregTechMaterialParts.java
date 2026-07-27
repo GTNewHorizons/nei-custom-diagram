@@ -24,7 +24,9 @@ import com.google.common.collect.Lists;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.interfaces.IOreMaterial;
 import gregtech.api.objects.ItemData;
+import gtPlusPlus.core.material.Material;
 
 /** Generates part diagrams for GregTech materials. */
 public final class GregTechMaterialParts implements DiagramGenerator {
@@ -39,7 +41,7 @@ public final class GregTechMaterialParts implements DiagramGenerator {
     private final RelatedMaterialsHandler relatedMaterialsHandler;
     private final DiagramFactory diagramFactory;
 
-    private ImmutableBiMap<Materials, Diagram> materialsMap;
+    private ImmutableBiMap<IOreMaterial, Diagram> materialsMap;
 
     public GregTechMaterialParts(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.GREGTECH_5_MATERIAL_PARTS.trans("groupname"), groupId, ICON, 1)
@@ -71,8 +73,11 @@ public final class GregTechMaterialParts implements DiagramGenerator {
         relatedMaterialsHandler.initialize();
         diagramFactory.initialize();
 
-        ImmutableBiMap.Builder<Materials, Diagram> materialsMapBuilder = ImmutableBiMap.builder();
+        ImmutableBiMap.Builder<IOreMaterial, Diagram> materialsMapBuilder = ImmutableBiMap.builder();
         for (Materials material : Materials.getAll()) {
+            materialsMapBuilder.put(material, diagramFactory.buildDiagram(material));
+        }
+        for (Material material : Material.mMaterialMap) {
             materialsMapBuilder.put(material, diagramFactory.buildDiagram(material));
         }
         materialsMap = materialsMapBuilder.build();
@@ -85,20 +90,33 @@ public final class GregTechMaterialParts implements DiagramGenerator {
         // Try handling fluids and fluid display stacks by converting into a filled cell.
         component = GregTechFluidDictUtil.fillCell(component).map(Component.class::cast).orElse(component);
 
+        // GT material
         Optional<ItemData> itemDataOptional = GregTechOreDictUtil.getItemData(component);
         if (itemDataOptional.isPresent() && itemDataOptional.get().mMaterial != null) {
             Materials material = itemDataOptional.get().mMaterial.mMaterial;
             if (material != null) {
-                if (materialsMap.containsKey(material)) {
-                    return Lists.newArrayList(materialsMap.get(material));
-                } else {
-                    Logger.GREGTECH_5_MATERIAL_PARTS.error(
-                            "Did not generate diagram for material: {}",
-                            GregTechFormatting.getMaterialDescription(material));
-                }
+                return getDiagram(material);
             }
         }
 
+        // GT++ material
+        Optional<Material> materialOptional = GregTechOreDictUtil.getGTPPMaterial(component);
+        if (materialOptional.isPresent()) {
+            Material material = materialOptional.get();
+            return getDiagram(material);
+        }
+
+        return Lists.newArrayList();
+    }
+
+    private List<Diagram> getDiagram(IOreMaterial material) {
+        if (materialsMap.containsKey(material)) {
+            return Lists.newArrayList(materialsMap.get(material));
+        } else {
+            Logger.GREGTECH_5_MATERIAL_PARTS.error(
+                    "Did not generate diagram for material: {}",
+                    GregTechFormatting.getMaterialDescription(material));
+        }
         return Lists.newArrayList();
     }
 }
