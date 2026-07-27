@@ -101,15 +101,6 @@ class DiagramFactory {
                         .insertEachSafe(getPrefixComponents(prefixes, material));
             }
         }
-
-        private void insertIntoSlot(Diagram.Builder builder, Material material) {
-            if (prefixes.size() == 1) {
-                builder.insertIntoSlot((Layout.SlotKey) slotKey, getPrefixComponents(prefixes, material));
-            } else {
-                builder.autoInsertIntoSlotGroup((Layout.SlotGroupKey) slotKey)
-                        .insertEachSafe(getPrefixComponents(prefixes, material));
-            }
-        }
     }
 
     private final LayoutHandler layoutHandler;
