@@ -1,10 +1,8 @@
 package com.github.dcysteine.neicustomdiagram.generators.gregtech5.oreprocessing;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
@@ -15,21 +13,16 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent
 import com.github.dcysteine.neicustomdiagram.api.diagram.matcher.ComponentDiagramMatcher;
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.main.Logger;
-import com.github.dcysteine.neicustomdiagram.main.Mods;
 import com.github.dcysteine.neicustomdiagram.util.DiagramUtil;
-import com.github.dcysteine.neicustomdiagram.util.bartworks.BartWorksOreDictUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.common.collect.ImmutableList;
+import com.ruling_0.materiallib.api.Material;
+import com.ruling_0.materiallib.api.MaterialLibAPI;
 
-import bartworks.system.material.Werkstoff;
-import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.common.ores.GTOreAdapter;
-import gregtech.common.ores.GTPPOreAdapter;
+import gregtech.api.enums.materials.Materials;
 import gregtech.common.ores.OreInfo;
 import gregtech.common.ores.OreManager;
-import gtPlusPlus.core.block.base.BlockBaseOre;
-import gtPlusPlus.core.material.Material;
 
 /** Generates ore processing diagrams for GregTech ores. */
 public final class GregTechOreProcessing implements DiagramGenerator {
@@ -94,9 +87,7 @@ public final class GregTechOreProcessing implements DiagramGenerator {
 
         ComponentDiagramMatcher.Builder matcherBuilder = ComponentDiagramMatcher.builder();
 
-        for (Materials material : Materials.getAll()) {
-            if (!material.hasOresItems()) continue;
-
+        for (Material material : MaterialLibAPI.getMaterials()) {
             List<ItemComponent> rawOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.ore, material);
             if (rawOres.isEmpty()) {
                 continue;
@@ -108,41 +99,6 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             Optional<ItemComponent> trueRawOre = GregTechOreDictUtil.getComponent(OrePrefixes.rawOre, material);
 
             buildDiagram(matcherBuilder, rawOres, trueRawOre);
-        }
-
-        if (Mods.BARTWORKS.isLoaded()) {
-            for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
-                Optional<ItemComponent> rawOre = BartWorksOreDictUtil.getComponent(OrePrefixes.ore, werkstoff);
-                Optional<ItemComponent> trueRawOre = BartWorksOreDictUtil.getComponent(OrePrefixes.rawOre, werkstoff);
-                if (!rawOre.isPresent()) {
-                    continue;
-                }
-
-                List<ItemComponent> rawOres = new ArrayList<>();
-                rawOres.add(rawOre.get());
-
-                OTHER_ORE_PREFIXES.forEach(
-                        prefix -> BartWorksOreDictUtil.getComponent(prefix, werkstoff).ifPresent(rawOres::add));
-
-                buildDiagram(matcherBuilder, rawOres, trueRawOre);
-            }
-        }
-
-        if (Mods.GT_PLUS_PLUS.isLoaded()) {
-            for (Material material : Material.mMaterialMap) {
-                ItemStack ore = material.getOre(1);
-                ItemStack rawOre = material.getRawOre(1);
-                if (ore == null || !isGtPlusPlusOreBlock(ore)) {
-                    // Skip non-GT++ ore blocks (e.g. materials merged into a vanilla GT material, whose ore is
-                    // already covered by the Materials loop above) to avoid duplicate diagrams.
-                    continue;
-                }
-
-                buildDiagram(
-                        matcherBuilder,
-                        ImmutableList.of(ItemComponent.create(ore)),
-                        Optional.of(ItemComponent.create(rawOre)));
-            }
         }
 
         return new DiagramGroup(info, matcherBuilder.build());
@@ -162,18 +118,8 @@ public final class GregTechOreProcessing implements DiagramGenerator {
     }
 
     static boolean isGregTechOreBlock(ItemComponent itemComponent) {
-        try (OreInfo<?> oreInfo = OreManager.getOreInfo(itemComponent.stack())) {
+        try (OreInfo oreInfo = OreManager.getOreInfo(itemComponent.stack())) {
             return oreInfo != null;
         }
-    }
-
-    /**
-     * True for gtPlusPlus ore blocks specifically, whether backed by the legacy {@link BlockBaseOre} class or a
-     * MaterialLib-migrated block. Materials merged into a vanilla GT material resolve through {@link GTOreAdapter}
-     * instead and are intentionally excluded here (see {@link GTPPOreAdapter} class doc).
-     */
-    private static boolean isGtPlusPlusOreBlock(ItemStack ore) {
-        Block block = Block.getBlockFromItem(ore.getItem());
-        return GTPPOreAdapter.INSTANCE.supports(block, ItemComponent.getItemDamage(ore));
     }
 }
