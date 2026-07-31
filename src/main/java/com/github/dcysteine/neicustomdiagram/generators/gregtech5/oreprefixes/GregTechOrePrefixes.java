@@ -28,9 +28,10 @@ import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechFormatting;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Lists;
+import com.ruling_0.materiallib.api.Material;
+import com.ruling_0.materiallib.api.MaterialLibAPI;
 
 import gregtech.api.enums.ItemList;
-import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.objects.ItemData;
 
@@ -47,7 +48,7 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
     private static final Layout.SlotGroupKey SLOT_GROUP_KEY = Layout.SlotGroupKey.create("key");
 
     private final DiagramGroupInfo info;
-    private ImmutableBiMap<Materials, Diagram> materialsMap;
+    private ImmutableBiMap<Material, Diagram> materialsMap;
 
     public GregTechOrePrefixes(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.GREGTECH_5_ORE_PREFIXES.trans("groupname"), groupId, ICON, 2)
@@ -68,8 +69,8 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
 
     @Override
     public DiagramGroup generate() {
-        ImmutableBiMap.Builder<Materials, Diagram> materialsMapBuilder = ImmutableBiMap.builder();
-        for (Materials material : Materials.getAll()) {
+        ImmutableBiMap.Builder<Material, Diagram> materialsMapBuilder = ImmutableBiMap.builder();
+        for (Material material : MaterialLibAPI.getMaterials()) {
             materialsMapBuilder.put(material, generateDiagram(material));
         }
         materialsMap = materialsMapBuilder.build();
@@ -77,7 +78,7 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
         return new DiagramGroup(info, new CustomDiagramMatcher(materialsMap.values(), this::getDiagram));
     }
 
-    private Diagram generateDiagram(Materials material) {
+    private Diagram generateDiagram(Material material) {
         List<DisplayComponent> components = new ArrayList<>();
         for (OrePrefixes prefix : OrePrefixes.VALUES) {
             Optional<ItemComponent> componentOptional = GregTechOreDictUtil.getComponent(prefix, material);
@@ -106,7 +107,7 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
 
         Optional<ItemData> itemDataOptional = GregTechOreDictUtil.getItemData(component);
         if (itemDataOptional.isPresent() && itemDataOptional.get().mMaterial != null) {
-            Materials material = itemDataOptional.get().mMaterial.mMaterial;
+            Material material = itemDataOptional.get().mMaterial.mMaterial;
             if (material != null) {
                 if (materialsMap.containsKey(material)) {
                     return Lists.newArrayList(materialsMap.get(material));
@@ -121,7 +122,7 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
         return Lists.newArrayList();
     }
 
-    private Layout buildLayout(Materials material, int itemsCount) {
+    private Layout buildLayout(Material material, int itemsCount) {
         final int rows = Math.max(1, (itemsCount + 8) / 9);
 
         return Layout.builder().addInteractable(new AllDiagramsButton(info, Grid.GRID.grid(0, 0)))

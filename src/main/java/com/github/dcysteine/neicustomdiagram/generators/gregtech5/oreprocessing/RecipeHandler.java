@@ -26,7 +26,8 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 
-import gregtech.api.enums.Materials;
+import gregtech.api.enums.materials.Materials;
+import gregtech.api.material.MaterialUtils;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
@@ -66,9 +67,10 @@ class RecipeHandler {
      */
     enum ChemicalBathFluid {
 
-        MERCURY(ItemComponent.create(GTUtility.getFluidDisplayStack(Materials.Mercury.mFluid))),
+        MERCURY(ItemComponent.create(GTUtility.getFluidDisplayStack(MaterialUtils.fluidOf(Materials.Mercury)))),
 
-        SODIUM_PERSULFATE(ItemComponent.create(GTUtility.getFluidDisplayStack(Materials.SodiumPersulfate.mFluid)));
+        SODIUM_PERSULFATE(ItemComponent
+                .create(GTUtility.getFluidDisplayStack(MaterialUtils.fluidOf(Materials.SodiumPersulfate))));
 
         final ItemComponent fluid;
 

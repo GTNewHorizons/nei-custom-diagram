@@ -1,30 +1,28 @@
 package com.github.dcysteine.neicustomdiagram.util.gregtech5;
 
-import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
+import net.minecraft.util.StatCollector;
 
-import gregtech.api.enums.Materials;
-import gregtech.api.interfaces.IOreMaterial;
-import gtPlusPlus.core.material.Material;
+import com.github.dcysteine.neicustomdiagram.main.config.ConfigOptions;
+import com.ruling_0.materiallib.api.Material;
+
+import gregtech.api.material.MaterialUtils;
 
 public final class GregTechFormatting {
 
     // Static class.
     private GregTechFormatting() {}
 
-    private static String getMaterialName(IOreMaterial material) {
-        String fallback = "";
-        if (material instanceof Materials gtMaterial) {
-            fallback = gtMaterial.mName;
-        } else if (material instanceof Material gtppMaterial) {
-            fallback = gtppMaterial.getInternalName();
+    private static String getMaterialName(Material material) {
+        String key = MaterialUtils.localizedNameKey(material);
+        if (key != null && StatCollector.canTranslate(key)) {
+            return StatCollector.translateToLocal(key);
         }
-        return material.getLocalizedName().equals("null") ? fallback : material.getLocalizedName();
+        return MaterialUtils.internalName(material);
     }
 
-    public static String getMaterialDescription(IOreMaterial material) {
-        // Only GT materials have IDs, GTPP materials do not
-        if (ConfigOptions.SHOW_IDS.get() && material instanceof Materials gtMaterial) {
-            return String.format("%s (#%d)", getMaterialName(material), gtMaterial.mMetaItemSubID);
+    public static String getMaterialDescription(Material material) {
+        if (ConfigOptions.SHOW_IDS.get()) {
+            return String.format("%s (#%d)", getMaterialName(material), MaterialUtils.oldSubId(material));
         } else {
             return getMaterialName(material);
         }

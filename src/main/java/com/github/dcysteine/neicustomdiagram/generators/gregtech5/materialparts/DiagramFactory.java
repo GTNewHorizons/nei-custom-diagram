@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
@@ -28,17 +29,16 @@ import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechDiagramUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechFluidDictUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.common.collect.ImmutableList;
+import com.ruling_0.materiallib.api.Material;
 
 import gregtech.api.enums.ItemList;
-import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.interfaces.IOreMaterial;
+import gregtech.api.material.MaterialUtils;
+import gregtech.api.material.MaterialUtils.CrackType;
 import gregtech.api.objects.ItemData;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
-import gtPlusPlus.core.item.base.BaseItemComponent;
-import gtPlusPlus.core.material.Material;
 
 class DiagramFactory {
 
@@ -95,7 +95,7 @@ class DiagramFactory {
             this.prefixes = ImmutableList.copyOf(prefixes);
         }
 
-        private void insertIntoSlot(Diagram.Builder builder, IOreMaterial material) {
+        private void insertIntoSlot(Diagram.Builder builder, Material material) {
             if (prefixes.size() == 1) {
                 builder.insertIntoSlot((Layout.SlotKey) slotKey, getPrefixComponents(prefixes, material));
             } else {
@@ -108,7 +108,7 @@ class DiagramFactory {
     private final LayoutHandler layoutHandler;
     private final HeatingCoilHandler heatingCoilHandler;
     private final RelatedMaterialsHandler relatedMaterialsHandler;
-    private final HashMap<IOreMaterial, Integer> materialEbfHeatMap;
+    private final HashMap<Material, Integer> materialEbfHeatMap;
 
     DiagramFactory(LayoutHandler layoutHandler, HeatingCoilHandler heatingCoilHandler,
             RelatedMaterialsHandler relatedMaterialsHandler) {
@@ -121,122 +121,87 @@ class DiagramFactory {
     void initialize() {
         for (GTRecipe ebfRecipe : RecipeMaps.blastFurnaceRecipes.getAllRecipes()) {
             for (ItemStack output : ebfRecipe.mOutputs) {
-
-                // GT material
                 ItemData outData = GTOreDictUnificator.getAssociation(output);
                 if ((outData != null) && outData.hasValidMaterialData()
                         && outData.hasValidPrefixData()
                         && (outData.mPrefix == OrePrefixes.ingot || outData.mPrefix == OrePrefixes.ingotHot)) {
-                    Materials mat = outData.mMaterial.mMaterial;
+                    Material mat = outData.mMaterial.mMaterial;
                     int recipeHeat = ebfRecipe.mSpecialValue;
                     materialEbfHeatMap.compute(
                             mat,
                             (m, oldHeat) -> (oldHeat == null) ? recipeHeat : Math.min(recipeHeat, oldHeat));
                 }
-
-                // GT++ material
-                if (output.getItem() instanceof BaseItemComponent bic) {
-                    OrePrefixes prefix = bic.componentType.getGtOrePrefix();
-                    Material material = bic.componentMaterial;
-                    if (prefix != null && material != null
-                            && (prefix == OrePrefixes.ingot || prefix == OrePrefixes.ingotHot)) {
-                        int recipeHeat = ebfRecipe.mSpecialValue;
-                        materialEbfHeatMap.compute(
-                                material,
-                                (m, oldHeat) -> (oldHeat == null) ? recipeHeat : Math.min(recipeHeat, oldHeat));
-                    }
-                }
             }
         }
     }
 
-    Diagram buildDiagram(IOreMaterial material) {
+    Diagram buildDiagram(Material material) {
         Diagram.Builder diagramBuilder = Diagram.builder().addAllLayouts(layoutHandler.requiredLayouts())
                 .addAllOptionalLayouts(layoutHandler.optionalLayouts()).addInteractable(
                         GregTechDiagramUtil.buildMaterialInfoButton(LayoutHandler.MATERIAL_INFO_POSITION, material));
 
         buildBlastFurnaceInfoButton(material).ifPresent(diagramBuilder::addInteractable);
+        diagramBuilder.autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.RELATED_MATERIALS)
+                .insertEachSafe(relatedMaterialsHandler.getRelatedMaterialRepresentations(material));
 
-        if (material instanceof Materials gtMaterial) {
+        Diagram.Builder.SlotGroupAutoSubBuilder fluidsSlotBuilder = diagramBuilder
+                .autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.FLUIDS);
+        insertFluidIntoSlot(
+                fluidsSlotBuilder,
+                MaterialUtils.fluid(material, 1000),
+                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypefluid"));
+        insertFluidIntoSlot(
+                fluidsSlotBuilder,
+                MaterialUtils.gas(material, 1000),
+                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypegas"));
+        insertFluidIntoSlot(
+                fluidsSlotBuilder,
+                MaterialUtils.solid(material, 1000),
+                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypesolid"));
+        insertFluidIntoSlot(
+                fluidsSlotBuilder,
+                MaterialUtils.molten(material, 1000),
+                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypemolten"));
+        insertFluidIntoSlot(
+                fluidsSlotBuilder,
+                MaterialUtils.plasma(material, 1000),
+                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypeplasma"));
 
-            diagramBuilder.autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.RELATED_MATERIALS)
-                    .insertEachSafe(relatedMaterialsHandler.getRelatedMaterialRepresentations(gtMaterial));
+        Diagram.Builder.SlotGroupAutoSubBuilder hydroCrackedFluidsSlotBuilder = diagramBuilder
+                .autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.HYDRO_CRACKED_FLUIDS);
+        insertFluidIntoSlot(
+                hydroCrackedFluidsSlotBuilder,
+                cracked(material, CrackType.HYDRO, 0),
+                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypelightlyhydrocracked"));
+        insertFluidIntoSlot(
+                hydroCrackedFluidsSlotBuilder,
+                cracked(material, CrackType.HYDRO, 1),
+                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypemoderatelyhydrocracked"));
+        insertFluidIntoSlot(
+                hydroCrackedFluidsSlotBuilder,
+                cracked(material, CrackType.HYDRO, 2),
+                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypeseverelyhydrocracked"));
 
-            Diagram.Builder.SlotGroupAutoSubBuilder fluidsSlotBuilder = diagramBuilder
-                    .autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.FLUIDS);
-            insertFluidIntoSlot(
-                    fluidsSlotBuilder,
-                    gtMaterial.getFluid(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypefluid"));
-            insertFluidIntoSlot(
-                    fluidsSlotBuilder,
-                    gtMaterial.getGas(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypegas"));
-            insertFluidIntoSlot(
-                    fluidsSlotBuilder,
-                    gtMaterial.getSolid(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypesolid"));
-            insertFluidIntoSlot(
-                    fluidsSlotBuilder,
-                    gtMaterial.getMolten(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypemolten"));
-            insertFluidIntoSlot(
-                    fluidsSlotBuilder,
-                    gtMaterial.getPlasma(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypeplasma"));
-
-            Diagram.Builder.SlotGroupAutoSubBuilder hydroCrackedFluidsSlotBuilder = diagramBuilder
-                    .autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.HYDRO_CRACKED_FLUIDS);
-            insertFluidIntoSlot(
-                    hydroCrackedFluidsSlotBuilder,
-                    gtMaterial.getLightlyHydroCracked(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypelightlyhydrocracked"));
-            insertFluidIntoSlot(
-                    hydroCrackedFluidsSlotBuilder,
-                    gtMaterial.getModeratelyHydroCracked(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypemoderatelyhydrocracked"));
-            insertFluidIntoSlot(
-                    hydroCrackedFluidsSlotBuilder,
-                    gtMaterial.getSeverelyHydroCracked(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypeseverelyhydrocracked"));
-
-            Diagram.Builder.SlotGroupAutoSubBuilder steamCrackedFluidsSlotBuilder = diagramBuilder
-                    .autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.STEAM_CRACKED_FLUIDS);
-            insertFluidIntoSlot(
-                    steamCrackedFluidsSlotBuilder,
-                    gtMaterial.getLightlySteamCracked(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypelightlysteamcracked"));
-            insertFluidIntoSlot(
-                    steamCrackedFluidsSlotBuilder,
-                    gtMaterial.getModeratelySteamCracked(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypemoderatelysteamcracked"));
-            insertFluidIntoSlot(
-                    steamCrackedFluidsSlotBuilder,
-                    gtMaterial.getSeverelySteamCracked(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypeseverelysteamcracked"));
-
-        } else if (material instanceof Material gtppMaterial) {
-
-            Diagram.Builder.SlotGroupAutoSubBuilder fluidsSlotBuilder = diagramBuilder
-                    .autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.FLUIDS);
-            insertFluidIntoSlot(
-                    fluidsSlotBuilder,
-                    gtppMaterial.getFluidStack(1000),
-                    Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypefluid"));
-            if (gtppMaterial.getPlasma() != null) {
-                insertFluidIntoSlot(
-                        fluidsSlotBuilder,
-                        new FluidStack(gtppMaterial.getPlasma(), 1000),
-                        Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypeplasma"));
-            }
-        }
+        Diagram.Builder.SlotGroupAutoSubBuilder steamCrackedFluidsSlotBuilder = diagramBuilder
+                .autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.STEAM_CRACKED_FLUIDS);
+        insertFluidIntoSlot(
+                steamCrackedFluidsSlotBuilder,
+                cracked(material, CrackType.STEAM, 0),
+                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypelightlysteamcracked"));
+        insertFluidIntoSlot(
+                steamCrackedFluidsSlotBuilder,
+                cracked(material, CrackType.STEAM, 1),
+                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypemoderatelysteamcracked"));
+        insertFluidIntoSlot(
+                steamCrackedFluidsSlotBuilder,
+                cracked(material, CrackType.STEAM, 2),
+                Lang.GREGTECH_5_MATERIAL_PARTS.trans("fluidtypeseverelysteamcracked"));
 
         Arrays.stream(MaterialPart.VALUES).forEach(part -> part.insertIntoSlot(diagramBuilder, material));
         return diagramBuilder.build();
     }
 
-    private static List<DisplayComponent> getPrefixComponents(ImmutableList<OrePrefixes> prefixes,
-            IOreMaterial material) {
+    private static List<DisplayComponent> getPrefixComponents(ImmutableList<OrePrefixes> prefixes, Material material) {
         List<DisplayComponent> list = new ArrayList<>();
         for (OrePrefixes prefix : prefixes) {
             Optional<ItemComponent> componentOptional = GregTechOreDictUtil.getComponent(prefix, material);
@@ -253,24 +218,18 @@ class DiagramFactory {
         return list;
     }
 
-    private Optional<Interactable> buildBlastFurnaceInfoButton(IOreMaterial material) {
-        int ebfTemp = -1;
-        if (material instanceof Materials gtMaterial) {
-            if (gtMaterial.mBlastFurnaceRequired) {
-                ebfTemp = gtMaterial.mBlastFurnaceTemp;
-            }
-        } else if (material instanceof Material gtppMaterial) {
-            if (gtppMaterial.requiresBlastFurnace()) {
-                ebfTemp = gtppMaterial.getMeltingPointK();
-            }
-        }
-        if (ebfTemp == -1) {
+    private static @Nullable FluidStack cracked(Material material, CrackType type, int severity) {
+        Fluid fluid = MaterialUtils.crackedFluid(material, type, severity);
+        return fluid == null ? null : new FluidStack(fluid, 1000);
+    }
+
+    private Optional<Interactable> buildBlastFurnaceInfoButton(Material material) {
+        if (!MaterialUtils.blastFurnaceRequired(material)) {
             return Optional.empty();
         }
 
-        ebfTemp = materialEbfHeatMap.getOrDefault(material, ebfTemp);
-
         Tooltip.Builder tooltipBuilder = Tooltip.builder().setFormatting(Tooltip.INFO_FORMATTING);
+        int ebfTemp = materialEbfHeatMap.getOrDefault(material, MaterialUtils.blastFurnaceTemp(material));
         if (ebfTemp > 0) {
             tooltipBuilder.addTextLine(Lang.GREGTECH_5_MATERIAL_PARTS.transf("blastfurnaceinfotemp", ebfTemp))
                     .addSpacing().setFormatting(Tooltip.SLOT_FORMATTING)

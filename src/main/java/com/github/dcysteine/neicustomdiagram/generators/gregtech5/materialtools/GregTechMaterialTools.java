@@ -21,8 +21,10 @@ import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechFormatting;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Lists;
+import com.ruling_0.materiallib.api.Material;
+import com.ruling_0.materiallib.api.MaterialLibAPI;
 
-import gregtech.api.enums.Materials;
+import gregtech.api.enums.materials.Materials;
 import gregtech.api.items.MetaGeneratedTool;
 import gregtech.api.objects.ItemData;
 import gregtech.common.items.IDMetaTool01;
@@ -40,7 +42,7 @@ public final class GregTechMaterialTools implements DiagramGenerator {
     private final RecipeHandler recipeHandler;
     private final DiagramFactory diagramFactory;
 
-    private ImmutableBiMap<Materials, Diagram> materialsMap;
+    private ImmutableBiMap<Material, Diagram> materialsMap;
 
     public GregTechMaterialTools(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.GREGTECH_5_MATERIAL_TOOLS.trans("groupname"), groupId, ICON, 1)
@@ -68,8 +70,8 @@ public final class GregTechMaterialTools implements DiagramGenerator {
         layoutHandler.initialize();
         recipeHandler.initialize();
 
-        ImmutableBiMap.Builder<Materials, Diagram> materialsMapBuilder = ImmutableBiMap.builder();
-        for (Materials material : Materials.getAll()) {
+        ImmutableBiMap.Builder<Material, Diagram> materialsMapBuilder = ImmutableBiMap.builder();
+        for (Material material : MaterialLibAPI.getMaterials()) {
             materialsMapBuilder.put(material, diagramFactory.buildDiagram(material));
         }
         materialsMap = materialsMapBuilder.build();
@@ -82,11 +84,11 @@ public final class GregTechMaterialTools implements DiagramGenerator {
         // Try handling fluids and fluid display stacks by converting into a filled cell.
         component = GregTechFluidDictUtil.fillCell(component).map(Component.class::cast).orElse(component);
 
-        Materials material = null;
+        Material material = null;
 
         if (component.type() == Component.ComponentType.ITEM
                 && ((ItemComponent) component).item() instanceof MetaGeneratedTool) {
-            material = MetaGeneratedTool.getPrimaryMaterial((ItemStack) component.stack());
+            material = MetaGeneratedTool.getPrimaryMaterialML((ItemStack) component.stack());
         } else {
             Optional<ItemData> itemDataOptional = GregTechOreDictUtil.getItemData(component);
             if (itemDataOptional.isPresent() && itemDataOptional.get().mMaterial != null) {

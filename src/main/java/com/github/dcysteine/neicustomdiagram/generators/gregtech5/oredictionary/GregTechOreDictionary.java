@@ -24,10 +24,10 @@ import com.github.dcysteine.neicustomdiagram.util.ComponentTransformer;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechFormatting;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.common.collect.Lists;
+import com.ruling_0.materiallib.api.Material;
 
 import codechicken.lib.gui.GuiDraw;
 import gregtech.api.enums.ItemList;
-import gregtech.api.enums.Materials;
 import gregtech.api.objects.ItemData;
 
 /**
@@ -99,7 +99,7 @@ public final class GregTechOreDictionary implements DiagramGenerator {
                                 .build());
 
         if (itemDataOptional.isPresent() && itemDataOptional.get().mMaterial != null) {
-            Materials material = itemDataOptional.get().mMaterial.mMaterial;
+            Material material = itemDataOptional.get().mMaterial.mMaterial;
             String materialName = GregTechFormatting.getMaterialDescription(material);
             String prefixName = itemDataOptional.get().mPrefix.getDefaultLocalName();
             boolean materialSmall = GuiDraw.getStringWidth(materialName) > Grid.TOTAL_WIDTH - 4;

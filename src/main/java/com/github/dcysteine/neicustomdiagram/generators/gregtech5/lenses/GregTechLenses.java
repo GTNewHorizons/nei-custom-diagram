@@ -10,8 +10,8 @@ import com.github.dcysteine.neicustomdiagram.api.diagram.matcher.ComponentDiagra
 import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 
-import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.enums.materials.Materials;
 
 public final class GregTechLenses implements DiagramGenerator {
 
