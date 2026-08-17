@@ -38,10 +38,7 @@ import gregtech.api.enums.materials.Materials;
 
 class DiagramBuilder {
 
-    /**
-     * Falls back to an arbitrary vanilla item if the stone dust lookup itself comes up empty, since this is only used
-     * to filter stone dust out of displayed outputs and must never crash class-init.
-     */
+    /** The fallback is a placeholder: this component is only ever removed from output lists, never displayed. */
     private static final ItemComponent STONE_DUST = GregTechOreDictUtil.getComponent(OrePrefixes.dust, Materials.Stone)
             .orElseGet(() -> ItemComponent.create(Items.gunpowder, 0));
 

@@ -29,11 +29,6 @@ public final class GregTechOreProcessing implements DiagramGenerator {
 
     public static final ItemComponent ICON = computeIcon();
 
-    /**
-     * Class-init must never throw: the oredict lookup or the ML-ore-block filter could both come up empty depending on
-     * load order or future material changes, so this falls back through progressively weaker guarantees, ending in a
-     * vanilla item that is always present.
-     */
     private static ItemComponent computeIcon() {
         List<ItemComponent> aluminiumOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.ore, Materials.Aluminium);
         return aluminiumOres.stream().filter(GregTechOreProcessing::isGregTechOreBlock).findFirst()
