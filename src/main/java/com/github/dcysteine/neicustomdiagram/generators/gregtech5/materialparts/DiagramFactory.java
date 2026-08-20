@@ -141,6 +141,7 @@ class DiagramFactory {
                         GregTechDiagramUtil.buildMaterialInfoButton(LayoutHandler.MATERIAL_INFO_POSITION, material));
 
         buildBlastFurnaceInfoButton(material).ifPresent(diagramBuilder::addInteractable);
+
         diagramBuilder.autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.RELATED_MATERIALS)
                 .insertEachSafe(relatedMaterialsHandler.getRelatedMaterialRepresentations(material));
 

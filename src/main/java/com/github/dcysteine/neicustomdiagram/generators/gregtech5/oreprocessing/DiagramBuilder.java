@@ -38,7 +38,7 @@ import gregtech.api.enums.materials.Materials;
 
 class DiagramBuilder {
 
-    /** The fallback is a placeholder: this component is only ever removed from output lists, never displayed. */
+    /** Only used to filter stone dust out of output lists, never displayed. */
     private static final ItemComponent STONE_DUST = GregTechOreDictUtil.getComponent(OrePrefixes.dust, Materials.Stone)
             .orElseGet(() -> ItemComponent.create(Items.gunpowder, 0));
 

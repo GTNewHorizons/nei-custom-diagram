@@ -29,13 +29,6 @@ public final class GregTechOreProcessing implements DiagramGenerator {
 
     public static final ItemComponent ICON = computeIcon();
 
-    private static ItemComponent computeIcon() {
-        List<ItemComponent> aluminiumOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.ore, Materials.Aluminium);
-        return aluminiumOres.stream().filter(GregTechOreProcessing::isGregTechOreBlock).findFirst()
-                .or(() -> aluminiumOres.stream().findFirst())
-                .orElseGet(() -> ItemComponent.create(new ItemStack(Blocks.iron_ore)));
-    }
-
     private static final ImmutableList<OrePrefixes> OTHER_ORE_PREFIXES = ImmutableList.of(
             OrePrefixes.oreBlackgranite,
             OrePrefixes.oreRedgranite,
@@ -50,6 +43,13 @@ public final class GregTechOreProcessing implements DiagramGenerator {
             OrePrefixes.orePoor,
             OrePrefixes.oreEndstone,
             OrePrefixes.oreEnd);
+
+    private static ItemComponent computeIcon() {
+        List<ItemComponent> aluminiumOres = GregTechOreDictUtil.getAllComponents(OrePrefixes.ore, Materials.Aluminium);
+        return aluminiumOres.stream().filter(GregTechOreProcessing::isGregTechOreBlock).findFirst()
+                .or(() -> aluminiumOres.stream().findFirst())
+                .orElseGet(() -> ItemComponent.create(new ItemStack(Blocks.iron_ore)));
+    }
 
     private final DiagramGroupInfo info;
 
