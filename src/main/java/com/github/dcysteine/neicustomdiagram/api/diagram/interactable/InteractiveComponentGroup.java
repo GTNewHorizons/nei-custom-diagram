@@ -31,10 +31,10 @@ public class InteractiveComponentGroup implements Interactable {
     protected final Point position;
 
     /** Guaranteed to be non-empty. */
-    protected final ImmutableList<DisplayComponent> components;
+    public final ImmutableList<DisplayComponent> components;
 
     /** Tooltip which will be drawn before annotated component tooltips. Meant for slot tooltips. */
-    protected final Tooltip slotTooltip;
+    public final Tooltip slotTooltip;
 
     /**
      * This class is really intended to be used with slots. If you're calling this constructor, consider using
