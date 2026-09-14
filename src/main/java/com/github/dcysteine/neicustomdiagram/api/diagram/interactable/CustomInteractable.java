@@ -16,9 +16,9 @@ import codechicken.nei.recipe.GuiUsageRecipe;
 /** This class is a flexible way to create arbitrary interactables, but requires a lot of setup. */
 public class CustomInteractable implements Interactable {
 
-    public final BoundedDrawable drawable;
-    public final Tooltip tooltip;
-    public final Consumer<RecipeType> interact;
+    protected final BoundedDrawable drawable;
+    protected final Tooltip tooltip;
+    protected final Consumer<RecipeType> interact;
 
     /**
      * This function will be called before {@code label.draw()}, with {@code position} as a parameter.
@@ -26,7 +26,7 @@ public class CustomInteractable implements Interactable {
      * <p>
      * You can use this to do something like draw a slot under the label.
      */
-    public final Consumer<Point> drawBackground;
+    protected final Consumer<Point> drawBackground;
 
     /**
      * This function will be called after {@code label.draw()}, with {@code position} as a parameter.
@@ -34,12 +34,12 @@ public class CustomInteractable implements Interactable {
      * <p>
      * You can use this to do something like draw additional info text over the label.
      */
-    public final Consumer<Point> drawForeground;
+    protected final Consumer<Point> drawForeground;
 
     /**
      * This function will be called when mousing over this interactable, with {@code position} as a parameter.
      */
-    public final Consumer<Point> drawOverlay;
+    protected final Consumer<Point> drawOverlay;
 
     protected CustomInteractable(BoundedDrawable drawable, Tooltip tooltip, Consumer<RecipeType> interact,
             Consumer<Point> drawBackground, Consumer<Point> drawForeground, Consumer<Point> drawOverlay) {
@@ -57,6 +57,18 @@ public class CustomInteractable implements Interactable {
 
     public Tooltip tooltip() {
         return tooltip;
+    }
+
+    public Consumer<RecipeType> interact() {
+        return interact;
+    }
+
+    public Consumer<Point> drawBackground() {
+        return drawBackground;
+    }
+
+    public Consumer<Point> drawForeground() {
+        return drawForeground;
     }
 
     @Override
