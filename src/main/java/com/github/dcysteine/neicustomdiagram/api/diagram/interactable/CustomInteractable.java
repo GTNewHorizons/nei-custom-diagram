@@ -26,7 +26,7 @@ public class CustomInteractable implements Interactable {
      * <p>
      * You can use this to do something like draw a slot under the label.
      */
-    protected final Consumer<Point> drawBackground;
+    public final Consumer<Point> drawBackground;
 
     /**
      * This function will be called after {@code label.draw()}, with {@code position} as a parameter.
@@ -34,12 +34,12 @@ public class CustomInteractable implements Interactable {
      * <p>
      * You can use this to do something like draw additional info text over the label.
      */
-    protected final Consumer<Point> drawForeground;
+    public final Consumer<Point> drawForeground;
 
     /**
      * This function will be called when mousing over this interactable, with {@code position} as a parameter.
      */
-    protected final Consumer<Point> drawOverlay;
+    public final Consumer<Point> drawOverlay;
 
     protected CustomInteractable(BoundedDrawable drawable, Tooltip tooltip, Consumer<RecipeType> interact,
             Consumer<Point> drawBackground, Consumer<Point> drawForeground, Consumer<Point> drawOverlay) {
