@@ -39,12 +39,12 @@ import codechicken.nei.recipe.RecipeItemInputHandler;
 
 public class DiagramGroup implements ICraftingHandler, IUsageHandler {
 
-    protected final DiagramGroupInfo info;
-    protected final DiagramMatcher matcher;
-    protected final Supplier<DiagramState> diagramStateSupplier;
+    public final DiagramGroupInfo info;
+    public final DiagramMatcher matcher;
+    public final Supplier<DiagramState> diagramStateSupplier;
 
-    protected final DiagramState diagramState;
-    protected final ImmutableList<Diagram> diagrams;
+    public final DiagramState diagramState;
+    public final ImmutableList<Diagram> diagrams;
 
     public DiagramGroup(DiagramGroupInfo info, DiagramMatcher matcher, Supplier<DiagramState> diagramStateSupplier) {
         this.info = info;

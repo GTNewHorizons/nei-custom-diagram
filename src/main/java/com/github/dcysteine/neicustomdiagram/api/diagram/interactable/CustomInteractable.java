@@ -16,9 +16,9 @@ import codechicken.nei.recipe.GuiUsageRecipe;
 /** This class is a flexible way to create arbitrary interactables, but requires a lot of setup. */
 public class CustomInteractable implements Interactable {
 
-    protected final BoundedDrawable drawable;
-    protected final Tooltip tooltip;
-    protected final Consumer<RecipeType> interact;
+    public final BoundedDrawable drawable;
+    public final Tooltip tooltip;
+    public final Consumer<RecipeType> interact;
 
     /**
      * This function will be called before {@code label.draw()}, with {@code position} as a parameter.
