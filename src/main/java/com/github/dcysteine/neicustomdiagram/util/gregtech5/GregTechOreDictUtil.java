@@ -13,6 +13,7 @@ import com.ruling_0.materiallib.api.Material;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.material.MaterialParts;
 import gregtech.api.objects.ItemData;
 import gregtech.api.util.GTOreDictUnificator;
 
@@ -26,7 +27,7 @@ public final class GregTechOreDictUtil {
     }
 
     public static Optional<ItemComponent> getComponent(OrePrefixes prefix, Material material) {
-        Optional<ItemStack> itemStackOptional = Optional.ofNullable(GTOreDictUnificator.get(prefix, material, 1));
+        Optional<ItemStack> itemStackOptional = Optional.ofNullable(MaterialParts.stack(prefix, material, 1));
         return itemStackOptional.map(ItemComponent::create);
     }
 
