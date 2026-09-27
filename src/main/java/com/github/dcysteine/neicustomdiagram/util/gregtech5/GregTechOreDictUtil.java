@@ -37,20 +37,6 @@ public final class GregTechOreDictUtil {
         return itemStacks.stream().map(ItemComponent::create).collect(Collectors.toList());
     }
 
-    /** Returns a list of everything that unifies into {@code component}. */
-    public static List<Component> reverseUnify(Component component) {
-        List<Component> results = new ArrayList<>();
-
-        if (component.type() == Component.ComponentType.ITEM) {
-            GTOreDictUnificator.getNonUnifiedStacks(component.stack())
-                    .forEach(itemStack -> results.add(ItemComponent.create(itemStack)));
-        } else {
-            results.add(component);
-        }
-
-        return results;
-    }
-
     /**
      * GregTech doesn't handle getting item data for fluids or its own fluid display items, so this method will return
      * empty optional for such cases.
@@ -74,14 +60,15 @@ public final class GregTechOreDictUtil {
      * Use this method when matching diagrams by component.
      */
     public static List<Component> getAssociatedComponents(Component component) {
-        List<Component> results = new ArrayList<>(reverseUnify(component));
+        List<Component> results = new ArrayList<>();
+        results.add(component);
 
         Optional<ItemData> itemDataOptional = getItemData(component);
         if (itemDataOptional.isPresent()) {
             ItemData itemData = itemDataOptional.get();
             itemData.mPrefix.mFamiliarPrefixes.forEach(
                     prefix -> getComponent(prefix, itemData.mMaterial.mMaterial)
-                            .ifPresent(c -> results.addAll(reverseUnify(c))));
+                            .ifPresent(results::add));
         }
 
         return results;

@@ -45,14 +45,10 @@ abstract class CircuitRecipe {
                     continue;
                 }
 
-                ItemComponent itemComponent = ItemComponent.create(itemStack);
-                List<Component> reverseUnifiedItems = GregTechOreDictUtil.reverseUnify(itemComponent);
-
                 itemInputsBuilder.add(
-                        ImmutableList.copyOf(
-                                reverseUnifiedItems.stream()
-                                        .map(c -> DisplayComponent.builder(c).setStackSize(itemStack.stackSize).build())
-                                        .collect(Collectors.toList())));
+                        ImmutableList.of(
+                                DisplayComponent.builder(ItemComponent.create(itemStack))
+                                        .setStackSize(itemStack.stackSize).build()));
             }
 
             DisplayComponent fluidInput = Iterables
