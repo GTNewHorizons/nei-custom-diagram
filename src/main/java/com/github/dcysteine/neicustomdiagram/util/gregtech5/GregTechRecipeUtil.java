@@ -20,8 +20,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTUtility;
 
 public final class GregTechRecipeUtil {
 
@@ -99,7 +99,7 @@ public final class GregTechRecipeUtil {
 
     private static boolean recipeContainsItems(ItemStack[] recipeItemStacks, Collection<ItemStack> itemStacks) {
         for (ItemStack itemStack : itemStacks) {
-            if (Arrays.stream(recipeItemStacks).noneMatch(s -> GTOreDictUnificator.isInputStackEqual(s, itemStack))) {
+            if (Arrays.stream(recipeItemStacks).noneMatch(s -> GTUtility.areStacksEqual(s, itemStack, true))) {
                 return false;
             }
         }

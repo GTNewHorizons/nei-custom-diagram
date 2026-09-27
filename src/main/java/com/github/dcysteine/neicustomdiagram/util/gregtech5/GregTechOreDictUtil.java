@@ -13,6 +13,7 @@ import com.ruling_0.materiallib.api.Material;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.material.MaterialData;
 import gregtech.api.material.MaterialParts;
 import gregtech.api.objects.ItemData;
 import gregtech.api.util.GTOreDictUnificator;
@@ -62,7 +63,7 @@ public final class GregTechOreDictUtil {
         if (component.type() != Component.ComponentType.ITEM) {
             return Optional.empty();
         }
-        return Optional.ofNullable(GTOreDictUnificator.getAssociation((ItemStack) component.stack()));
+        return Optional.ofNullable(MaterialData.getAssociation((ItemStack) component.stack()));
     }
 
     /**

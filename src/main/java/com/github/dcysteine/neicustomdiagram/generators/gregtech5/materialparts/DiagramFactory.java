@@ -33,11 +33,11 @@ import com.ruling_0.materiallib.api.Material;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.material.MaterialData;
 import gregtech.api.material.MaterialUtils;
 import gregtech.api.material.MaterialUtils.CrackType;
 import gregtech.api.objects.ItemData;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 
 class DiagramFactory {
@@ -121,7 +121,7 @@ class DiagramFactory {
     void initialize() {
         for (GTRecipe ebfRecipe : RecipeMaps.blastFurnaceRecipes.getAllRecipes()) {
             for (ItemStack output : ebfRecipe.mOutputs) {
-                ItemData outData = GTOreDictUnificator.getAssociation(output);
+                ItemData outData = MaterialData.getAssociation(output);
                 if ((outData != null) && outData.hasValidMaterialData()
                         && outData.hasValidPrefixData()
                         && (outData.mPrefix == OrePrefixes.ingot || outData.mPrefix == OrePrefixes.ingotHot)) {
