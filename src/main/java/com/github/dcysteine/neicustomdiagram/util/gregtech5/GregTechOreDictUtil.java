@@ -16,7 +16,7 @@ import gregtech.api.enums.OrePrefixes;
 import gregtech.api.material.MaterialData;
 import gregtech.api.material.MaterialParts;
 import gregtech.api.objects.ItemData;
-import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.OreDictUtils;
 
 public final class GregTechOreDictUtil {
 
@@ -33,7 +33,7 @@ public final class GregTechOreDictUtil {
     }
 
     public static List<ItemComponent> getAllComponents(OrePrefixes prefix, Material material) {
-        List<ItemStack> itemStacks = GTOreDictUnificator.getOres(prefix, material);
+        List<ItemStack> itemStacks = OreDictUtils.getOres(prefix, material);
         return itemStacks.stream().map(ItemComponent::create).collect(Collectors.toList());
     }
 
@@ -66,9 +66,8 @@ public final class GregTechOreDictUtil {
         Optional<ItemData> itemDataOptional = getItemData(component);
         if (itemDataOptional.isPresent()) {
             ItemData itemData = itemDataOptional.get();
-            itemData.mPrefix.mFamiliarPrefixes.forEach(
-                    prefix -> getComponent(prefix, itemData.mMaterial.mMaterial)
-                            .ifPresent(results::add));
+            itemData.mPrefix.mFamiliarPrefixes
+                    .forEach(prefix -> getComponent(prefix, itemData.mMaterial.mMaterial).ifPresent(results::add));
         }
 
         return results;
