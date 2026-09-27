@@ -36,28 +36,15 @@ public final class GregTechOreDictUtil {
         return itemStacks.stream().map(ItemComponent::create).collect(Collectors.toList());
     }
 
-    /**
-     * Returns the unified version of {@code component}, or just returns {@code component} if it couldn't be unified or
-     * isn't an item.
-     */
-    public static Component unify(Component component) {
-        if (component.type() != Component.ComponentType.ITEM) {
-            return component;
-        }
-
-        return ItemComponent.create(GTOreDictUnificator.get_nocopy((ItemStack) component.stack()));
-    }
-
     /** Returns a list of everything that unifies into {@code component}. */
     public static List<Component> reverseUnify(Component component) {
-        Component unified = unify(component);
         List<Component> results = new ArrayList<>();
 
-        if (unified.type() == Component.ComponentType.ITEM) {
-            GTOreDictUnificator.getNonUnifiedStacks(unified.stack())
+        if (component.type() == Component.ComponentType.ITEM) {
+            GTOreDictUnificator.getNonUnifiedStacks(component.stack())
                     .forEach(itemStack -> results.add(ItemComponent.create(itemStack)));
         } else {
-            results.add(unified);
+            results.add(component);
         }
 
         return results;

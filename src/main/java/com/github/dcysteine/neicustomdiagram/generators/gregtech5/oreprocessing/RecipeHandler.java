@@ -16,7 +16,6 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.github.dcysteine.neicustomdiagram.main.Logger;
-import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechRecipeUtil;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
@@ -30,7 +29,6 @@ import gregtech.api.enums.materials.Materials;
 import gregtech.api.material.MaterialUtils;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 
@@ -180,7 +178,7 @@ class RecipeHandler {
                         continue;
                     }
 
-                    ItemComponent itemComponent = ItemComponent.create(GTOreDictUnificator.get_nocopy(itemStack));
+                    ItemComponent itemComponent = ItemComponent.create(itemStack);
                     multimap.put(itemComponent, outputs);
 
                     // Need an effectively final variable here so that we can reference it within
@@ -200,8 +198,7 @@ class RecipeHandler {
 
     /** The returned set is immutable! */
     Set<ImmutableList<DisplayComponent>> getRecipeOutputs(RecipeMap recipeMap, ItemComponent input) {
-        return Multimaps.unmodifiableSetMultimap(recipeData.get(recipeMap))
-                .get((ItemComponent) GregTechOreDictUtil.unify(input));
+        return Multimaps.unmodifiableSetMultimap(recipeData.get(recipeMap)).get(input);
     }
 
     /**
@@ -212,8 +209,7 @@ class RecipeHandler {
      * Also will log each case where multiple differing recipe outputs were found.
      */
     Optional<ImmutableList<DisplayComponent>> getUniqueRecipeOutput(RecipeMap recipeMap, ItemComponent input) {
-        Set<ImmutableList<DisplayComponent>> outputs = recipeData.get(recipeMap)
-                .get((ItemComponent) GregTechOreDictUtil.unify(input));
+        Set<ImmutableList<DisplayComponent>> outputs = recipeData.get(recipeMap).get(input);
 
         if (outputs.size() > 1) {
             Logger.GREGTECH_5_ORE_PROCESSING.warn("Found {} recipes: [{}] [{}]", outputs.size(), recipeMap, input);

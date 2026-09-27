@@ -52,7 +52,7 @@ public final class GregTechRecipeUtil {
         for (Component component : inputs) {
             switch (component.type()) {
                 case ITEM:
-                    inputItems.add(GTOreDictUnificator.get_nocopy((ItemStack) component.stack()));
+                    inputItems.add((ItemStack) component.stack());
                     break;
 
                 case FLUID:
@@ -66,7 +66,7 @@ public final class GregTechRecipeUtil {
         for (Component component : outputs) {
             switch (component.type()) {
                 case ITEM:
-                    outputItems.add(GTOreDictUnificator.get_nocopy((ItemStack) component.stack()));
+                    outputItems.add((ItemStack) component.stack());
                     break;
 
                 case FLUID:
