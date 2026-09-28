@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
@@ -33,7 +34,7 @@ public final class GregTechOreDictUtil {
     }
 
     public static List<ItemComponent> getAllComponents(OrePrefixes prefix, Material material) {
-        List<ItemStack> itemStacks = OreDictUtils.getOres(prefix, material);
+        List<ItemStack> itemStacks = OreDictionary.getOres(prefix.oreDictName(material));
         return itemStacks.stream().map(ItemComponent::create).collect(Collectors.toList());
     }
 
