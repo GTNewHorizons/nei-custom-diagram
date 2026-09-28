@@ -72,10 +72,11 @@ public final class GregTechOreDictionary implements DiagramGenerator {
             // Don't bother returning a diagram that contains just the input element.
             return Lists.newArrayList();
         }
+        List<Component> unifyComponents = GregTechOreDictUtil.reverseUnify(component);
 
         Diagram.Builder builder = Diagram.builder().addLayout(buildLayout(itemDataOptional));
         builder.autoInsertIntoSlotGroup(SLOT_GROUP_UNIFY)
-                .insertIntoNextSlot(ComponentTransformer.transformToDisplay(component));
+                .insertEachSafe(ComponentTransformer.transformToDisplay(unifyComponents));
         builder.autoInsertIntoSlotGroup(SLOT_GROUP_ALL)
                 .insertEachSafe(ComponentTransformer.transformToDisplay(allComponents));
 

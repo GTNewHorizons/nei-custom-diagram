@@ -12,6 +12,7 @@ neicustomdiagram.util.emptyfluidcontainer=空容器：
 
 neicustomdiagram.util.gregtech5.materialinfohot=危险！炽热！
 neicustomdiagram.util.gregtech5.materialinfocold=危险！冰冷！
+neicustomdiagram.util.gregtech5.reverseunifieditems=矿典同义词：
 neicustomdiagram.util.gregtech5.outputchance=几率：%.2f%%
 neicustomdiagram.util.gregtech5.recipecleanroom=合成表要求超净间
 neicustomdiagram.util.gregtech5.recipelowgravity=合成表要求低重力

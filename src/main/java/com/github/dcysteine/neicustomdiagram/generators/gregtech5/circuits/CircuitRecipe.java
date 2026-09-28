@@ -11,9 +11,11 @@ import java.util.stream.IntStream;
 
 import net.minecraft.item.ItemStack;
 
+import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
 import com.github.dcysteine.neicustomdiagram.main.Logger;
+import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechRecipeUtil;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.HashBasedTable;
@@ -43,10 +45,14 @@ abstract class CircuitRecipe {
                     continue;
                 }
 
+                ItemComponent itemComponent = ItemComponent.create(itemStack);
+                List<Component> reverseUnifiedItems = GregTechOreDictUtil.reverseUnify(itemComponent);
+
                 itemInputsBuilder.add(
-                        ImmutableList.of(
-                                DisplayComponent.builder(ItemComponent.create(itemStack))
-                                        .setStackSize(itemStack.stackSize).build()));
+                        ImmutableList.copyOf(
+                                reverseUnifiedItems.stream()
+                                        .map(c -> DisplayComponent.builder(c).setStackSize(itemStack.stackSize).build())
+                                        .collect(Collectors.toList())));
             }
 
             DisplayComponent fluidInput = Iterables

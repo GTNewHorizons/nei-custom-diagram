@@ -128,9 +128,20 @@ public final class GregTechRecipeUtil {
                 continue;
             }
 
-            displayComponents.add(
-                    DisplayComponent.builder(ItemComponent.createWithNbt(itemStack)).setStackSize(itemStack.stackSize)
-                            .build());
+            ItemComponent itemComponent = ItemComponent.createWithNbt(itemStack);
+            DisplayComponent.Builder builder = DisplayComponent.builder(itemComponent)
+                    .setStackSize(itemStack.stackSize);
+
+            List<Component> reverseUnifiedItems = GregTechOreDictUtil.reverseUnify(itemComponent);
+            if (reverseUnifiedItems.size() > 1) {
+                builder.setAdditionalInfo("*").setAdditionalTooltip(
+                        Tooltip.builder().setFormatting(Tooltip.INFO_FORMATTING)
+                                .addTextLine(Lang.GREGTECH_5_UTIL.trans("reverseunifieditems"))
+                                .setFormatting(Tooltip.DEFAULT_FORMATTING).addAllComponents(reverseUnifiedItems)
+                                .build());
+            }
+
+            displayComponents.add(builder.build());
         }
 
         return displayComponents;
