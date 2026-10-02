@@ -1,8 +1,10 @@
 package com.github.dcysteine.neicustomdiagram.api.diagram;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,7 @@ import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.ICraftingHandler;
 import codechicken.nei.recipe.IUsageHandler;
 import codechicken.nei.recipe.RecipeItemInputHandler;
+import codechicken.nei.recipe.StackInfo;
 
 public class DiagramGroup implements ICraftingHandler, IUsageHandler {
 
@@ -132,16 +135,24 @@ public class DiagramGroup implements ICraftingHandler, IUsageHandler {
 
         switch (id) {
             case "item":
-                ItemStack itemStack = (ItemStack) stacks[0];
-                ItemComponent itemComponent = info.ignoreNbt() ? ItemComponent.create(itemStack)
+                final ItemStack itemStack = (ItemStack) stacks[0];
+                final ItemComponent itemComponent = info.ignoreNbt() ? ItemComponent.create(itemStack)
                         : ItemComponent.createWithNbt(itemStack);
 
-                return matcher.match(recipeType, itemComponent);
+                final FluidStack containedFluid = StackInfo.getFluid(itemStack);
+                if (containedFluid == null) {
+                    return matcher.match(recipeType, itemComponent);
+                }
 
+                final Set<Diagram> matchingDiagrams = new LinkedHashSet<>(matcher.match(recipeType, itemComponent));
+                final FluidComponent fluidContainer = info.ignoreNbt() ? FluidComponent.create(containedFluid)
+                        : FluidComponent.createWithNbt(containedFluid);
+                matchingDiagrams.addAll(matcher.match(recipeType, fluidContainer));
+                return matchingDiagrams;
             case "liquid":
             case "fluid":
-                FluidStack fluidStack = (FluidStack) stacks[0];
-                FluidComponent fluidComponent = info.ignoreNbt() ? FluidComponent.create(fluidStack)
+                final FluidStack fluidStack = (FluidStack) stacks[0];
+                final FluidComponent fluidComponent = info.ignoreNbt() ? FluidComponent.create(fluidStack)
                         : FluidComponent.createWithNbt(fluidStack);
 
                 return matcher.match(recipeType, fluidComponent);
