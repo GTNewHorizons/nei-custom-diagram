@@ -26,7 +26,7 @@ public final class GregTechDiagramUtil {
                 .addTextLine(GregTechFormatting.getMaterialDescription(material)).setFormatting(Tooltip.INFO_FORMATTING)
                 .addTextLine(MaterialUtils.chemicalFormula(material));
 
-        boolean radioactive = Boolean.TRUE.equals(material.getProperty(GTMaterialProperties.IS_RADIOACTIVE));
+        boolean radioactive = material.getProperty(GTMaterialProperties.RADIATION_LEVEL) != null;
         float heatDamage = MaterialUtils.heatDamage(material);
         if (radioactive || heatDamage != 0) {
             tooltipBuilder.addSpacing().setFormatting(Tooltip.URGENT_FORMATTING);
