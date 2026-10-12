@@ -23,9 +23,9 @@ import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechFormatting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
+import com.ruling_0.materiallib.api.Material;
 
 import detrav.items.DetravMetaGeneratedTool01;
-import gregtech.api.enums.Materials;
 import gregtech.api.items.MetaGeneratedTool;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.common.items.IDMetaTool01;
@@ -45,11 +45,11 @@ class RecipeHandler {
     private static class BaseTool {
 
         public final ItemComponent itemComponent;
-        public final Materials primaryMaterial;
+        public final Material primaryMaterial;
 
         private BaseTool(ItemStack itemStack) {
             itemComponent = ItemComponent.create(itemStack);
-            primaryMaterial = MetaGeneratedTool.getPrimaryMaterial(itemStack);
+            primaryMaterial = MetaGeneratedTool.getPrimaryMaterialML(itemStack);
         }
 
         public static BaseTool create(ItemStack itemStack) {
@@ -61,14 +61,13 @@ class RecipeHandler {
             if (object == this) return true;
             if (!(object instanceof BaseTool)) return false;
             BaseTool baseTool = (BaseTool) object;
-            return baseTool.primaryMaterial.getId() == primaryMaterial.getId()
-                    && baseTool.itemComponent.item() == itemComponent.item()
+            return baseTool.primaryMaterial == primaryMaterial && baseTool.itemComponent.item() == itemComponent.item()
                     && baseTool.itemComponent.damage() == itemComponent.damage();
         }
 
         @Override
         public int hashCode() {
-            int result = primaryMaterial.getId();
+            int result = primaryMaterial.getIndex();
             result = 31 * result + itemComponent.item().hashCode();
             result = 31 * result + itemComponent.damage();
             return result;
@@ -118,7 +117,7 @@ class RecipeHandler {
      * We group together tools with the same base item but different NBT (which will be electrical stats). This is why
      * values will be lists of lists.
      */
-    private final ListMultimap<Materials, ImmutableList<DisplayComponent>> materialToolsMultimap;
+    private final ListMultimap<Material, ImmutableList<DisplayComponent>> materialToolsMultimap;
 
     /**
      * Multimap of material to list of lists of turbines with that primary material.
@@ -127,7 +126,7 @@ class RecipeHandler {
      * values will be lists of lists. Though in practice, turbines don't have electric stats, so each inner list will
      * have size 1.
      */
-    private final ListMultimap<Materials, ImmutableList<DisplayComponent>> materialTurbinesMultimap;
+    private final ListMultimap<Material, ImmutableList<DisplayComponent>> materialTurbinesMultimap;
 
     /**
      * Multimap of material to list of lists of Detrav scanners with that primary material.
@@ -136,7 +135,7 @@ class RecipeHandler {
      * values will be lists of lists. Though in practice, scanners don't have electric stats, so each inner list will
      * have size 1.
      */
-    private final ListMultimap<Materials, ImmutableList<DisplayComponent>> materialScannersMultimap;
+    private final ListMultimap<Material, ImmutableList<DisplayComponent>> materialScannersMultimap;
 
     /**
      * Multimap of material to list of lists of Detrav electric scanners with that primary material.
@@ -145,7 +144,7 @@ class RecipeHandler {
      * values will be lists of lists. Though in practice, scanners don't have varying electric stats, so each inner list
      * will have size 1.
      */
-    private final ListMultimap<Materials, ImmutableList<DisplayComponent>> materialElectricScannersMultimap;
+    private final ListMultimap<Material, ImmutableList<DisplayComponent>> materialElectricScannersMultimap;
 
     RecipeHandler() {
         this.materialToolsMultimap = MultimapBuilder.hashKeys().arrayListValues().build();
@@ -212,7 +211,7 @@ class RecipeHandler {
      * We group together tools with the same base item but different NBT (which will be electrical stats). This is why
      * values will be lists of lists.
      */
-    ImmutableList<ImmutableList<DisplayComponent>> getTools(Materials material) {
+    ImmutableList<ImmutableList<DisplayComponent>> getTools(Material material) {
         return ImmutableList.copyOf(materialToolsMultimap.get(material));
     }
 
@@ -224,7 +223,7 @@ class RecipeHandler {
      * values will be lists of lists. Though in practice, turbines don't have electric stats, so each inner list will
      * have size 1.
      */
-    ImmutableList<ImmutableList<DisplayComponent>> getTurbines(Materials material) {
+    ImmutableList<ImmutableList<DisplayComponent>> getTurbines(Material material) {
         return ImmutableList.copyOf(materialTurbinesMultimap.get(material));
     }
 
@@ -236,7 +235,7 @@ class RecipeHandler {
      * values will be lists of lists. Though in practice, scanners don't have electric stats, so each inner list will
      * have size 1.
      */
-    ImmutableList<ImmutableList<DisplayComponent>> getScanners(Materials material) {
+    ImmutableList<ImmutableList<DisplayComponent>> getScanners(Material material) {
         return ImmutableList.copyOf(materialScannersMultimap.get(material));
     }
 
@@ -248,7 +247,7 @@ class RecipeHandler {
      * values will be lists of lists. Though in practice, scanners don't have varying electric stats, so each inner list
      * will have size 1.
      */
-    ImmutableList<ImmutableList<DisplayComponent>> getElectricScanners(Materials material) {
+    ImmutableList<ImmutableList<DisplayComponent>> getElectricScanners(Material material) {
         return ImmutableList.copyOf(materialElectricScannersMultimap.get(material));
     }
 
@@ -288,8 +287,8 @@ class RecipeHandler {
         DisplayComponent.Builder builder = DisplayComponent.builder(itemComponent);
 
         ItemStack itemStack = itemComponent.stack();
-        Materials primaryMaterial = MetaGeneratedTool.getPrimaryMaterial(itemStack);
-        Materials secondaryMaterial = MetaGeneratedTool.getSecondaryMaterial(itemStack);
+        Material primaryMaterial = MetaGeneratedTool.getPrimaryMaterialML(itemStack);
+        Material secondaryMaterial = MetaGeneratedTool.getSecondaryMaterialML(itemStack);
         builder.setAdditionalTooltip(
                 Tooltip.builder().setFormatting(Tooltip.INFO_FORMATTING)
                         .addTextLine(

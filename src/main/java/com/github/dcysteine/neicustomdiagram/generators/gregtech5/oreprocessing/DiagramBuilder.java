@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import net.minecraft.init.Items;
+
 import com.github.dcysteine.neicustomdiagram.api.diagram.Diagram;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.DisplayComponent;
@@ -31,14 +33,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 
-import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.enums.materials.Materials;
 
 class DiagramBuilder {
 
-    private static final ItemComponent STONE_DUST = ItemComponent
-            .create(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Stone, 1));
+    /** Only used to filter stone dust out of output lists, never displayed. */
+    private static final ItemComponent STONE_DUST = GregTechOreDictUtil.getComponent(OrePrefixes.dust, Materials.Stone)
+            .orElseGet(() -> ItemComponent.create(Items.gunpowder, 0));
 
     private final LayoutHandler layoutHandler;
     private final LabelHandler labelHandler;

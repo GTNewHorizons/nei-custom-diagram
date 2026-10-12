@@ -6,17 +6,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.Component;
 import com.github.dcysteine.neicustomdiagram.api.diagram.component.ItemComponent;
+import com.ruling_0.materiallib.api.Material;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.interfaces.IOreMaterial;
+import gregtech.api.material.MaterialData;
+import gregtech.api.material.MaterialParts;
 import gregtech.api.objects.ItemData;
-import gregtech.api.util.GTOreDictUnificator;
-import gtPlusPlus.core.item.base.BaseItemComponent;
-import gtPlusPlus.core.material.Material;
+import gregtech.api.util.OreDictUtils;
 
 public final class GregTechOreDictUtil {
 
@@ -27,38 +28,25 @@ public final class GregTechOreDictUtil {
         return ItemComponent.create(item.get(1));
     }
 
-    public static Optional<ItemComponent> getComponent(OrePrefixes prefix, IOreMaterial material) {
-        Optional<ItemStack> itemStackOptional = Optional.ofNullable(material.getPart(prefix, 1));
+    public static Optional<ItemComponent> getComponent(OrePrefixes prefix, Material material) {
+        Optional<ItemStack> itemStackOptional = Optional.ofNullable(MaterialParts.stack(prefix, material, 1));
         return itemStackOptional.map(ItemComponent::create);
     }
 
-    public static List<ItemComponent> getAllComponents(OrePrefixes prefix, IOreMaterial material) {
-        List<ItemStack> itemStacks = GTOreDictUnificator.getOres(prefix, material);
+    public static List<ItemComponent> getAllComponents(OrePrefixes prefix, Material material) {
+        List<ItemStack> itemStacks = OreDictionary.getOres(prefix.oreDictName(material));
         return itemStacks.stream().map(ItemComponent::create).collect(Collectors.toList());
     }
 
-    /**
-     * Returns the unified version of {@code component}, or just returns {@code component} if it couldn't be unified or
-     * isn't an item.
-     */
-    public static Component unify(Component component) {
-        if (component.type() != Component.ComponentType.ITEM) {
-            return component;
-        }
-
-        return ItemComponent.create(GTOreDictUnificator.get_nocopy((ItemStack) component.stack()));
-    }
-
-    /** Returns a list of everything that unifies into {@code component}. */
+    /** Returns {@code component} and every item a GregTech recipe input holding it also accepts. */
     public static List<Component> reverseUnify(Component component) {
-        Component unified = unify(component);
         List<Component> results = new ArrayList<>();
 
-        if (unified.type() == Component.ComponentType.ITEM) {
-            GTOreDictUnificator.getNonUnifiedStacks(unified.stack())
+        if (component.type() == Component.ComponentType.ITEM) {
+            OreDictUtils.getInterchangeableStacks((ItemStack) component.stack())
                     .forEach(itemStack -> results.add(ItemComponent.create(itemStack)));
         } else {
-            results.add(unified);
+            results.add(component);
         }
 
         return results;
@@ -76,19 +64,7 @@ public final class GregTechOreDictUtil {
         if (component.type() != Component.ComponentType.ITEM) {
             return Optional.empty();
         }
-        return Optional.ofNullable(GTOreDictUnificator.getAssociation((ItemStack) component.stack()));
-    }
-
-    public static Optional<Material> getGTPPMaterial(Component component) {
-        if (component.type() != Component.ComponentType.ITEM) {
-            return Optional.empty();
-        }
-
-        ItemStack stack = (ItemStack) component.stack();
-        if (stack != null && stack.getItem() instanceof BaseItemComponent bic) {
-            return Optional.ofNullable(bic.componentMaterial);
-        }
-        return Optional.empty();
+        return Optional.ofNullable(MaterialData.getAssociation((ItemStack) component.stack()));
     }
 
     /**
@@ -104,8 +80,8 @@ public final class GregTechOreDictUtil {
         Optional<ItemData> itemDataOptional = getItemData(component);
         if (itemDataOptional.isPresent()) {
             ItemData itemData = itemDataOptional.get();
-            itemData.mPrefix.mFamiliarPrefixes.forEach(
-                    prefix -> getComponent(prefix, itemData.mMaterial.mMaterial)
+            itemData.prefix.familiarPrefixes.forEach(
+                    prefix -> getComponent(prefix, itemData.material.material)
                             .ifPresent(c -> results.addAll(reverseUnify(c))));
         }
 

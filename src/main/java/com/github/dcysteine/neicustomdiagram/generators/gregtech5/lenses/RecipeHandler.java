@@ -171,6 +171,6 @@ class RecipeHandler {
             return false;
         }
 
-        return itemDataOptional.get().mPrefix == OrePrefixes.lens;
+        return itemDataOptional.get().prefix == OrePrefixes.lens;
     }
 }
