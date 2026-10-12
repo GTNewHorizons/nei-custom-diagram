@@ -98,10 +98,10 @@ public final class GregTechOreDictionary implements DiagramGenerator {
                                                 Tooltip.SLOT_FORMATTING))
                                 .build());
 
-        if (itemDataOptional.isPresent() && itemDataOptional.get().mMaterial != null) {
-            Material material = itemDataOptional.get().mMaterial.mMaterial;
+        if (itemDataOptional.isPresent() && itemDataOptional.get().material != null) {
+            Material material = itemDataOptional.get().material.mMaterial;
             String materialName = GregTechFormatting.getMaterialDescription(material);
-            String prefixName = itemDataOptional.get().mPrefix.getDefaultLocalName();
+            String prefixName = itemDataOptional.get().prefix.getDefaultLocalName();
             boolean materialSmall = GuiDraw.getStringWidth(materialName) > Grid.TOTAL_WIDTH - 4;
             boolean prefixSmall = GuiDraw.getStringWidth(prefixName) > Grid.TOTAL_WIDTH - 4;
 

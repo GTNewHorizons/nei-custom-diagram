@@ -91,8 +91,8 @@ public final class GregTechMaterialTools implements DiagramGenerator {
             material = MetaGeneratedTool.getPrimaryMaterialML((ItemStack) component.stack());
         } else {
             Optional<ItemData> itemDataOptional = GregTechOreDictUtil.getItemData(component);
-            if (itemDataOptional.isPresent() && itemDataOptional.get().mMaterial != null) {
-                material = itemDataOptional.get().mMaterial.mMaterial;
+            if (itemDataOptional.isPresent() && itemDataOptional.get().material != null) {
+                material = itemDataOptional.get().material.mMaterial;
             }
         }
 

@@ -124,8 +124,8 @@ class DiagramFactory {
                 ItemData outData = MaterialData.getAssociation(output);
                 if ((outData != null) && outData.hasValidMaterialData()
                         && outData.hasValidPrefixData()
-                        && (outData.mPrefix == OrePrefixes.ingot || outData.mPrefix == OrePrefixes.ingotHot)) {
-                    Material mat = outData.mMaterial.mMaterial;
+                        && (outData.prefix == OrePrefixes.ingot || outData.prefix == OrePrefixes.ingotHot)) {
+                    Material mat = outData.material.mMaterial;
                     int recipeHeat = ebfRecipe.mSpecialValue;
                     materialEbfHeatMap.compute(
                             mat,

@@ -106,8 +106,8 @@ public final class GregTechOrePrefixes implements DiagramGenerator {
         component = GregTechFluidDictUtil.fillCell(component).map(Component.class::cast).orElse(component);
 
         Optional<ItemData> itemDataOptional = GregTechOreDictUtil.getItemData(component);
-        if (itemDataOptional.isPresent() && itemDataOptional.get().mMaterial != null) {
-            Material material = itemDataOptional.get().mMaterial.mMaterial;
+        if (itemDataOptional.isPresent() && itemDataOptional.get().material != null) {
+            Material material = itemDataOptional.get().material.mMaterial;
             if (material != null) {
                 if (materialsMap.containsKey(material)) {
                     return Lists.newArrayList(materialsMap.get(material));

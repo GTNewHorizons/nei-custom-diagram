@@ -568,6 +568,6 @@ class RecipeHandler {
 
     private static Set<OrePrefixes> getOrePrefixes(Set<Component> componentSet) {
         return componentSet.stream().map(GregTechOreDictUtil::getItemData).filter(Optional::isPresent)
-                .map(itemData -> itemData.get().mPrefix).collect(Collectors.toCollection(HashSet::new));
+                .map(itemData -> itemData.get().prefix).collect(Collectors.toCollection(HashSet::new));
     }
 }
