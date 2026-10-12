@@ -92,7 +92,7 @@ public final class GregTechMaterialTools implements DiagramGenerator {
         } else {
             Optional<ItemData> itemDataOptional = GregTechOreDictUtil.getItemData(component);
             if (itemDataOptional.isPresent() && itemDataOptional.get().material != null) {
-                material = itemDataOptional.get().material.mMaterial;
+                material = itemDataOptional.get().material.material;
             }
         }
 

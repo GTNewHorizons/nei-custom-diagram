@@ -99,7 +99,7 @@ public final class GregTechOreDictionary implements DiagramGenerator {
                                 .build());
 
         if (itemDataOptional.isPresent() && itemDataOptional.get().material != null) {
-            Material material = itemDataOptional.get().material.mMaterial;
+            Material material = itemDataOptional.get().material.material;
             String materialName = GregTechFormatting.getMaterialDescription(material);
             String prefixName = itemDataOptional.get().prefix.getDefaultLocalName();
             boolean materialSmall = GuiDraw.getStringWidth(materialName) > Grid.TOTAL_WIDTH - 4;
