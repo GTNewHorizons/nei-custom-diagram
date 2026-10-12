@@ -80,7 +80,7 @@ public final class GregTechOreDictUtil {
         Optional<ItemData> itemDataOptional = getItemData(component);
         if (itemDataOptional.isPresent()) {
             ItemData itemData = itemDataOptional.get();
-            itemData.prefix.mFamiliarPrefixes.forEach(
+            itemData.prefix.familiarPrefixes.forEach(
                     prefix -> getComponent(prefix, itemData.material.material)
                             .ifPresent(c -> results.addAll(reverseUnify(c))));
         }
