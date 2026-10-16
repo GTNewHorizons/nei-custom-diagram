@@ -4,8 +4,10 @@ import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -76,8 +78,11 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
             Diagram diagram = buildDiagram(table);
             diagramsBuilder.add(diagram);
 
+            Set<ItemComponent> seenItems = new HashSet<>();
             for (LootEntry entry : table.entries()) {
-                multimapBuilder.put(entry.item(), diagram);
+                if (seenItems.add(entry.item())) {
+                    multimapBuilder.put(entry.item(), diagram);
+                }
             }
         }
 
