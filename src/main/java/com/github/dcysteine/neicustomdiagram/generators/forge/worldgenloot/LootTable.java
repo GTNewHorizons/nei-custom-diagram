@@ -28,7 +28,7 @@ public record LootTable(String name, List<LootEntry> entries, int totalWeight) {
             if (c.theItemId == null) continue;
             entries.add(
                     new LootEntry(
-                            ItemComponent.create(c.theItemId),
+                            ItemComponent.createWithNbt(c.theItemId),
                             c.theMinimumChanceToGenerateItem,
                             c.theMaximumChanceToGenerateItem,
                             c.itemWeight));

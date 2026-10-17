@@ -4,8 +4,10 @@ import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -53,7 +55,7 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
 
     public ForgeWorldgenLoot(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.FORGE_WORLDGEN_LOOT.trans("groupname"), groupId, ICON, 2)
-                .setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN)
+                .setIgnoreNbt(false).setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN)
                 .setDescription("This diagram displays world-gen loot tables registered via Forge ChestGenHooks.")
                 .build();
     }
@@ -76,8 +78,11 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
             Diagram diagram = buildDiagram(table);
             diagramsBuilder.add(diagram);
 
+            Set<ItemComponent> seenItems = new HashSet<>();
             for (LootEntry entry : table.entries()) {
-                multimapBuilder.put(entry.item(), diagram);
+                if (seenItems.add(entry.item())) {
+                    multimapBuilder.put(entry.item(), diagram);
+                }
             }
         }
 
