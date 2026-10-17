@@ -55,7 +55,7 @@ public final class ForgeWorldgenLoot implements DiagramGenerator {
 
     public ForgeWorldgenLoot(String groupId) {
         this.info = DiagramGroupInfo.builder(Lang.FORGE_WORLDGEN_LOOT.trans("groupname"), groupId, ICON, 2)
-                .setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN)
+                .setIgnoreNbt(false).setDefaultVisibility(DiagramGroupVisibility.ALWAYS_SHOWN)
                 .setDescription("This diagram displays world-gen loot tables registered via Forge ChestGenHooks.")
                 .build();
     }
