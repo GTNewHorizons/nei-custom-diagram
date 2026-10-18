@@ -9,8 +9,8 @@ public enum Mods {
     ENDER_STORAGE("EnderStorage"),
     GTNH_CORE_MOD("dreamcraft"),
     // GregTech 5 shares a mod ID with GregTech 6, so we must also check the mod version.
-    GREGTECH_5("gregtech_nh"),
-    GREGTECH_6("gregapi"),
+    GREGTECH_5("gregtech", version -> !version.startsWith("GT6")),
+    GREGTECH_6("gregtech", version -> version.startsWith("GT6")),
     // GregTech5 add-ons
     BARTWORKS("bartworks"),
     GT_PLUS_PLUS("miscutils"),
