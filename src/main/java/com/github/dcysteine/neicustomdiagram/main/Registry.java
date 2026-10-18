@@ -55,15 +55,17 @@ public enum Registry {
         entriesBuilder.add(RegistryEntry.create("forge.fluidcontainers", ForgeFluidContainers::new));
         entriesBuilder.add(RegistryEntry.create("forge.oredictionary", ForgeOreDictionary::new));
         entriesBuilder.add(RegistryEntry.create("forge.worldgenloot", ForgeWorldgenLoot::new));
-        entriesBuilder.add(RegistryEntry.create("gregtech.circuits", GregTechCircuits::new, Mods.GREGTECH_5));
-        entriesBuilder.add(RegistryEntry.create("gregtech.lenses", GregTechLenses::new, Mods.GREGTECH_5));
-        entriesBuilder.add(RegistryEntry.create("gregtech.materialparts", GregTechMaterialParts::new, Mods.GREGTECH_5));
-        entriesBuilder.add(RegistryEntry.create("gregtech.materialtools", GregTechMaterialTools::new, Mods.GREGTECH_5));
-        entriesBuilder.add(RegistryEntry.create("gregtech.oredictionary", GregTechOreDictionary::new, Mods.GREGTECH_5));
-        entriesBuilder.add(RegistryEntry.create("gregtech.oreprefixes", GregTechOrePrefixes::new, Mods.GREGTECH_5));
-        entriesBuilder.add(RegistryEntry.create("gregtech.oreprocessing", GregTechOreProcessing::new, Mods.GREGTECH_5));
-        entriesBuilder
+        if (Mods.GREGTECH_5.isLoaded()) {
+            entriesBuilder.add(RegistryEntry.create("gregtech.circuits", GregTechCircuits::new, Mods.GREGTECH_5));
+            entriesBuilder.add(RegistryEntry.create("gregtech.lenses", GregTechLenses::new, Mods.GREGTECH_5));
+            entriesBuilder.add(RegistryEntry.create("gregtech.materialparts", GregTechMaterialParts::new, Mods.GREGTECH_5));
+            entriesBuilder.add(RegistryEntry.create("gregtech.materialtools", GregTechMaterialTools::new, Mods.GREGTECH_5));
+            entriesBuilder.add(RegistryEntry.create("gregtech.oredictionary", GregTechOreDictionary::new, Mods.GREGTECH_5));
+            entriesBuilder.add(RegistryEntry.create("gregtech.oreprefixes", GregTechOrePrefixes::new, Mods.GREGTECH_5));
+            entriesBuilder.add(RegistryEntry.create("gregtech.oreprocessing", GregTechOreProcessing::new, Mods.GREGTECH_5));
+            entriesBuilder
                 .add(RegistryEntry.create("gregtech.recipedebugger", GregTechRecipeDebugger::new, Mods.GREGTECH_5));
+        }
 
         entries = entriesBuilder.build();
     }
