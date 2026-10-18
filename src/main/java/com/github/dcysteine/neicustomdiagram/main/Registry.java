@@ -58,13 +58,17 @@ public enum Registry {
         if (Mods.GREGTECH_5.isLoaded()) {
             entriesBuilder.add(RegistryEntry.create("gregtech.circuits", GregTechCircuits::new, Mods.GREGTECH_5));
             entriesBuilder.add(RegistryEntry.create("gregtech.lenses", GregTechLenses::new, Mods.GREGTECH_5));
-            entriesBuilder.add(RegistryEntry.create("gregtech.materialparts", GregTechMaterialParts::new, Mods.GREGTECH_5));
-            entriesBuilder.add(RegistryEntry.create("gregtech.materialtools", GregTechMaterialTools::new, Mods.GREGTECH_5));
-            entriesBuilder.add(RegistryEntry.create("gregtech.oredictionary", GregTechOreDictionary::new, Mods.GREGTECH_5));
-            entriesBuilder.add(RegistryEntry.create("gregtech.oreprefixes", GregTechOrePrefixes::new, Mods.GREGTECH_5));
-            entriesBuilder.add(RegistryEntry.create("gregtech.oreprocessing", GregTechOreProcessing::new, Mods.GREGTECH_5));
             entriesBuilder
-                .add(RegistryEntry.create("gregtech.recipedebugger", GregTechRecipeDebugger::new, Mods.GREGTECH_5));
+                    .add(RegistryEntry.create("gregtech.materialparts", GregTechMaterialParts::new, Mods.GREGTECH_5));
+            entriesBuilder
+                    .add(RegistryEntry.create("gregtech.materialtools", GregTechMaterialTools::new, Mods.GREGTECH_5));
+            entriesBuilder
+                    .add(RegistryEntry.create("gregtech.oredictionary", GregTechOreDictionary::new, Mods.GREGTECH_5));
+            entriesBuilder.add(RegistryEntry.create("gregtech.oreprefixes", GregTechOrePrefixes::new, Mods.GREGTECH_5));
+            entriesBuilder
+                    .add(RegistryEntry.create("gregtech.oreprocessing", GregTechOreProcessing::new, Mods.GREGTECH_5));
+            entriesBuilder
+                    .add(RegistryEntry.create("gregtech.recipedebugger", GregTechRecipeDebugger::new, Mods.GREGTECH_5));
         }
 
         entries = entriesBuilder.build();
