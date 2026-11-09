@@ -1,5 +1,8 @@
 package com.github.dcysteine.neicustomdiagram.util.gregtech5;
 
+import static gregtech.api.recipe.RecipeEnvironment.CLEANROOM;
+import static gregtech.api.recipe.RecipeEnvironment.LOW_GRAVITY;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -246,14 +249,12 @@ public final class GregTechRecipeUtil {
         return results;
     }
 
-    // TODO these special values only apply for certain recipe types.
-    // Do we ever run into cases where they don't apply?
     public static boolean requiresCleanroom(GTRecipe recipe) {
-        return recipe.mSpecialValue == -200 || recipe.mSpecialValue == -300;
+        return recipe.getEnvironmentRequirements().contains(CLEANROOM);
     }
 
     public static boolean requiresLowGravity(GTRecipe recipe) {
-        return recipe.mSpecialValue == -100 || recipe.mSpecialValue == -300;
+        return recipe.getEnvironmentRequirements().contains(LOW_GRAVITY);
     }
 
     private static Optional<Tooltip> buildSpecialConditionsTooltip(GTRecipe recipe) {
