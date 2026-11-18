@@ -70,7 +70,7 @@ final class TwilightForestLootTables {
             int rarity = item.getRarity();
             if (stack == null || stack.getItem() == null) continue;
             // stackSize in TFTreasureItem is the max quantity (getItemStack randomises 1..stackSize)
-            entries.add(new LootEntry(ItemComponent.create(stack), 1, stack.stackSize, rarity));
+            entries.add(new LootEntry(ItemComponent.createWithNbt(stack), 1, stack.stackSize, rarity));
         }
 
         if (!entries.isEmpty()) {
