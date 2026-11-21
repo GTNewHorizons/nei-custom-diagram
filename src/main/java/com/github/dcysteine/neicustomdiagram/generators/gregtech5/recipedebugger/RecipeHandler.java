@@ -163,7 +163,7 @@ class RecipeHandler {
                 "largechemicalreactorlabel"),
         DISTILLATION_TOWER(RecipeMaps.distillationTowerRecipes, ItemList.Distillation_Tower, "distillationtowerlabel"),
         OIL_CRACKER(RecipeMaps.crackingRecipes, ItemList.OilCracker, "oilcrackerlabel"),
-        PYROLYSE_OVEN(RecipeMaps.pyrolyseRecipes, ItemList.PyrolyseOven, "pyrolyseovenlabel"),
+        PYROLYSE_OVEN(RecipeMaps.pyrolyseRecipes, ItemList.PyrolyzeOven, "pyrolyseovenlabel"),
         WIREMILL(RecipeMaps.wiremillRecipes, ItemList.Machine_HV_Wiremill, "wiremilllabel"),
         BENDING_MACHINE(RecipeMaps.benderRecipes, ItemList.Machine_HV_Bender, "bendingmachinelabel"),
         ALLOY_SMELTER(RecipeMaps.alloySmelterRecipes, ItemList.Machine_HV_AlloySmelter, "alloysmelterlabel"),
