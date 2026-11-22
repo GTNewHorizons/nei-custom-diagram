@@ -45,7 +45,6 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
-import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 
@@ -203,8 +202,7 @@ class RecipeHandler {
                 if (itemStack == null) {
                     continue;
                 }
-                ItemStack unified = GTOreDictUnificator.get_nocopy(itemStack);
-                inputs.merge(ItemComponent.createWithNbt(unified), itemStack.stackSize, Integer::sum);
+                inputs.merge(ItemComponent.createWithNbt(itemStack), itemStack.stackSize, Integer::sum);
             }
             for (FluidStack fluidStack : recipe.mFluidInputs) {
                 if (fluidStack == null) {
@@ -218,8 +216,7 @@ class RecipeHandler {
                 if (itemStack == null) {
                     continue;
                 }
-                ItemStack unified = GTOreDictUnificator.get_nocopy(itemStack);
-                outputs.merge(ItemComponent.createWithNbt(unified), itemStack.stackSize, Integer::sum);
+                outputs.merge(ItemComponent.createWithNbt(itemStack), itemStack.stackSize, Integer::sum);
             }
             for (FluidStack fluidStack : recipe.mFluidOutputs) {
                 if (fluidStack == null) {
@@ -571,6 +568,6 @@ class RecipeHandler {
 
     private static Set<OrePrefixes> getOrePrefixes(Set<Component> componentSet) {
         return componentSet.stream().map(GregTechOreDictUtil::getItemData).filter(Optional::isPresent)
-                .map(itemData -> itemData.get().mPrefix).collect(Collectors.toCollection(HashSet::new));
+                .map(itemData -> itemData.get().prefix).collect(Collectors.toCollection(HashSet::new));
     }
 }

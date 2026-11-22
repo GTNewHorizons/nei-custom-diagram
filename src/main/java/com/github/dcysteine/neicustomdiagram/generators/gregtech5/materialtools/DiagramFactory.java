@@ -14,9 +14,10 @@ import com.github.dcysteine.neicustomdiagram.main.Lang;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechDiagramUtil;
 import com.github.dcysteine.neicustomdiagram.util.gregtech5.GregTechOreDictUtil;
 import com.google.common.collect.ImmutableList;
+import com.ruling_0.materiallib.api.Material;
 
-import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.material.MaterialUtils;
 
 class DiagramFactory {
 
@@ -37,7 +38,7 @@ class DiagramFactory {
             this.prefixes = ImmutableList.copyOf(prefixes);
         }
 
-        private void insertIntoSlot(Diagram.Builder builder, Materials material) {
+        private void insertIntoSlot(Diagram.Builder builder, Material material) {
             if (prefixes.size() == 1) {
                 builder.insertIntoSlot((Layout.SlotKey) slotKey, getPrefixComponents(prefixes, material));
             } else {
@@ -55,12 +56,12 @@ class DiagramFactory {
         this.recipeHandler = recipeHandler;
     }
 
-    Diagram buildDiagram(Materials material) {
+    Diagram buildDiagram(Material material) {
         Diagram.Builder diagramBuilder = Diagram.builder().addAllLayouts(layoutHandler.requiredLayouts())
                 .addAllOptionalLayouts(layoutHandler.optionalLayouts()).addInteractable(
                         GregTechDiagramUtil.buildMaterialInfoButton(LayoutHandler.MATERIAL_INFO_POSITION, material));
 
-        GregTechOreDictUtil.getComponent(OrePrefixes.stick, material.mHandleMaterial).ifPresent(
+        GregTechOreDictUtil.getComponent(OrePrefixes.stick, MaterialUtils.handleMaterial(material)).ifPresent(
                 handle -> diagramBuilder.autoInsertIntoSlotGroup(LayoutHandler.SlotGroupKeys.TOOL_PARTS)
                         .insertIntoNextSlot(
                                 DisplayComponent.builder(handle)
@@ -83,7 +84,7 @@ class DiagramFactory {
         return diagramBuilder.build();
     }
 
-    private static List<DisplayComponent> getPrefixComponents(ImmutableList<OrePrefixes> prefixes, Materials material) {
+    private static List<DisplayComponent> getPrefixComponents(ImmutableList<OrePrefixes> prefixes, Material material) {
         List<DisplayComponent> list = new ArrayList<>();
         for (OrePrefixes prefix : prefixes) {
             Optional<ItemComponent> componentOptional = GregTechOreDictUtil.getComponent(prefix, material);
